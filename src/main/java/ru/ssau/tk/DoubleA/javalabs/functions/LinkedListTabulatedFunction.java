@@ -1,6 +1,6 @@
 package ru.ssau.tk.DoubleA.javalabs.functions;
 
-public class LinkedListTabulatedFunction extends AbstractTabulatedFunction{
+public class LinkedListTabulatedFunction extends AbstractTabulatedFunction implements Insertable, Removable {
 
     private Node head;
 
@@ -78,6 +78,24 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction{
 
         return floorNode;
     }
+    public void insert(double x, double y)
+    {
+
+    }
+    public void remove(int index)
+    {
+        if (index < count && index >= 0) {
+            if (count <= 1) {
+                head = null;
+            }
+            else {
+                Node nodeToRemove = getNode(index);
+                nodeToRemove.prev.next = nodeToRemove.next;
+                nodeToRemove.next.prev = nodeToRemove.prev;
+            }
+        }
+    }
+
 
     public LinkedListTabulatedFunction(double[] xValues, double[] yValues)
     {

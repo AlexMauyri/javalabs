@@ -1,4 +1,5 @@
-package PACKAGE_NAME;
-
 public interface MathFunction {
+
+    double apply(double x);
+
 }

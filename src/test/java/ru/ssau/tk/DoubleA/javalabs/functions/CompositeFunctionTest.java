@@ -14,6 +14,6 @@ public class CompositeFunctionTest {
         function = new CompositeFunction(function, function);
         Assertions.assertEquals(38416, function.apply(14));
         function = new CompositeFunction(new nRootCalculateFunction(2), new SqrFunction());
-        Assertions.assertTrue(java.lang.Math.abs(function.apply(25)) - 25 < epsilon);
+        Assertions.assertTrue(Math.abs(function.apply(25)) - 25 <= epsilon);
     }
 }

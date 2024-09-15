@@ -127,18 +127,61 @@ public class CompositeFunctionTest extends AbstractTest {
         Assertions.assertEquals(1851.89072896, mainFunction.apply(-6.56), EPSILON);
     }
 
+    ArrayTabulatedFunction arrayTabFunction2;
+
     @Test
     void testATabulatedAndATabulated() {
+        arrayTabFunction1 = new ArrayTabulatedFunction(new double[] {0, 2.43, 8.05, 12.95, 18.33}, new double[] {-32, 89, -69, 121, -98});
+        arrayTabFunction2 = new ArrayTabulatedFunction(new double[] {-9, -2.2, -0.4, 1, 3.69}, new double[] {-81, -1331.0/1125.0, -8.0/1125.0, 1.0/9.0, (41.0*369.0*369.0)/1000000.0});
+        mainFunction = new CompositeFunction(arrayTabFunction2, arrayTabFunction1);
+        Assertions.assertEquals(-515.535576, mainFunction.apply(15), EPSILON);
 
+        arrayTabFunction1 = new ArrayTabulatedFunction(new SqrFunction(), 0, 15, 50);
+        arrayTabFunction2 = new ArrayTabulatedFunction(new double[] {0, 2, 8, 12, 18}, new double[] {0, 4, 64, 144, 324});
+        mainFunction = new CompositeFunction(arrayTabFunction1, arrayTabFunction2);
+        Assertions.assertEquals(26.063848, mainFunction.apply(2.046), EPSILON);
+
+        arrayTabFunction1 = new ArrayTabulatedFunction(new SqrFunction(), -18, 3, 100);
+        arrayTabFunction2 = new ArrayTabulatedFunction(arrayTabFunction1, 0, 5, 50);
+        mainFunction = new CompositeFunction(arrayTabFunction2, arrayTabFunction1);
+        Assertions.assertEquals(244.724517, mainFunction.apply(9), EPSILON);
     }
+
+    LinkedListTabulatedFunction listTabFunction2;
 
     @Test
     void testLTabulatedAndLTabulated() {
+        listTabFunction1 = new LinkedListTabulatedFunction(new double[] {0, 2.43, 8.05, 12.95, 18.33}, new double[] {-32, 89, -69, 121, -98});
+        listTabFunction2 = new LinkedListTabulatedFunction(new double[] {-9, -2.2, -0.4, 1, 3.69}, new double[] {-81, -1331.0/1125.0, -8.0/1125.0, 1.0/9.0, (41.0*369.0*369.0)/1000000.0});
+        mainFunction = new CompositeFunction(listTabFunction2, listTabFunction1);
+        Assertions.assertEquals(-2984.056973, mainFunction.apply(-7.15), EPSILON);
 
+        listTabFunction1 = new LinkedListTabulatedFunction(new SqrFunction(), 0, 15, 50);
+        listTabFunction2 = new LinkedListTabulatedFunction(new double[] {0, 2, 8, 12, 18}, new double[] {0, 4, 64, 144, 324});
+        mainFunction = new CompositeFunction(listTabFunction1, listTabFunction2);
+        Assertions.assertEquals(0.078979, mainFunction.apply(0.129), EPSILON);
+
+        listTabFunction1 = new LinkedListTabulatedFunction(new SqrFunction(), -18, 3, 100);
+        listTabFunction2 = new LinkedListTabulatedFunction(listTabFunction1, 0, 5, 50);
+        mainFunction = new CompositeFunction(listTabFunction2, listTabFunction1);
+        Assertions.assertEquals(3326.682277, mainFunction.apply(101), EPSILON);
     }
 
     @Test
     void testATabulatedAndLTabulated() {
+        arrayTabFunction1 = new ArrayTabulatedFunction(new double[] {0, 2.43, 8.05, 12.95, 18.33}, new double[] {-32, 89, -69, 121, -98});
+        listTabFunction1 = new LinkedListTabulatedFunction(new double[] {0, 2, 8, 12, 18}, new double[] {0, 4, 64, 144, 324});
+        mainFunction = new CompositeFunction(listTabFunction1, arrayTabFunction1);
+        Assertions.assertEquals(-1411.592936, mainFunction.apply(6.66), EPSILON);
 
+        arrayTabFunction1 = new ArrayTabulatedFunction(new SqrFunction(), -18, 3, 100);
+        listTabFunction1 = new LinkedListTabulatedFunction(new double[] {-9, -2.2, -0.4, 1, 3.69}, new double[] {-81, -1331.0/1125.0, -8.0/1125.0, 1.0/9.0, (41.0*369.0*369.0)/1000000.0});
+        mainFunction = new CompositeFunction(arrayTabFunction1, listTabFunction1);
+        Assertions.assertEquals(4194.833734, mainFunction.apply(-66.6), EPSILON);
+
+        arrayTabFunction1 = new ArrayTabulatedFunction(new SqrFunction(), 0, 15, 50);
+        listTabFunction1 = new LinkedListTabulatedFunction(arrayTabFunction1, 0, 5, 50);
+        mainFunction = new CompositeFunction(listTabFunction1, arrayTabFunction1);
+        Assertions.assertEquals(198801.909493, mainFunction.apply(666), EPSILON);
     }
 }

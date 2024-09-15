@@ -2,9 +2,58 @@ package ru.ssau.tk.DoubleA.javalabs.functions;
 
 import java.util.Arrays;
 
-public class ArrayTabulatedFunction extends AbstractTabulatedFunction {
+public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements Insertable {
     private double[] xValues;
     private double[] yValues;
+
+    final private static int EXTENSION_CONSTANT = 2;
+    private int emptyPlaces = 0;
+
+    public void insert(double x, double y) {
+
+        int indexX = indexOfX(x);
+        if (indexX != -1) {
+            yValues[indexX] = y;
+        }
+        else {
+            double[] xValuesBuffer, yValuesBuffer;
+            if (emptyPlaces == 0) {
+                xValuesBuffer = new double[count + EXTENSION_CONSTANT];
+                yValuesBuffer = new double[count + EXTENSION_CONSTANT];
+                emptyPlaces = EXTENSION_CONSTANT - 1;
+            } else {
+                xValuesBuffer = xValues;
+                yValuesBuffer = yValues;
+                emptyPlaces--;
+            }
+
+            if (x < leftBound()) {
+                System.arraycopy(xValues, 0, xValuesBuffer, 1, count);
+                System.arraycopy(yValues, 0, yValuesBuffer, 1, count);
+                xValuesBuffer[0] = x;
+                yValuesBuffer[0] = y;
+            }
+            else if (x > rightBound()) {
+                System.arraycopy(xValues, 0, xValuesBuffer, 0, count);
+                System.arraycopy(yValues, 0, yValuesBuffer, 0, count);
+                xValuesBuffer[count] = x;
+                yValuesBuffer[count] = y;
+            }
+            else {
+                int floorIndexX = floorIndexOfX(x); // = 2
+                System.arraycopy(xValues, 0, xValuesBuffer, 0, floorIndexX + 1);
+                System.arraycopy(xValues, 0, xValuesBuffer, count - (floorIndexX + 1), count - (floorIndexX + 1));
+                System.arraycopy(yValues, 0, yValuesBuffer, 0, floorIndexX + 1);
+                System.arraycopy(yValues, 0, yValuesBuffer, count - (floorIndexX + 1), count - (floorIndexX + 1));
+                xValuesBuffer[floorIndexX+1] = x;
+                yValuesBuffer[floorIndexX+1] = y;
+            }
+
+            xValues = xValuesBuffer;
+            yValues = yValuesBuffer;
+            count++;
+        }
+    }
 
     public ArrayTabulatedFunction(double[] xValues, double[] yValues) {
         this.xValues = Arrays.copyOf(xValues, xValues.length);

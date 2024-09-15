@@ -71,7 +71,7 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
         else {
             Node currentNode = head;
 
-            while (currentNode.x > x) {
+            while (currentNode.x < x && currentNode.next != head) {
                 currentNode = currentNode.next;
             }
 
@@ -96,14 +96,15 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
     public void remove(int index)
     {
         if (index < count && index >= 0) {
-            if (count <= 1) {
+            if (count == 1) {
                 head = null;
-            }
-            else {
+            } else {
                 Node nodeToRemove = getNode(index);
+                if (index == 0) head = nodeToRemove.next;
                 nodeToRemove.prev.next = nodeToRemove.next;
                 nodeToRemove.next.prev = nodeToRemove.prev;
             }
+            count--;
         }
     }
 
@@ -220,7 +221,7 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
             currentNode = currentNode.next;
         }
 
-        return (floorIndex == count - 1 ? count : floorIndex);
+        return (floorIndex == count - 1 && currentNode.x < x ? count : floorIndex);
     }
 
     protected double extrapolateLeft(double x)
@@ -270,6 +271,9 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
                 return getY(indexOfX(x));
             }
             else {
+                if (count == 1) {
+                    return x;
+                }
                 Node floorNode = floorNodeOfX(x);
                 return interpolate(x, floorNode.x, floorNode.next.x, floorNode.y, floorNode.next.y);
             }

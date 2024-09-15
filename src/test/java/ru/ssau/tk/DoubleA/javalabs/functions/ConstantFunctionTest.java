@@ -3,7 +3,7 @@ package ru.ssau.tk.DoubleA.javalabs.functions;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class ConstantFunctionTest {
+public class ConstantFunctionTest extends AbstractTest {
 
     @Test
     void test() {

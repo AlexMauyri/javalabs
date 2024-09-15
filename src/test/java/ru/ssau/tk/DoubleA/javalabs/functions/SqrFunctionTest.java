@@ -3,7 +3,7 @@ package ru.ssau.tk.DoubleA.javalabs.functions;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class SqrFunctionTest {
+class SqrFunctionTest extends AbstractTest {
 
     @Test
     void test() {

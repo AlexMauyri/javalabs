@@ -1,10 +1,10 @@
 package ru.ssau.tk.DoubleA.javalabs.functions;
 
-public class nRootCalculateFunction implements MathFunction {
+public class NRootCalculateFunction implements MathFunction {
 
     private int rootDegree;
 
-    public nRootCalculateFunction(int rootDegree) {
+    public NRootCalculateFunction(int rootDegree) {
         this.rootDegree = rootDegree;
     }
 

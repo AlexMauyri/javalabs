@@ -3,7 +3,7 @@ package ru.ssau.tk.DoubleA.javalabs.functions;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class IdentityFunctionTest {
+public class IdentityFunctionTest extends AbstractTest {
 
     @Test
     void test() {

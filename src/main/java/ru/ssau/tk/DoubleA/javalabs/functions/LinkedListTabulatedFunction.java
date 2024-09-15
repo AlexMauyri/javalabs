@@ -115,9 +115,10 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
 
         if (xFrom == xTo)
         {
+            double yFrom = source.apply(xFrom);
             for (int xIndex = 0; xIndex < count; xIndex++)
             {
-                addNode(xFrom, source.apply(xFrom));
+                addNode(xFrom, yFrom);
             }
         }
         else if (count >= 2)
@@ -130,7 +131,7 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
             }
 
             final int POINTS_BEFORE_END = count - 1;
-            final double INTERVAL = (xFrom - xTo) / (count - 1);
+            final double INTERVAL = Math.abs(xTo - xFrom) / (count - 1);
 
             for (int xIndex = 0; xIndex < POINTS_BEFORE_END; xIndex++)
             {

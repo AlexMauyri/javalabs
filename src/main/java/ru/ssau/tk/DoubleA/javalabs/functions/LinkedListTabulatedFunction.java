@@ -4,7 +4,7 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
 
     private Node head;
 
-    private void addNode(double x, double y)
+    protected void addNode(double x, double y)
     {
         Node cur = new Node();
         cur.x = x;
@@ -24,7 +24,7 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
         }
         count++;
     }
-    private Node getNode(int index)
+    protected Node getNode(int index)
     {
         Node currentNode;
 
@@ -53,7 +53,7 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
 
         return currentNode;
     }
-    private Node floorNodeOfX(double x)
+    protected Node floorNodeOfX(double x)
     {
         Node currentNode = head, floorNode = head;
 

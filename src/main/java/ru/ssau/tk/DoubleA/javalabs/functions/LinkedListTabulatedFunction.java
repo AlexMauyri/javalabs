@@ -56,23 +56,10 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
     private Node floorNodeOfX(double x)
     {
         Node currentNode = head, floorNode = head;
-        int valuesBelowX = 0;
-        double floorValue = -1;
 
-        for (int currentIndex = 0; currentIndex < count; currentIndex++)
+        for (int index = 0; currentNode.x < x && index < count; index++)
         {
-            if (currentNode.x < x)
-            {
-                if (valuesBelowX == 0) {
-                    floorNode = currentNode;
-                    floorValue = currentNode.x;
-                }
-                else if (currentNode.x > floorValue) {
-                    floorNode = currentNode;
-                    floorValue = currentNode.x;
-                }
-                valuesBelowX++;
-            }
+            floorNode = currentNode;
             currentNode = currentNode.next;
         }
 
@@ -201,33 +188,15 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
     protected int floorIndexOfX(double x)
     {
         Node currentNode = head;
-        int valuesBelowX = 0, floorIndex = -1;
-        double floorValue = -1;
+        int curIndex = 0, floorIndex = 0;
 
-        for (int currentIndex = 0; currentIndex < count; currentIndex++)
+        for ( ;currentNode.x < x && curIndex < count; curIndex++)
         {
-            if (currentNode.x < x)
-            {
-                if (valuesBelowX == 0) {
-                    floorIndex = currentIndex;
-                    floorValue = currentNode.x;
-                }
-                else if (currentNode.x > floorValue) {
-                    floorIndex = currentIndex;
-                    floorValue = currentNode.x;
-                }
-                valuesBelowX++;
-            }
+            floorIndex = curIndex;
             currentNode = currentNode.next;
         }
 
-        if (valuesBelowX == 0 || valuesBelowX == count) {
-            return valuesBelowX;
-        }
-        else {
-            return floorIndex;
-        }
-
+        return (floorIndex == curIndex - 1 ? curIndex : floorIndex);
     }
 
     protected double extrapolateLeft(double x)
@@ -282,5 +251,4 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
             }
         }
     }
-
 }

@@ -188,15 +188,15 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
     protected int floorIndexOfX(double x)
     {
         Node currentNode = head;
-        int curIndex = 0, floorIndex = 0;
+        int floorIndex = 0;
 
-        for ( ;currentNode.x < x && curIndex < count; curIndex++)
+        for (int curIndex = 0; currentNode.x < x && curIndex < count; curIndex++)
         {
             floorIndex = curIndex;
             currentNode = currentNode.next;
         }
 
-        return (floorIndex == curIndex - 1 ? curIndex : floorIndex);
+        return (floorIndex == count - 1 ? count : floorIndex);
     }
 
     protected double extrapolateLeft(double x)

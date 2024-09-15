@@ -43,7 +43,7 @@ public class ArrayTabulatedFunctionTest extends AbstractTest {
         mathFunctionManual.insert(1.9, 0.7);
         Assertions.assertEquals(2, mathFunctionManual.indexOfY(0.7));
 
-        Assertions.assertThrows(ArrayIndexOutOfBoundsException.class, () -> mathFunctionManual.getX(3));
+        Assertions.assertThrows(ArrayIndexOutOfBoundsException.class, () -> mathFunctionManual.getX(10));
     }
 
     @Test

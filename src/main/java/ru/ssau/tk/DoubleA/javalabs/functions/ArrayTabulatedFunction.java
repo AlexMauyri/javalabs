@@ -119,10 +119,12 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
     @Override
     protected int floorIndexOfX(double x) {
         int index = 0;
-        while (index < count && xValues[index] < x) {
-            ++index;
+
+        for (int i = 0; xValues[i] < x && i < count; ++i) {
+            index = i;
         }
-        return index;
+
+        return (index == count - 1 && xValues[index] < x? count : index);
     }
 
     @Override

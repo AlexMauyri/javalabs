@@ -29,12 +29,10 @@ public class ArrayTabulatedFunctionTest extends AbstractTest {
     void insertTest() {
         mathFunctionManual.insert(1.9, 5.6);
         Assertions.assertEquals(5, mathFunctionManual.getCount());
-        Assertions.assertEquals(4, mathFunctionManual.emptyPlaces);
         mathFunctionManual.insert(0.6, -3.2);
         Assertions.assertEquals(6, mathFunctionManual.getCount());
         mathFunctionManual.insert(15.5, 20.7);
         Assertions.assertEquals(7, mathFunctionManual.getCount());
-        Assertions.assertEquals(2, mathFunctionManual.emptyPlaces);
 
         Assertions.assertEquals(0.6, mathFunctionManual.getX(0));
         Assertions.assertEquals(2, mathFunctionManual.indexOfY(5.6));

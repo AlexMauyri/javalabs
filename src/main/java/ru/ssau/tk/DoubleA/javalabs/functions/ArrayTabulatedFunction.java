@@ -7,7 +7,6 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
     private double[] yValues;
 
     final private static int EXTENSION_CONSTANT = 5;
-    protected int emptyPlaces = 0;
 
     public void insert(double x, double y) {
 
@@ -17,27 +16,21 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
         }
         else {
             double[] xValuesBuffer, yValuesBuffer;
-            if (emptyPlaces == 0) {
+            if (count == xValues.length) {
                 xValuesBuffer = new double[count + EXTENSION_CONSTANT];
                 yValuesBuffer = new double[count + EXTENSION_CONSTANT];
-                emptyPlaces = EXTENSION_CONSTANT - 1;
             } else {
                 xValuesBuffer = xValues;
                 yValuesBuffer = yValues;
-                emptyPlaces--;
             }
-
-            if (x < leftBound()) {
-                System.arraycopy(xValues, 0, xValuesBuffer, 1, count);
-                System.arraycopy(yValues, 0, yValuesBuffer, 1, count);
-                xValuesBuffer[0] = x;
-                yValuesBuffer[0] = y;
-            }
-            else if (x > rightBound()) {
-                System.arraycopy(xValues, 0, xValuesBuffer, 0, count);
-                System.arraycopy(yValues, 0, yValuesBuffer, 0, count);
-                xValuesBuffer[count] = x;
-                yValuesBuffer[count] = y;
+            
+            if (x < leftBound() || x > rightBound()) {
+                int isLeastIndex = (x < leftBound()? 0 : 1);
+                int index = floorIndexOfX(x);
+                System.arraycopy(xValues, 0, xValuesBuffer, isLeastIndex, count);
+                System.arraycopy(yValues, 0, yValuesBuffer, isLeastIndex, count);
+                xValuesBuffer[index] = x;
+                yValuesBuffer[index] = y;
             }
             else {
                 int floorIndexX = floorIndexOfX(x);

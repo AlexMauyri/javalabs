@@ -8,8 +8,8 @@ public class ConstantFunctionTest extends AbstractTest {
     @Test
     void test() {
         ConstantFunction mathFunction = new ConstantFunction(100);
-        Assertions.assertEquals(mathFunction.getCONSTANT(), mathFunction.apply(1));
-        Assertions.assertEquals(mathFunction.getCONSTANT(), mathFunction.apply(-1));
-        Assertions.assertEquals(mathFunction.getCONSTANT(), mathFunction.apply(0));
+        Assertions.assertEquals(mathFunction.getCONSTANT(), mathFunction.apply(1), EPSILON);
+        Assertions.assertEquals(mathFunction.getCONSTANT(), mathFunction.apply(-1), EPSILON);
+        Assertions.assertEquals(mathFunction.getCONSTANT(), mathFunction.apply(0), EPSILON);
     }
 }

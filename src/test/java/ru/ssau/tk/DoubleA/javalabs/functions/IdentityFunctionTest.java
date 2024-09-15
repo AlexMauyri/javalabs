@@ -8,8 +8,8 @@ public class IdentityFunctionTest extends AbstractTest {
     @Test
     void test() {
         IdentityFunction function = new IdentityFunction();
-        Assertions.assertEquals(Math.PI,function.apply(Math.PI));
-        Assertions.assertEquals(-214768000.000867412,function.apply(-214768000.000867412));
-        Assertions.assertEquals(365,function.apply(365));
+        Assertions.assertEquals(Math.PI, function.apply(Math.PI), EPSILON);
+        Assertions.assertEquals(-214768000.000867412, function.apply(-214768000.000867412), EPSILON);
+        Assertions.assertEquals(365, function.apply(365), EPSILON);
     }
 }

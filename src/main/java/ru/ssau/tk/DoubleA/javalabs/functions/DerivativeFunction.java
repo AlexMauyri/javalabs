@@ -2,7 +2,7 @@ package ru.ssau.tk.DoubleA.javalabs.functions;
 
 public class DerivativeFunction implements MathFunction {
 
-    private final static double epsilon = Math.pow(1, -20);
+    private final static double epsilon = 1E-5;
     private MathFunction mathFunction;
 
     DerivativeFunction(MathFunction mathFunction) {

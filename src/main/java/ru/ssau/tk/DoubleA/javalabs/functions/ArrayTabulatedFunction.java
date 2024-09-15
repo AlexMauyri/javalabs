@@ -2,7 +2,7 @@ package ru.ssau.tk.DoubleA.javalabs.functions;
 
 import java.util.Arrays;
 
-public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements Insertable {
+public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements Insertable, Removable {
     private double[] xValues;
     private double[] yValues;
 
@@ -91,6 +91,28 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
                 yValues[i] = source.apply(xValues[i]);
             }
         }
+    }
+
+    public void remove(int index) {
+        if (index < 0 || index >= count) return;
+
+        for (int i = index; i < count - 1; ++i) {
+            xValues[i] = xValues[i + 1];
+            yValues[i] = yValues[i + 1];
+        }
+
+        if (count - 1 <= xValues.length / 2) {
+            double[] newXValues = new double[count - 1];
+            double[] newYValues = new double[count - 1];
+
+            System.arraycopy(xValues, 0, newXValues, 0, count - 1);
+            System.arraycopy(yValues, 0, newYValues, 0, count - 1);
+
+            xValues = newXValues;
+            yValues = newYValues;
+        }
+
+        --count;
     }
 
     @Override

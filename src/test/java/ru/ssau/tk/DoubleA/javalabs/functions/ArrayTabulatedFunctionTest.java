@@ -16,6 +16,15 @@ public class ArrayTabulatedFunctionTest extends AbstractTest {
         mathFunctionManual = new ArrayTabulatedFunction(new double[]{1.0, 2.5, 3.5, 5.0}, new double[]{1.4, 3.4, 2.5, 2.7});
     }
 
+    @Test
+    void removeTest() {
+        mathFunctionManual.remove(3);
+        Assertions.assertEquals(3, mathFunctionManual.getCount());
+        mathFunctionManual.remove(0);
+        Assertions.assertEquals(2, mathFunctionManual.getCount());
+        Assertions.assertThrows(ArrayIndexOutOfBoundsException.class, () -> mathFunctionManual.getX(3));
+    }
+
 
     @Test
     void applyTest() {

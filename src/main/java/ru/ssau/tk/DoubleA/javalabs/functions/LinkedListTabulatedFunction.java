@@ -75,6 +75,10 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
                 currentNode = currentNode.next;
             }
 
+            if (currentNode.x < x) {
+                currentNode = currentNode.next;
+            }
+
             if (currentNode.x == x) {
                 currentNode.y = y;
             }
@@ -82,12 +86,12 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
                 Node newNode = new Node();
                 newNode.x = x;
                 newNode.y = y;
-                newNode.prev = currentNode.next.prev;
-                newNode.next = currentNode.next;
-                currentNode.next.prev = newNode;
-                currentNode.next = newNode;
+                newNode.next = currentNode;
+                newNode.prev = currentNode.prev;
+                currentNode.prev = newNode;
+                newNode.prev.next = newNode;
 
-                if (currentNode == head) head = newNode;
+                if (currentNode == head && newNode.x < currentNode.x) head = newNode;
             }
         }
         ++count;

@@ -67,6 +67,30 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
     }
     public void insert(double x, double y)
     {
+        if (head == null) addNode(x, y);
+        else {
+            Node currentNode = head;
+
+            while (currentNode.x > x) {
+                currentNode = currentNode.next;
+            }
+
+            if (currentNode.x == x) {
+                currentNode.y = y;
+            }
+            else {
+                Node newNode = new Node();
+                newNode.x = x;
+                newNode.y = y;
+                newNode.prev = currentNode.next.prev;
+                newNode.next = currentNode.next;
+                currentNode.next.prev = newNode;
+                currentNode.next = newNode;
+
+                if (currentNode == head) head = newNode;
+            }
+        }
+        ++count;
 
     }
     public void remove(int index)

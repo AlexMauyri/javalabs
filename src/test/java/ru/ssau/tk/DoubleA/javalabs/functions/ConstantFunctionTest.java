@@ -7,9 +7,9 @@ public class ConstantFunctionTest extends AbstractTest {
 
     @Test
     void test() {
-        ConstantFunction constantFunction = new ConstantFunction(100);
-        Assertions.assertEquals(constantFunction.getCONSTANT(), constantFunction.apply(1));
-        Assertions.assertEquals(constantFunction.getCONSTANT(), constantFunction.apply(-1));
-        Assertions.assertEquals(constantFunction.getCONSTANT(), constantFunction.apply(0));
+        ConstantFunction mathFunction = new ConstantFunction(100);
+        Assertions.assertEquals(mathFunction.getCONSTANT(), mathFunction.apply(1));
+        Assertions.assertEquals(mathFunction.getCONSTANT(), mathFunction.apply(-1));
+        Assertions.assertEquals(mathFunction.getCONSTANT(), mathFunction.apply(0));
     }
 }

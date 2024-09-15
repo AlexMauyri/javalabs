@@ -9,9 +9,14 @@ public class DerivativeFunctionTest extends AbstractTest {
     void test() {
         DerivativeFunction derivativeFunction = new DerivativeFunction(new SqrFunction());
         Assertions.assertTrue(Math.abs(8 - derivativeFunction.apply(4)) <= EPSILON);
+
         derivativeFunction = new DerivativeFunction(new UnitFunction());
         Assertions.assertTrue(Math.abs(0 - derivativeFunction.apply(4)) <= EPSILON);
+
         derivativeFunction = new DerivativeFunction(new NRootCalculateFunction(3).andThen(new SqrFunction()));
-        Assertions.assertTrue(Math.abs(0.0879857462720519825939632373 - derivativeFunction.apply(435)) <= EPSILON);
+        Assertions.assertTrue(Math.abs(0.087985746 - derivativeFunction.apply(435)) <= EPSILON);
+
+        derivativeFunction = new DerivativeFunction(new CompositeFunction(new NRootCalculateFunction(5), new NRootCalculateFunction(6).andThen(new SqrFunction())));
+        Assertions.assertTrue(Math.abs(0.00015440 - derivativeFunction.apply(666)) <= EPSILON);
     }
 }

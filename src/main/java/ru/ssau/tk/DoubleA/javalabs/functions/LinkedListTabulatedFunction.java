@@ -96,9 +96,9 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
         }
     }
 
-
     public LinkedListTabulatedFunction(double[] xValues, double[] yValues)
     {
+        count = 0;
         head = null;
         int xValuesLength = xValues.length, yValuesLength = yValues.length;
 
@@ -111,6 +111,7 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
     }
     public LinkedListTabulatedFunction(MathFunction source, double xFrom, double xTo, int count)
     {
+        this.count = 0;
         head = null;
 
         if (xFrom == xTo)

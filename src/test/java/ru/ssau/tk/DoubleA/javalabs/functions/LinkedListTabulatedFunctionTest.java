@@ -9,7 +9,8 @@ public class LinkedListTabulatedFunctionTest {
     void test() {
         LinkedListTabulatedFunction manualList = new LinkedListTabulatedFunction(
                                                  new double[] {-3, 1.5, 6, 10.5, 15},
-                                                 new double[] {9, 2.25, 36, 110.25, 225});
+                                                 new double[] {9, 2.25, 36, 110.25, 225}
+        );
         LinkedListTabulatedFunction discreteList = new LinkedListTabulatedFunction(new SqrFunction(), -3, 15, 5);
 
         // getCount() tests

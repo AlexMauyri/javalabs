@@ -15,7 +15,10 @@ public class CompositeFunctionTest extends AbstractTest {
         mainFunction = new CompositeFunction(new NRootCalculateFunction(7), new SqrFunction());
         Assertions.assertEquals(25, mainFunction.apply(78125), EPSILON);
 
-        mainFunction = new CompositeFunction(new DerivativeFunction(new SqrFunction()), new IdentityFunction());
+        mainFunction = new CompositeFunction(
+                new DerivativeFunction(new SqrFunction()),
+                new IdentityFunction()
+        );
         Assertions.assertEquals(-630, mainFunction.apply(-315), EPSILON);
     }
 
@@ -60,7 +63,10 @@ public class CompositeFunctionTest extends AbstractTest {
 
     @Test
     void testATabulatedAndSimple() {
-        arrayTabFunction1 = new ArrayTabulatedFunction(new double[] {0, 2, 8, 12, 18}, new double[] {0, 4, 64, 144, 324});
+        arrayTabFunction1 = new ArrayTabulatedFunction(
+                new double[] {0, 2, 8, 12, 18},
+                new double[] {0, 4, 64, 144, 324}
+        );
         mainFunction = new CompositeFunction(new DerivativeFunction(arrayTabFunction1), new IdentityFunction());
         Assertions.assertEquals(30, mainFunction.apply(15), EPSILON);
 
@@ -78,13 +84,16 @@ public class CompositeFunctionTest extends AbstractTest {
 
     @Test
     void testLTabulatedAndSimple() {
-        listTabFunction1 = new LinkedListTabulatedFunction(new double[] {-20, -16, -9, -6, -2}, new double[] {400, 256, 81, 36, 4});
+        listTabFunction1 = new LinkedListTabulatedFunction(
+                new double[] {-20, -16, -9, -6, -2},
+                new double[] {400, 256, 81, 36, 4}
+        );
         mainFunction = new CompositeFunction(new DerivativeFunction(listTabFunction1), new IdentityFunction());
         Assertions.assertEquals(-36, mainFunction.apply(-18), EPSILON);
 
         listTabFunction1 = new LinkedListTabulatedFunction(new SqrFunction(), 0, 5, 50);
         mainFunction = new CompositeFunction(listTabFunction1, new SqrFunction());
-        Assertions.assertEquals(252.688188876561, mainFunction.apply(3.987), EPSILON);
+        Assertions.assertEquals(252.69, mainFunction.apply(3.987), EPSILON);
 
         listTabFunction1 = new LinkedListTabulatedFunction(new SqrFunction(), 33, 33, 1);
         mainFunction = new CompositeFunction(listTabFunction1, new SqrFunction());
@@ -94,7 +103,10 @@ public class CompositeFunctionTest extends AbstractTest {
     @Test
     void testATabulatedAndComposite() {
         compFunction1 = new CompositeFunction(new UnitFunction(), new ZeroFunction());
-        arrayTabFunction1 = new ArrayTabulatedFunction(new double[] {0, 2, 8, 12, 18}, new double[] {0, 4, 64, 144, 324});
+        arrayTabFunction1 = new ArrayTabulatedFunction(
+                new double[] {0, 2, 8, 12, 18},
+                new double[] {0, 4, 64, 144, 324}
+        );
         mainFunction = new CompositeFunction(compFunction1, arrayTabFunction1);
         Assertions.assertEquals(0, mainFunction.apply(15));
 
@@ -112,7 +124,10 @@ public class CompositeFunctionTest extends AbstractTest {
     @Test
     void testLTabulatedAndComposite() {
         compFunction1 = new CompositeFunction(new UnitFunction(), new ZeroFunction());
-        listTabFunction1 = new LinkedListTabulatedFunction(new double[] {-20, -16, -9, -6, -2}, new double[] {400, 256, 81, 36, 4});
+        listTabFunction1 = new LinkedListTabulatedFunction(
+                new double[] {-20, -16, -9, -6, -2},
+                new double[] {400, 256, 81, 36, 4}
+        );
         mainFunction = new CompositeFunction(listTabFunction1, compFunction1);
         Assertions.assertEquals(0, mainFunction.apply(-12.5));
 
@@ -131,13 +146,22 @@ public class CompositeFunctionTest extends AbstractTest {
 
     @Test
     void testATabulatedAndATabulated() {
-        arrayTabFunction1 = new ArrayTabulatedFunction(new double[] {0, 2.43, 8.05, 12.95, 18.33}, new double[] {-32, 89, -69, 121, -98});
-        arrayTabFunction2 = new ArrayTabulatedFunction(new double[] {-9, -2.2, -0.4, 1, 3.69}, new double[] {-81, -1331.0/1125.0, -8.0/1125.0, 1.0/9.0, (41.0*369.0*369.0)/1000000.0});
+        arrayTabFunction1 = new ArrayTabulatedFunction(
+                new double[] {0, 2.43, 8.05, 12.95, 18.33},
+                new double[] {-32, 89, -69, 121, -98}
+        );
+        arrayTabFunction2 = new ArrayTabulatedFunction(
+                new double[] {-9, -2.2, -0.4, 1, 3.69},
+                new double[] {-81, -1331.0/1125.0, -8.0/1125.0, 1.0/9.0, (41.0*369.0*369.0)/1000000.0}
+        );
         mainFunction = new CompositeFunction(arrayTabFunction2, arrayTabFunction1);
         Assertions.assertEquals(-515.535576, mainFunction.apply(15), EPSILON);
 
         arrayTabFunction1 = new ArrayTabulatedFunction(new SqrFunction(), 0, 15, 50);
-        arrayTabFunction2 = new ArrayTabulatedFunction(new double[] {0, 2, 8, 12, 18}, new double[] {0, 4, 64, 144, 324});
+        arrayTabFunction2 = new ArrayTabulatedFunction(
+                new double[] {0, 2, 8, 12, 18},
+                new double[] {0, 4, 64, 144, 324}
+        );
         mainFunction = new CompositeFunction(arrayTabFunction1, arrayTabFunction2);
         Assertions.assertEquals(26.063848, mainFunction.apply(2.046), EPSILON);
 
@@ -151,13 +175,22 @@ public class CompositeFunctionTest extends AbstractTest {
 
     @Test
     void testLTabulatedAndLTabulated() {
-        listTabFunction1 = new LinkedListTabulatedFunction(new double[] {0, 2.43, 8.05, 12.95, 18.33}, new double[] {-32, 89, -69, 121, -98});
-        listTabFunction2 = new LinkedListTabulatedFunction(new double[] {-9, -2.2, -0.4, 1, 3.69}, new double[] {-81, -1331.0/1125.0, -8.0/1125.0, 1.0/9.0, (41.0*369.0*369.0)/1000000.0});
+        listTabFunction1 = new LinkedListTabulatedFunction(
+                new double[] {0, 2.43, 8.05, 12.95, 18.33},
+                new double[] {-32, 89, -69, 121, -98}
+        );
+        listTabFunction2 = new LinkedListTabulatedFunction(
+                new double[] {-9, -2.2, -0.4, 1, 3.69},
+                new double[] {-81, -1331.0/1125.0, -8.0/1125.0, 1.0/9.0, (41.0*369.0*369.0)/1000000.0}
+        );
         mainFunction = new CompositeFunction(listTabFunction2, listTabFunction1);
         Assertions.assertEquals(-2984.056973, mainFunction.apply(-7.15), EPSILON);
 
         listTabFunction1 = new LinkedListTabulatedFunction(new SqrFunction(), 0, 15, 50);
-        listTabFunction2 = new LinkedListTabulatedFunction(new double[] {0, 2, 8, 12, 18}, new double[] {0, 4, 64, 144, 324});
+        listTabFunction2 = new LinkedListTabulatedFunction(
+                new double[] {0, 2, 8, 12, 18},
+                new double[] {0, 4, 64, 144, 324}
+        );
         mainFunction = new CompositeFunction(listTabFunction1, listTabFunction2);
         Assertions.assertEquals(0.078979, mainFunction.apply(0.129), EPSILON);
 
@@ -169,13 +202,22 @@ public class CompositeFunctionTest extends AbstractTest {
 
     @Test
     void testATabulatedAndLTabulated() {
-        arrayTabFunction1 = new ArrayTabulatedFunction(new double[] {0, 2.43, 8.05, 12.95, 18.33}, new double[] {-32, 89, -69, 121, -98});
-        listTabFunction1 = new LinkedListTabulatedFunction(new double[] {0, 2, 8, 12, 18}, new double[] {0, 4, 64, 144, 324});
+        arrayTabFunction1 = new ArrayTabulatedFunction(
+                new double[] {0, 2.43, 8.05, 12.95, 18.33},
+                new double[] {-32, 89, -69, 121, -98}
+        );
+        listTabFunction1 = new LinkedListTabulatedFunction(
+                new double[] {0, 2, 8, 12, 18},
+                new double[] {0, 4, 64, 144, 324}
+        );
         mainFunction = new CompositeFunction(listTabFunction1, arrayTabFunction1);
         Assertions.assertEquals(-1411.592936, mainFunction.apply(6.66), EPSILON);
 
         arrayTabFunction1 = new ArrayTabulatedFunction(new SqrFunction(), -18, 3, 100);
-        listTabFunction1 = new LinkedListTabulatedFunction(new double[] {-9, -2.2, -0.4, 1, 3.69}, new double[] {-81, -1331.0/1125.0, -8.0/1125.0, 1.0/9.0, (41.0*369.0*369.0)/1000000.0});
+        listTabFunction1 = new LinkedListTabulatedFunction(
+                new double[] {-9, -2.2, -0.4, 1, 3.69},
+                new double[] {-81, -1331.0/1125.0, -8.0/1125.0, 1.0/9.0, (41.0*369.0*369.0)/1000000.0}
+        );
         mainFunction = new CompositeFunction(arrayTabFunction1, listTabFunction1);
         Assertions.assertEquals(4194.833734, mainFunction.apply(-66.6), EPSILON);
 

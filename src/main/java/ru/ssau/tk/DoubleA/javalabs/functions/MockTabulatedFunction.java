@@ -1,10 +1,10 @@
 package ru.ssau.tk.DoubleA.javalabs.functions;
 
 public class MockTabulatedFunction extends AbstractTabulatedFunction {
-    private final double x0;
-    private final double x1;
-    private final double y0;
-    private final double y1;
+    private double x0;
+    private double x1;
+    private double y0;
+    private double y1;
 
     public MockTabulatedFunction(double x0, double x1, double y0, double y1) {
         if (x1 < x0) {
@@ -61,7 +61,8 @@ public class MockTabulatedFunction extends AbstractTabulatedFunction {
 
     @Override
     public void setY(int index, double value) {
-
+        if (index == 0) y0 = value;
+        else if (index == 1) y1 = value;
     }
 
     @Override

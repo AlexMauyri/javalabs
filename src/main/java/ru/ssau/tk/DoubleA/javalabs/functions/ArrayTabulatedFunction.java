@@ -25,12 +25,12 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
             }
             
             if (x < leftBound() || x > rightBound()) {
-                int isLeastIndex = (x < leftBound()? 0 : 1);
-                int index = floorIndexOfX(x);
-                System.arraycopy(xValues, 0, xValuesBuffer, isLeastIndex, count);
-                System.arraycopy(yValues, 0, yValuesBuffer, isLeastIndex, count);
-                xValuesBuffer[index] = x;
-                yValuesBuffer[index] = y;
+                int startOfCopyingTheArray = (x < leftBound()? 1 : 0);
+                int floorIndexX = floorIndexOfX(x);
+                System.arraycopy(xValues, 0, xValuesBuffer, startOfCopyingTheArray, count);
+                System.arraycopy(yValues, 0, yValuesBuffer, startOfCopyingTheArray, count);
+                xValuesBuffer[floorIndexX] = x;
+                yValuesBuffer[floorIndexX] = y;
             }
             else {
                 int floorIndexX = floorIndexOfX(x);
@@ -95,7 +95,7 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
             yValues[i] = yValues[i + 1];
         }
 
-        if (count - 1 <= xValues.length / 2) {
+        if (count - 1 <= xValues.length - EXTENSION_CONSTANT) {
             double[] newXValues = new double[count - 1];
             double[] newYValues = new double[count - 1];
 

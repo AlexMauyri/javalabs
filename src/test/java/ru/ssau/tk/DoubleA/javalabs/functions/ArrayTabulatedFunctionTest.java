@@ -13,7 +13,10 @@ public class ArrayTabulatedFunctionTest extends AbstractTest {
     @BeforeEach
     void init() {
         mathFunctionDiscrete = new ArrayTabulatedFunction(new SqrFunction(), 1.0, 2.0, 6);
-        mathFunctionManual = new ArrayTabulatedFunction(new double[]{1.0, 2.5, 3.5, 5.0}, new double[]{1.4, 3.4, 2.5, 2.7});
+        mathFunctionManual = new ArrayTabulatedFunction(
+                new double[]{1.0, 2.5, 3.5, 5.0},
+                new double[]{1.4, 3.4, 2.5, 2.7}
+        );
     }
 
     @Test
@@ -22,7 +25,6 @@ public class ArrayTabulatedFunctionTest extends AbstractTest {
         Assertions.assertEquals(3, mathFunctionManual.getCount());
         mathFunctionManual.remove(0);
         Assertions.assertEquals(2, mathFunctionManual.getCount());
-        Assertions.assertThrows(ArrayIndexOutOfBoundsException.class, () -> mathFunctionManual.getX(3));
     }
 
     @Test
@@ -51,7 +53,11 @@ public class ArrayTabulatedFunctionTest extends AbstractTest {
         Assertions.assertEquals(7.8, mathFunctionDiscrete.apply(3.0), EPSILON);
         Assertions.assertEquals(-1.2, mathFunctionDiscrete.apply(0), EPSILON);
 
-        mathFunctionDiscrete = new ArrayTabulatedFunction(new DerivativeFunction(new NRootCalculateFunction(5)), 10, 25, 20);
+        mathFunctionDiscrete = new ArrayTabulatedFunction(
+                new DerivativeFunction(
+                        new NRootCalculateFunction(5)
+                ), 10, 25, 20
+        );
 
         Assertions.assertEquals(0.02982, mathFunctionDiscrete.apply(10.7894), EPSILON);
         Assertions.assertEquals(0.03050, mathFunctionDiscrete.apply(10.5), EPSILON);

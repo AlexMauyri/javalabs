@@ -17,6 +17,6 @@ public class NRootCalculateFunction implements MathFunction {
 
     @Override
     public double apply(double x) {
-        return Math.pow(Math.E, (1/((double)rootDegree))*Math.log(x));
+        return Math.pow(Math.E, (1/((double)rootDegree)) * Math.log(x));
     }
 }

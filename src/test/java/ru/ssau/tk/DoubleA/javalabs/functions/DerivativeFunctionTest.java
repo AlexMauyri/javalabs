@@ -13,10 +13,17 @@ public class DerivativeFunctionTest extends AbstractTest {
         derivativeFunction = new DerivativeFunction(new UnitFunction());
         Assertions.assertEquals(0, derivativeFunction.apply(4), EPSILON);
 
-        derivativeFunction = new DerivativeFunction(new NRootCalculateFunction(3).andThen(new SqrFunction()));
+        derivativeFunction = new DerivativeFunction(
+                new NRootCalculateFunction(3).andThen(new SqrFunction())
+        );
         Assertions.assertEquals(0.087985746, derivativeFunction.apply(435), EPSILON);
 
-        derivativeFunction = new DerivativeFunction(new CompositeFunction(new NRootCalculateFunction(5), new NRootCalculateFunction(6).andThen(new SqrFunction())));
+        derivativeFunction = new DerivativeFunction(
+                new CompositeFunction(
+                    new NRootCalculateFunction(5),
+                    new NRootCalculateFunction(6).andThen(new SqrFunction())
+                )
+        );
         Assertions.assertEquals(0.00015440, derivativeFunction.apply(666), EPSILON);
     }
 }

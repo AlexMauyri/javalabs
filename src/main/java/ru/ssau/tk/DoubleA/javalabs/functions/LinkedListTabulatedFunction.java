@@ -14,13 +14,13 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
         {
             head = cur;
             head.next = cur;
-            head.prev = cur;
+            head.previous = cur;
         } else
         {
             cur.next = head;
-            head.prev.next = cur;
-            cur.prev = head.prev;
-            head.prev = cur;
+            head.previous.next = cur;
+            cur.previous = head.previous;
+            head.previous = cur;
         }
         count++;
     }
@@ -41,12 +41,12 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
         }
         else
         {
-            currentNode = head.prev;
+            currentNode = head.previous;
             int currentIndex = count - 1;
 
             while (currentIndex != index)
             {
-                currentNode = currentNode.prev;
+                currentNode = currentNode.previous;
                 currentIndex--;
             }
         }
@@ -87,9 +87,9 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
                 newNode.x = x;
                 newNode.y = y;
                 newNode.next = currentNode;
-                newNode.prev = currentNode.prev;
-                currentNode.prev = newNode;
-                newNode.prev.next = newNode;
+                newNode.previous = currentNode.previous;
+                currentNode.previous = newNode;
+                newNode.previous.next = newNode;
 
                 if (currentNode == head && newNode.x < currentNode.x) head = newNode;
             }
@@ -105,8 +105,8 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
             } else {
                 Node nodeToRemove = getNode(index);
                 if (index == 0) head = nodeToRemove.next;
-                nodeToRemove.prev.next = nodeToRemove.next;
-                nodeToRemove.next.prev = nodeToRemove.prev;
+                nodeToRemove.previous.next = nodeToRemove.next;
+                nodeToRemove.next.previous = nodeToRemove.previous;
             }
             count--;
         }
@@ -170,7 +170,7 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
     }
     public double rightBound()
     {
-        return head.prev.x;
+        return head.previous.x;
     }
 
     public double getX(int index)
@@ -242,7 +242,7 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
             return x;
         }
 
-        return interpolate(x, head.prev.prev.x, head.prev.x, head.prev.prev.y, head.prev.y);
+        return interpolate(x, head.previous.previous.x, head.previous.x, head.previous.previous.y, head.previous.y);
     }
     protected double interpolate(double x, int floorIndex)
     {

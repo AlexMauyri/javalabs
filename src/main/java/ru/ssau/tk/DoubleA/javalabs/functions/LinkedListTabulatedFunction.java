@@ -75,6 +75,7 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
                 currentNode = currentNode.next;
             }
 
+            //In case when currentNode == head.previous
             if (currentNode.x < x) {
                 currentNode = currentNode.next;
             }

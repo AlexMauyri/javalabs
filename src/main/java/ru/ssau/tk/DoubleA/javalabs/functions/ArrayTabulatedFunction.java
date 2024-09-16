@@ -25,10 +25,10 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
             }
             
             if (x < leftBound() || x > rightBound()) {
-                int startOfCopyingTheArray = (x < leftBound()? 1 : 0);
+                int startPositionForDestination = (x < leftBound()? 1 : 0);
                 int floorIndexX = floorIndexOfX(x);
-                System.arraycopy(xValues, 0, xValuesBuffer, startOfCopyingTheArray, count);
-                System.arraycopy(yValues, 0, yValuesBuffer, startOfCopyingTheArray, count);
+                System.arraycopy(xValues, 0, xValuesBuffer, startPositionForDestination, count);
+                System.arraycopy(yValues, 0, yValuesBuffer, startPositionForDestination, count);
                 xValuesBuffer[floorIndexX] = x;
                 yValuesBuffer[floorIndexX] = y;
             }

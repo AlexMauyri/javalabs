@@ -2,61 +2,70 @@ package ru.ssau.tk.DoubleA.javalabs.functions;
 
 import java.util.Arrays;
 
-public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements Insertable, Removable {
+public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements Insertable, Removable
+{
     private double[] xValues;
     private double[] yValues;
 
-    final private static int EXTENSION_CONSTANT = 5;
+    final private static int EXTENSION_MODIFIER = 5;
     final private static double EPSILON = 1E-7;
 
-    public void insert(double x, double y) {
-
+    public void insert(double x, double y)
+    {
         int indexX = indexOfX(x);
+
+        // If x exists change y value, else insert new pair
         if (indexX != -1) {
             yValues[indexX] = y;
         }
         else {
-            double[] xValuesBuffer, yValuesBuffer;
+            double[] xValuesBufferArray, yValuesBufferArray;
             if (count == xValues.length) {
-                xValuesBuffer = new double[count + EXTENSION_CONSTANT];
-                yValuesBuffer = new double[count + EXTENSION_CONSTANT];
+                xValuesBufferArray = new double[count + EXTENSION_MODIFIER];
+                yValuesBufferArray = new double[count + EXTENSION_MODIFIER];
             } else {
-                xValuesBuffer = xValues;
-                yValuesBuffer = yValues;
+                xValuesBufferArray = xValues;
+                yValuesBufferArray = yValues;
             }
             
             if (x < leftBound() || x > rightBound()) {
                 int startPositionForDestination = (x < leftBound()? 1 : 0);
                 int floorIndexX = floorIndexOfX(x);
-                System.arraycopy(xValues, 0, xValuesBuffer, startPositionForDestination, count);
-                System.arraycopy(yValues, 0, yValuesBuffer, startPositionForDestination, count);
-                xValuesBuffer[floorIndexX] = x;
-                yValuesBuffer[floorIndexX] = y;
+
+                System.arraycopy(xValues, 0, xValuesBufferArray, startPositionForDestination, count);
+                System.arraycopy(yValues, 0, yValuesBufferArray, startPositionForDestination, count);
+
+                xValuesBufferArray[floorIndexX] = x;
+                yValuesBufferArray[floorIndexX] = y;
             }
             else {
                 int floorIndexX = floorIndexOfX(x);
                 int numbersBefore = floorIndexX + 1, numbersAfter = count - numbersBefore, newIndex = floorIndexX + 1;
-                System.arraycopy(xValues, 0, xValuesBuffer, 0, numbersBefore);
-                System.arraycopy(xValues, newIndex, xValuesBuffer, newIndex + 1, numbersAfter);
-                System.arraycopy(yValues, 0, yValuesBuffer, 0, numbersBefore);
-                System.arraycopy(yValues, newIndex, yValuesBuffer, newIndex + 1, numbersAfter);
-                xValuesBuffer[newIndex] = x;
-                yValuesBuffer[newIndex] = y;
+
+                System.arraycopy(xValues, 0, xValuesBufferArray, 0, numbersBefore);
+                System.arraycopy(xValues, newIndex, xValuesBufferArray, newIndex + 1, numbersAfter);
+                System.arraycopy(yValues, 0, yValuesBufferArray, 0, numbersBefore);
+                System.arraycopy(yValues, newIndex, yValuesBufferArray, newIndex + 1, numbersAfter);
+
+                xValuesBufferArray[newIndex] = x;
+                yValuesBufferArray[newIndex] = y;
             }
 
-            xValues = xValuesBuffer;
-            yValues = yValuesBuffer;
+            xValues = xValuesBufferArray;
+            yValues = yValuesBufferArray;
             count++;
         }
     }
 
-    public ArrayTabulatedFunction(double[] xValues, double[] yValues) {
+    public ArrayTabulatedFunction(double[] xValues, double[] yValues)
+    {
         this.xValues = Arrays.copyOf(xValues, xValues.length);
         this.yValues = Arrays.copyOf(yValues, yValues.length);
         this.count = xValues.length;
     }
 
-    public ArrayTabulatedFunction(MathFunction source, double xFrom, double xTo, int count) {
+    public ArrayTabulatedFunction(MathFunction source, double xFrom, double xTo, int count)
+    {
         if (xFrom > xTo) {
             double temp = xFrom;
             xFrom = xTo;
@@ -88,7 +97,8 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
         }
     }
 
-    public void remove(int index) {
+    public void remove(int index)
+    {
         if (index < 0 || index >= count) return;
 
         for (int i = index; i < count - 1; ++i) {
@@ -96,7 +106,7 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
             yValues[i] = yValues[i + 1];
         }
 
-        if (count - 1 <= xValues.length - EXTENSION_CONSTANT) {
+        if (count - 1 <= xValues.length - EXTENSION_MODIFIER) {
             double[] newXValues = new double[count - 1];
             double[] newYValues = new double[count - 1];
 
@@ -111,7 +121,8 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
     }
 
     @Override
-    protected int floorIndexOfX(double x) {
+    protected int floorIndexOfX(double x)
+    {
         int index = 0;
 
         for (int i = 0; xValues[i] < x && i < count; ++i) {
@@ -122,48 +133,56 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
     }
 
     @Override
-    protected double extrapolateLeft(double x) throws ArrayIndexOutOfBoundsException {
+    protected double extrapolateLeft(double x) throws ArrayIndexOutOfBoundsException
+    {
         if (count == 1) return x;
 
         return interpolate(x, 0);
     }
 
     @Override
-    protected double extrapolateRight(double x) throws ArrayIndexOutOfBoundsException {
+    protected double extrapolateRight(double x) throws ArrayIndexOutOfBoundsException
+    {
         if (count == 1) return x;
 
         return interpolate(x, count - 2);
     }
 
     @Override
-    protected double interpolate(double x, int floorIndex) throws ArrayIndexOutOfBoundsException {
+    protected double interpolate(double x, int floorIndex) throws ArrayIndexOutOfBoundsException
+    {
         if (count == 1) return x;
 
         return interpolate(x, getX(floorIndex), getX(floorIndex + 1), getY(floorIndex), getY(floorIndex + 1));
     }
 
     @Override
-    public int getCount() {
+    public int getCount()
+    {
         return count;
     }
 
     @Override
-    public double getX(int index) throws ArrayIndexOutOfBoundsException {
+    public double getX(int index) throws ArrayIndexOutOfBoundsException
+    {
         return xValues[index];
     }
 
     @Override
-    public double getY(int index) throws ArrayIndexOutOfBoundsException {
+    public double getY(int index) throws ArrayIndexOutOfBoundsException
+    {
         return yValues[index];
     }
 
     @Override
-    public void setY(int index, double value) throws ArrayIndexOutOfBoundsException {
+    public void setY(int index, double value) throws ArrayIndexOutOfBoundsException
+    {
         yValues[index] = value;
     }
 
     @Override
-    public int indexOfX(double x) {
+    public int indexOfX(double x)
+    {
         for (int i = 0; i < count; ++i) {
             if (Math.abs(xValues[i] - x) < EPSILON) {
                 return i;
@@ -173,7 +192,8 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
     }
 
     @Override
-    public int indexOfY(double y) {
+    public int indexOfY(double y)
+    {
         for (int i = 0; i < count; ++i) {
             if (Math.abs(yValues[i] - y) < EPSILON) {
                 return i;
@@ -183,12 +203,14 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
     }
 
     @Override
-    public double leftBound() throws ArrayIndexOutOfBoundsException {
+    public double leftBound() throws ArrayIndexOutOfBoundsException
+    {
         return xValues[0];
     }
 
     @Override
-    public double rightBound() throws ArrayIndexOutOfBoundsException {
+    public double rightBound() throws ArrayIndexOutOfBoundsException
+    {
         return xValues[count - 1];
     }
 }

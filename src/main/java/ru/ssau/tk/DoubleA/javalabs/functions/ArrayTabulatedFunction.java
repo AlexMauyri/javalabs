@@ -7,6 +7,7 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
     private double[] yValues;
 
     final private static int EXTENSION_CONSTANT = 5;
+    final private static double EPSILON = 1E-7;
 
     public void insert(double x, double y) {
 
@@ -66,7 +67,7 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
         yValues = new double[count];
         this.count = count;
 
-        if (Math.abs(xFrom - xTo) <= 0.0000001) {
+        if (Math.abs(xFrom - xTo) <= EPSILON) {
             double yValue = source.apply(xFrom);
             for (int i = 0; i < count; ++i) {
                 xValues[i] = xFrom;
@@ -164,7 +165,7 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
     @Override
     public int indexOfX(double x) {
         for (int i = 0; i < count; ++i) {
-            if (Math.abs(xValues[i] - x) < 0.000001) {
+            if (Math.abs(xValues[i] - x) < EPSILON) {
                 return i;
             }
         }
@@ -174,7 +175,7 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
     @Override
     public int indexOfY(double y) {
         for (int i = 0; i < count; ++i) {
-            if (Math.abs(yValues[i] - y) < 0.000001) {
+            if (Math.abs(yValues[i] - y) < EPSILON) {
                 return i;
             }
         }

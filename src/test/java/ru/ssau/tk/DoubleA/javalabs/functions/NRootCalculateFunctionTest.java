@@ -3,13 +3,11 @@ package ru.ssau.tk.DoubleA.javalabs.functions;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class NRootCalculateFunctionTest extends AbstractTest
-{
+public class NRootCalculateFunctionTest extends AbstractTest {
     NRootCalculateFunction rootFunction = new NRootCalculateFunction(1);
 
     @Test
-    void test()
-    {
+    void test() {
         Assertions.assertEquals(741.45, rootFunction.apply(741.45), EPSILON);
 
         rootFunction.setRootDegree(6);

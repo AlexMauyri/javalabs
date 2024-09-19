@@ -3,13 +3,13 @@ package ru.ssau.tk.DoubleA.javalabs.functions;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class LinkedListTabulatedFunctionTest
-{
+public class LinkedListTabulatedFunctionTest {
     LinkedListTabulatedFunction manualList = new LinkedListTabulatedFunction(
-            new double[] {-3, 1.5, 6, 10.5, 15},
-            new double[] {9, 2.25, 36, 110.25, 225}
+            new double[]{-3, 1.5, 6, 10.5, 15},
+            new double[]{9, 2.25, 36, 110.25, 225}
     );
     LinkedListTabulatedFunction discreteList = new LinkedListTabulatedFunction(new SqrFunction(), -3, 15, 5);
+    LinkedListTabulatedFunction manualList2 = new LinkedListTabulatedFunction(new double[]{}, new double[]{});
 
     @Test
     void testGetCount() {
@@ -18,8 +18,7 @@ public class LinkedListTabulatedFunctionTest
     }
 
     @Test
-    void testLRBound()
-    {
+    void testLRBound() {
         Assertions.assertEquals(-3, manualList.leftBound());
         Assertions.assertEquals(15, manualList.rightBound());
         Assertions.assertEquals(-3, discreteList.leftBound());
@@ -27,8 +26,7 @@ public class LinkedListTabulatedFunctionTest
     }
 
     @Test
-    void testGet()
-    {
+    void testGet() {
         Assertions.assertEquals(6, manualList.getX(2));
         Assertions.assertEquals(6, discreteList.getX(2));
         Assertions.assertEquals(2.25, manualList.getY(1));
@@ -36,8 +34,7 @@ public class LinkedListTabulatedFunctionTest
     }
 
     @Test
-    void testSetY()
-    {
+    void testSetY() {
         manualList.setY(3, 169);
         Assertions.assertEquals(169, manualList.getY(3));
 
@@ -46,8 +43,7 @@ public class LinkedListTabulatedFunctionTest
     }
 
     @Test
-    void testIndexOf()
-    {
+    void testIndexOf() {
         manualList.setY(3, 169);
         discreteList.setY(3, 169);
 
@@ -62,8 +58,7 @@ public class LinkedListTabulatedFunctionTest
     }
 
     @Test
-    void testExtrapolateLeft()
-    {
+    void testExtrapolateLeft() {
         manualList.setY(3, 110.25);
         discreteList.setY(3, 110.25);
 
@@ -72,15 +67,13 @@ public class LinkedListTabulatedFunctionTest
     }
 
     @Test
-    void testExtrapolateRight()
-    {
+    void testExtrapolateRight() {
         Assertions.assertEquals(352.5, manualList.extrapolateRight(20));
         Assertions.assertEquals(352.5, discreteList.extrapolateRight(20));
     }
 
     @Test
-    void testInterpolate()
-    {
+    void testInterpolate() {
         Assertions.assertEquals(13.5, manualList.interpolate(-6, 0));
         Assertions.assertEquals(13.5, discreteList.interpolate(-6, 0));
         Assertions.assertEquals(352.5, manualList.interpolate(20, 5));
@@ -90,8 +83,7 @@ public class LinkedListTabulatedFunctionTest
     }
 
     @Test
-    void testApply()
-    {
+    void testApply() {
         Assertions.assertEquals(13.5, manualList.apply(-6));
         Assertions.assertEquals(13.5, discreteList.apply(-6));
         Assertions.assertEquals(352.5, manualList.apply(20));
@@ -103,8 +95,7 @@ public class LinkedListTabulatedFunctionTest
     }
 
     @Test
-    void testFloorNodeOfX()
-    {
+    void testFloorNodeOfX() {
         Assertions.assertEquals(5, manualList.floorIndexOfX(15.5));
         Assertions.assertEquals(5, discreteList.floorIndexOfX(15.5));
         Assertions.assertEquals(1, manualList.floorIndexOfX(4));
@@ -116,19 +107,15 @@ public class LinkedListTabulatedFunctionTest
     }
 
     @Test
-    void testGetNode()
-    {
+    void testGetNode() {
         Assertions.assertEquals(15, manualList.getNode(4).x);
         Assertions.assertEquals(15, discreteList.getNode(4).x);
         Assertions.assertEquals(9, manualList.getNode(0).y);
         Assertions.assertEquals(9, discreteList.getNode(0).y);
     }
 
-    LinkedListTabulatedFunction manualList2 = new LinkedListTabulatedFunction(new double[]{}, new double[]{});
-
     @Test
-    void testAddNode()
-    {
+    void testAddNode() {
         manualList.addNode(16, 256);
         discreteList.addNode(16, 256);
         Assertions.assertEquals(6, manualList.getCount());
@@ -153,8 +140,7 @@ public class LinkedListTabulatedFunctionTest
     }
 
     @Test
-    void testRemove()
-    {
+    void testRemove() {
         manualList2.addNode(14, 196);
         manualList2.addNode(16, 256);
         manualList2.addNode(32, 1024);
@@ -171,8 +157,7 @@ public class LinkedListTabulatedFunctionTest
     }
 
     @Test
-    void testInsert()
-    {
+    void testInsert() {
         manualList2.addNode(16, 256);
         manualList2.addNode(32, 1024);
 

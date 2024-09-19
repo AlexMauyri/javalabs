@@ -1,11 +1,47 @@
 package ru.ssau.tk.DoubleA.javalabs.functions;
 
-public class LinkedListTabulatedFunction extends AbstractTabulatedFunction implements Insertable, Removable
-{
+public class LinkedListTabulatedFunction extends AbstractTabulatedFunction implements Insertable, Removable {
     private Node head;
 
-    protected void addNode(double x, double y)
-    {
+    public LinkedListTabulatedFunction(double[] xValues, double[] yValues) {
+        count = 0;
+        head = null;
+        int xValuesLength = xValues.length, yValuesLength = yValues.length;
+
+        for (int xIndex = 0, yIndex = 0; xIndex < xValuesLength && yIndex < yValuesLength; xIndex++, yIndex++) {
+            this.addNode(xValues[xIndex], yValues[yIndex]);
+        }
+    }
+
+    public LinkedListTabulatedFunction(MathFunction source, double xFrom, double xTo, int count) {
+        this.count = 0;
+        head = null;
+
+        if (xFrom == xTo || count < 2) {
+            double yFrom = source.apply(xFrom);
+
+            for (int xIndex = 0; xIndex < count; xIndex++) {
+                addNode(xFrom, yFrom);
+            }
+        } else {
+            if (xFrom > xTo) {
+                double swapBuffer = xFrom;
+                xFrom = xTo;
+                xTo = swapBuffer;
+            }
+
+            final int PAIRS_BEFORE_END = count - 1;
+            final double INTERVAL = Math.abs(xTo - xFrom) / (count - 1);
+
+            for (int xIndex = 0; xIndex < PAIRS_BEFORE_END; xIndex++) {
+                this.addNode(xFrom + xIndex * INTERVAL, source.apply(xFrom + xIndex * INTERVAL));
+            }
+
+            this.addNode(xTo, source.apply(xTo));
+        }
+    }
+
+    protected void addNode(double x, double y) {
         Node cur = new Node();
         cur.x = x;
         cur.y = y;
@@ -14,8 +50,7 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
             head = cur;
             head.next = cur;
             head.previous = cur;
-        }
-        else {
+        } else {
             cur.next = head;
             head.previous.next = cur;
             cur.previous = head.previous;
@@ -25,71 +60,22 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
         count++;
     }
 
-    public LinkedListTabulatedFunction(double[] xValues, double[] yValues)
-    {
-        count = 0;
-        head = null;
-        int xValuesLength = xValues.length, yValuesLength = yValues.length;
-
-        for (int xIndex = 0, yIndex = 0;xIndex < xValuesLength && yIndex < yValuesLength; xIndex++, yIndex++)
-        {
-            this.addNode(xValues[xIndex], yValues[yIndex]);
-        }
-    }
-
-    public LinkedListTabulatedFunction(MathFunction source, double xFrom, double xTo, int count)
-    {
-        this.count = 0;
-        head = null;
-
-        if (xFrom == xTo || count < 2) {
-            double yFrom = source.apply(xFrom);
-
-            for (int xIndex = 0; xIndex < count; xIndex++)
-            {
-                addNode(xFrom, yFrom);
-            }
-        }
-        else {
-            if (xFrom > xTo)
-            {
-                double swapBuffer = xFrom;
-                xFrom = xTo;
-                xTo = swapBuffer;
-            }
-
-            final int PAIRS_BEFORE_END = count - 1;
-            final double INTERVAL = Math.abs(xTo - xFrom) / (count - 1);
-
-            for (int xIndex = 0; xIndex < PAIRS_BEFORE_END; xIndex++)
-            {
-                this.addNode(xFrom + xIndex * INTERVAL, source.apply(xFrom + xIndex * INTERVAL));
-            }
-
-            this.addNode(xTo, source.apply(xTo));
-        }
-    }
-
-    protected Node getNode(int index)
-    {
+    protected Node getNode(int index) {
         Node currentNode;
 
         if (index < count / 2) {
             currentNode = head;
             int currentIndex = 0;
 
-            while (currentIndex != index)
-            {
+            while (currentIndex != index) {
                 currentNode = currentNode.next;
                 currentIndex++;
             }
-        }
-        else {
+        } else {
             currentNode = head.previous;
             int currentIndex = count - 1;
 
-            while (currentIndex != index)
-            {
+            while (currentIndex != index) {
                 currentNode = currentNode.previous;
                 currentIndex--;
             }
@@ -98,12 +84,10 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
         return currentNode;
     }
 
-    protected Node floorNodeOfX(double x)
-    {
+    protected Node floorNodeOfX(double x) {
         Node currentNode = head, floorNode = head;
 
-        for (int index = 0; currentNode.x < x && index < count; index++)
-        {
+        for (int index = 0; currentNode.x < x && index < count; index++) {
             floorNode = currentNode;
             currentNode = currentNode.next;
         }
@@ -112,8 +96,7 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
     }
 
     @Override
-    public void insert(double x, double y)
-    {
+    public void insert(double x, double y) {
         if (head == null) addNode(x, y);
         else {
             Node currentNode = head;
@@ -129,8 +112,7 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
 
             if (currentNode.x == x) {
                 currentNode.y = y;
-            }
-            else {
+            } else {
                 Node newNode = new Node();
                 newNode.x = x;
                 newNode.y = y;
@@ -146,14 +128,12 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
     }
 
     @Override
-    public void remove(int index)
-    {
+    public void remove(int index) {
         if (index < count && index >= 0) {
 
             if (count == 1) {
                 head = null;
-            }
-            else {
+            } else {
                 Node nodeToRemove = getNode(index);
                 if (index == 0) head = nodeToRemove.next;
                 nodeToRemove.previous.next = nodeToRemove.next;
@@ -165,49 +145,41 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
     }
 
     @Override
-    public int getCount()
-    {
+    public int getCount() {
         return count;
     }
 
     @Override
-    public double leftBound()
-    {
+    public double leftBound() {
         return head.x;
     }
 
     @Override
-    public double rightBound()
-    {
+    public double rightBound() {
         return head.previous.x;
     }
 
     @Override
-    public double getX(int index)
-    {
+    public double getX(int index) {
         return getNode(index).x;
     }
 
     @Override
-    public double getY(int index)
-    {
+    public double getY(int index) {
         return getNode(index).y;
     }
 
     @Override
-    public void setY(int index, double value)
-    {
+    public void setY(int index, double value) {
         getNode(index).y = value;
     }
 
     @Override
-    public int indexOfX(double x)
-    {
+    public int indexOfX(double x) {
         Node currentNode = head;
         int currentIndex = 0;
 
-        while (currentNode.x != x && currentIndex < count)
-        {
+        while (currentNode.x != x && currentIndex < count) {
             currentNode = currentNode.next;
             currentIndex++;
         }
@@ -217,13 +189,11 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
     }
 
     @Override
-    public int indexOfY(double y)
-    {
+    public int indexOfY(double y) {
         Node currentNode = head;
         int currentIndex = 0;
 
-        while (currentNode.y != y && currentIndex < count)
-        {
+        while (currentNode.y != y && currentIndex < count) {
             currentNode = currentNode.next;
             currentIndex++;
         }
@@ -233,13 +203,11 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
     }
 
     @Override
-    protected int floorIndexOfX(double x)
-    {
+    protected int floorIndexOfX(double x) {
         Node currentNode = head;
         int floorIndex = 0;
 
-        for (int curIndex = 0; currentNode.x < x && curIndex < count; curIndex++)
-        {
+        for (int curIndex = 0; currentNode.x < x && curIndex < count; curIndex++) {
             floorIndex = curIndex;
             currentNode = currentNode.next;
         }
@@ -248,8 +216,7 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
     }
 
     @Override
-    protected double extrapolateLeft(double x)
-    {
+    protected double extrapolateLeft(double x) {
         if (count == 1) {
             return x;
         }
@@ -258,8 +225,7 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
     }
 
     @Override
-    protected double extrapolateRight(double x)
-    {
+    protected double extrapolateRight(double x) {
         if (count == 1) {
             return x;
         }
@@ -268,41 +234,34 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
     }
 
     @Override
-    protected double interpolate(double x, int floorIndex)
-    {
+    protected double interpolate(double x, int floorIndex) {
         if (count == 1) {
             return x;
         }
 
         if (floorIndex == 0) {
             return extrapolateLeft(x);
-        }
-        else if (floorIndex >= count - 1) {
+        } else if (floorIndex >= count - 1) {
             return extrapolateRight(x);
-        }
-        else {
+        } else {
             Node floorNode = getNode(floorIndex);
             return interpolate(x, floorNode.x, floorNode.next.x, floorNode.y, floorNode.next.y);
         }
     }
 
     @Override
-    public double apply(double x)
-    {
+    public double apply(double x) {
         if (x < leftBound()) {
             return extrapolateLeft(x);
-        }
-        else if (x > rightBound()) {
+        } else if (x > rightBound()) {
             return extrapolateRight(x);
-        }
-        else {
+        } else {
             int indexX = indexOfX(x);
 
             // If x already exists return y, else interpolate value of y
             if (indexX != -1) {
                 return getY(indexX);
-            }
-            else {
+            } else {
                 if (count == 1) {
                     return x;
                 }

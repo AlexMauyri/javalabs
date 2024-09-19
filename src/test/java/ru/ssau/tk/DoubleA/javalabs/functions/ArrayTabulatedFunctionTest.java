@@ -4,14 +4,12 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class ArrayTabulatedFunctionTest extends AbstractTest
-{
+public class ArrayTabulatedFunctionTest extends AbstractTest {
     ArrayTabulatedFunction mathFunctionDiscrete;
     ArrayTabulatedFunction mathFunctionManual;
 
     @BeforeEach
-    void init()
-    {
+    void init() {
         mathFunctionDiscrete = new ArrayTabulatedFunction(new SqrFunction(), 1.0, 2.0, 6);
         mathFunctionManual = new ArrayTabulatedFunction(
                 new double[]{1.0, 2.5, 3.5, 5.0},
@@ -20,8 +18,7 @@ public class ArrayTabulatedFunctionTest extends AbstractTest
     }
 
     @Test
-    void removeTest()
-    {
+    void removeTest() {
         mathFunctionManual.remove(3);
         Assertions.assertEquals(3, mathFunctionManual.getCount());
 
@@ -30,8 +27,7 @@ public class ArrayTabulatedFunctionTest extends AbstractTest
     }
 
     @Test
-    void insertTest()
-    {
+    void insertTest() {
         mathFunctionManual.insert(1.9, 5.6);
         Assertions.assertEquals(5, mathFunctionManual.getCount());
 
@@ -52,8 +48,7 @@ public class ArrayTabulatedFunctionTest extends AbstractTest
     }
 
     @Test
-    void applyTest()
-    {
+    void applyTest() {
         Assertions.assertEquals(2.26, mathFunctionDiscrete.apply(1.5), EPSILON);
         Assertions.assertEquals(1.96, mathFunctionDiscrete.apply(1.4), EPSILON);
         Assertions.assertEquals(7.8, mathFunctionDiscrete.apply(3.0), EPSILON);
@@ -77,8 +72,7 @@ public class ArrayTabulatedFunctionTest extends AbstractTest
     }
 
     @Test
-    void getterTest()
-    {
+    void getterTest() {
         Assertions.assertEquals(1.2, mathFunctionDiscrete.getX(1), EPSILON);
         Assertions.assertEquals(2.0, mathFunctionDiscrete.getX(5), EPSILON);
         Assertions.assertEquals(4.0, mathFunctionDiscrete.getY(5), EPSILON);
@@ -111,8 +105,7 @@ public class ArrayTabulatedFunctionTest extends AbstractTest
     }
 
     @Test
-    void setterTest()
-    {
+    void setterTest() {
         Assertions.assertDoesNotThrow(() -> mathFunctionDiscrete.setY(3, 1.5));
         Assertions.assertThrows(ArrayIndexOutOfBoundsException.class, () -> mathFunctionDiscrete.setY(10, 1.5));
 

@@ -3,13 +3,11 @@ package ru.ssau.tk.DoubleA.javalabs.functions;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class AndThenMethodTest extends AbstractTest
-{
+public class AndThenMethodTest extends AbstractTest {
     MathFunction mathFunction;
 
     @Test
-    void test()
-    {
+    void test() {
         mathFunction = new NRootCalculateFunction(5)
                 .andThen(new SqrFunction()
                         .andThen(new NRootCalculateFunction(3))

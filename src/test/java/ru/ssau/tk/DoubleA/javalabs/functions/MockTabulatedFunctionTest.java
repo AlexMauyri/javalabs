@@ -3,13 +3,11 @@ package ru.ssau.tk.DoubleA.javalabs.functions;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class MockTabulatedFunctionTest extends AbstractTest
-{
+class MockTabulatedFunctionTest extends AbstractTest {
     MockTabulatedFunction mockTabulatedFunction;
 
     @Test
-    void test()
-    {
+    void test() {
         mockTabulatedFunction = new MockTabulatedFunction(4.0, 6.0, 3.5, 2.4);
 
         double x0 = mockTabulatedFunction.leftBound();

@@ -4,6 +4,14 @@ abstract public class AbstractTabulatedFunction implements TabulatedFunction {
     // Count of element pairs in array/list
     protected int count;
 
+    static void checkLengthIsTheSame(double[] xValues, double[] yValues) {
+
+    }
+
+    void checkSorted(double[] xValues) {
+        
+    }
+
     // Finds index of the largest element in array/list, which is less than x.
     abstract protected int floorIndexOfX(double x);
 

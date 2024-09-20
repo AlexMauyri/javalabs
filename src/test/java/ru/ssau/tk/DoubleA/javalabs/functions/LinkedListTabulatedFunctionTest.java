@@ -9,7 +9,7 @@ public class LinkedListTabulatedFunctionTest {
             new double[]{9, 2.25, 36, 110.25, 225}
     );
     LinkedListTabulatedFunction discreteList = new LinkedListTabulatedFunction(new SqrFunction(), -3, 15, 5);
-    LinkedListTabulatedFunction manualList2 = new LinkedListTabulatedFunction(new double[]{}, new double[]{});
+    LinkedListTabulatedFunction manualList2 = new LinkedListTabulatedFunction(new double[]{9, 11}, new double[]{18, 25});
 
     @Test
     void testGetCount() {
@@ -76,8 +76,8 @@ public class LinkedListTabulatedFunctionTest {
     void testInterpolate() {
         Assertions.assertEquals(13.5, manualList.interpolate(-6, 0));
         Assertions.assertEquals(13.5, discreteList.interpolate(-6, 0));
-        Assertions.assertEquals(352.5, manualList.interpolate(20, 5));
-        Assertions.assertEquals(352.5, discreteList.interpolate(20, 5));
+        Assertions.assertEquals(352.5, manualList.interpolate(20, 3));
+        Assertions.assertEquals(352.5, discreteList.interpolate(20, 3));
         Assertions.assertEquals(85.5, manualList.interpolate(9, 2));
         Assertions.assertEquals(85.5, discreteList.interpolate(9, 2));
     }
@@ -126,17 +126,17 @@ public class LinkedListTabulatedFunctionTest {
         Assertions.assertEquals(380, discreteList.apply(20));
 
         manualList2.addNode(14, 196);
-        Assertions.assertEquals(1, manualList2.getCount());
-        Assertions.assertEquals(20, manualList2.apply(20));
+        Assertions.assertEquals(3, manualList2.getCount());
+        Assertions.assertEquals(538, manualList2.apply(20));
         Assertions.assertEquals(0, manualList2.floorIndexOfX(10));
-        Assertions.assertEquals(1, manualList2.floorIndexOfX(18));
+        Assertions.assertEquals(3, manualList2.floorIndexOfX(18));
 
         manualList2.addNode(16, 256);
-        Assertions.assertEquals(0, manualList2.floorIndexOfX(13));
-        Assertions.assertEquals(0, manualList2.floorIndexOfX(15));
-        Assertions.assertEquals(2, manualList2.floorIndexOfX(17));
-        Assertions.assertEquals(2, manualList2.getCount());
-        Assertions.assertEquals(14, manualList2.getX(0));
+        Assertions.assertEquals(1, manualList2.floorIndexOfX(13));
+        Assertions.assertEquals(2, manualList2.floorIndexOfX(15));
+        Assertions.assertEquals(4, manualList2.floorIndexOfX(17));
+        Assertions.assertEquals(4, manualList2.getCount());
+        Assertions.assertEquals(9, manualList2.getX(0));
     }
 
     @Test
@@ -146,9 +146,9 @@ public class LinkedListTabulatedFunctionTest {
         manualList2.addNode(32, 1024);
 
         manualList2.remove(0);
-        Assertions.assertEquals(16, manualList2.getX(0));
-        Assertions.assertEquals(2, manualList2.getCount());
-        Assertions.assertEquals(1024, manualList2.getNode(1).y);
+        Assertions.assertEquals(11, manualList2.getX(0));
+        Assertions.assertEquals(4, manualList2.getCount());
+        Assertions.assertEquals(196, manualList2.getNode(1).y);
 
         manualList.remove(2);
         Assertions.assertEquals(10.5, manualList.getX(2));
@@ -162,19 +162,19 @@ public class LinkedListTabulatedFunctionTest {
         manualList2.addNode(32, 1024);
 
         manualList2.insert(10, 100);
-        Assertions.assertEquals(3, manualList2.getCount());
-        Assertions.assertEquals(0, manualList2.indexOfX(10));
+        Assertions.assertEquals(5, manualList2.getCount());
+        Assertions.assertEquals(1, manualList2.indexOfX(10));
 
         manualList2.insert(22, 484);
-        Assertions.assertEquals(484, manualList2.getY(2));
+        Assertions.assertEquals(25, manualList2.getY(2));
 
         manualList2.insert(64, 4096);
-        Assertions.assertEquals(64, manualList2.getNode(4).x);
+        Assertions.assertEquals(22, manualList2.getNode(4).x);
 
-        Assertions.assertEquals(0, manualList2.indexOfX(10));
-        Assertions.assertEquals(1, manualList2.indexOfX(16));
-        Assertions.assertEquals(2, manualList2.indexOfX(22));
-        Assertions.assertEquals(3, manualList2.indexOfX(32));
-        Assertions.assertEquals(4, manualList2.indexOfX(64));
+        Assertions.assertEquals(1, manualList2.indexOfX(10));
+        Assertions.assertEquals(3, manualList2.indexOfX(16));
+        Assertions.assertEquals(4, manualList2.indexOfX(22));
+        Assertions.assertEquals(5, manualList2.indexOfX(32));
+        Assertions.assertEquals(6, manualList2.indexOfX(64));
     }
 }

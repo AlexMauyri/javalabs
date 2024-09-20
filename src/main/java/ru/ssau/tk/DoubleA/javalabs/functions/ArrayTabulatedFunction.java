@@ -8,13 +8,21 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
     private double[] xValues;
     private double[] yValues;
 
-    public ArrayTabulatedFunction(double[] xValues, double[] yValues) {
+    public ArrayTabulatedFunction(double[] xValues, double[] yValues) throws IllegalArgumentException {
+        if (xValues.length < 2 || yValues.length < 2) {
+            throw new IllegalArgumentException("Count of Array Tabulated Function nodes cannot be less than 2");
+        }
+
         this.xValues = Arrays.copyOf(xValues, xValues.length);
         this.yValues = Arrays.copyOf(yValues, yValues.length);
         this.count = xValues.length;
     }
 
-    public ArrayTabulatedFunction(MathFunction source, double xFrom, double xTo, int count) {
+    public ArrayTabulatedFunction(MathFunction source, double xFrom, double xTo, int count) throws IllegalArgumentException {
+        if (count < 2) {
+            throw new IllegalArgumentException("Count of Array Tabulated Function nodes cannot be less than 2");
+        }
+
         if (xFrom > xTo) {
             double temp = xFrom;
             xFrom = xTo;
@@ -31,7 +39,7 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
                 xValues[i] = xFrom;
                 yValues[i] = yValue;
             }
-        } else if (count >= 2) {
+        } else {
             xValues[0] = xFrom;
             xValues[count - 1] = xTo;
             yValues[0] = source.apply(xValues[0]);
@@ -63,7 +71,7 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
 
             if (x < leftBound() || x > rightBound()) {
                 int startPositionForDestination = (x < leftBound() ? 1 : 0);
-                int floorIndexX = floorIndexOfX(x);
+                int floorIndexX = (x < leftBound() ? 0 : count);
 
                 System.arraycopy(xValues, 0, xValuesBufferArray, startPositionForDestination, count);
                 System.arraycopy(yValues, 0, yValuesBufferArray, startPositionForDestination, count);
@@ -89,8 +97,14 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
         }
     }
 
-    public void remove(int index) {
-        if (index < 0 || index >= count) return;
+    public void remove(int index) throws ArrayIndexOutOfBoundsException, IllegalStateException {
+        if (index < 0) {
+            throw new ArrayIndexOutOfBoundsException("Index cannot be less than zero");
+        } else if (index >= count) {
+            throw new ArrayIndexOutOfBoundsException("Index cannot be greater than or equal to count");
+        } else if (count == 2) {
+            throw new IllegalStateException("Count of List Tabulated Function nodes cannot be less than 2");
+        }
 
         for (int i = index; i < count - 1; ++i) {
             xValues[i] = xValues[i + 1];
@@ -112,7 +126,11 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
     }
 
     @Override
-    protected int floorIndexOfX(double x) {
+    protected int floorIndexOfX(double x) throws IllegalArgumentException {
+        if (x < leftBound()) {
+            throw new IllegalArgumentException("Index cannot be less than left bound");
+        }
+
         int index = 0;
 
         for (int i = 0; xValues[i] < x && i < count; ++i) {
@@ -123,22 +141,34 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
     }
 
     @Override
-    protected double extrapolateLeft(double x) throws ArrayIndexOutOfBoundsException {
-        if (count == 1) return x;
+    protected double extrapolateLeft(double x) {
+        if (xValues[0] == xValues[count - 1]) {
+            return yValues[0];
+        }
 
         return interpolate(x, 0);
     }
 
     @Override
-    protected double extrapolateRight(double x) throws ArrayIndexOutOfBoundsException {
-        if (count == 1) return x;
+    protected double extrapolateRight(double x) {
+        if (xValues[0] == xValues[count - 1]) {
+            return yValues[0];
+        }
 
         return interpolate(x, count - 2);
     }
 
     @Override
-    protected double interpolate(double x, int floorIndex) throws ArrayIndexOutOfBoundsException {
-        if (count == 1) return x;
+    protected double interpolate(double x, int floorIndex) throws IllegalArgumentException {
+        if (floorIndex < 0) {
+            throw new IllegalArgumentException("Floor Index cannot be less than zero");
+        } else if (floorIndex >= count - 1) {
+            throw new IllegalArgumentException("Floor Index cannot be greater than or equal to last node index");
+        }
+
+        if (xValues[0] == xValues[count - 1]) {
+            return yValues[0];
+        }
 
         return interpolate(x, getX(floorIndex), getX(floorIndex + 1), getY(floorIndex), getY(floorIndex + 1));
     }
@@ -150,16 +180,34 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
 
     @Override
     public double getX(int index) throws ArrayIndexOutOfBoundsException {
+        if (index < 0) {
+            throw new ArrayIndexOutOfBoundsException("Index cannot be less than zero");
+        } else if (index >= count) {
+            throw new ArrayIndexOutOfBoundsException("Index cannot be greater than or equal to count");
+        }
+
         return xValues[index];
     }
 
     @Override
     public double getY(int index) throws ArrayIndexOutOfBoundsException {
+        if (index < 0) {
+            throw new ArrayIndexOutOfBoundsException("Index cannot be less than zero");
+        } else if (index >= count) {
+            throw new ArrayIndexOutOfBoundsException("Index cannot be greater than or equal to count");
+        }
+
         return yValues[index];
     }
 
     @Override
     public void setY(int index, double value) throws ArrayIndexOutOfBoundsException {
+        if (index < 0) {
+            throw new ArrayIndexOutOfBoundsException("Index cannot be less than zero");
+        } else if (index >= count) {
+            throw new ArrayIndexOutOfBoundsException("Index cannot be greater than or equal to count");
+        }
+
         yValues[index] = value;
     }
 
@@ -184,12 +232,12 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
     }
 
     @Override
-    public double leftBound() throws ArrayIndexOutOfBoundsException {
+    public double leftBound() {
         return xValues[0];
     }
 
     @Override
-    public double rightBound() throws ArrayIndexOutOfBoundsException {
+    public double rightBound() {
         return xValues[count - 1];
     }
 }

@@ -58,9 +58,9 @@ public class CompositeFunctionTest extends AbstractTest {
         mainFunction = new CompositeFunction(arrayTabFunction1, new SqrFunction());
         Assertions.assertEquals(17.523567165456, mainFunction.apply(2.046), EPSILON);
 
-        arrayTabFunction1 = new ArrayTabulatedFunction(new SqrFunction(), 33, 33, 1);
+        arrayTabFunction1 = new ArrayTabulatedFunction(new SqrFunction(), 33, 33, 2);
         mainFunction = new CompositeFunction(arrayTabFunction1, new SqrFunction());
-        Assertions.assertEquals(144, mainFunction.apply(12));
+        Assertions.assertEquals(1185921, mainFunction.apply(12));
 
     }
 
@@ -77,9 +77,9 @@ public class CompositeFunctionTest extends AbstractTest {
         mainFunction = new CompositeFunction(listTabFunction1, new SqrFunction());
         Assertions.assertEquals(252.69, mainFunction.apply(3.987), EPSILON);
 
-        listTabFunction1 = new LinkedListTabulatedFunction(new SqrFunction(), 33, 33, 1);
+        listTabFunction1 = new LinkedListTabulatedFunction(new SqrFunction(), 33, 33, 2);
         mainFunction = new CompositeFunction(listTabFunction1, new SqrFunction());
-        Assertions.assertEquals(9, mainFunction.apply(3));
+        Assertions.assertEquals(1185921, mainFunction.apply(3));
     }
 
     @Test
@@ -98,9 +98,9 @@ public class CompositeFunctionTest extends AbstractTest {
         Assertions.assertEquals(4.186116, mainFunction.apply(2.046), EPSILON);
 
         compFunction1 = new CompositeFunction(new SqrFunction(), new SqrFunction());
-        arrayTabFunction1 = new ArrayTabulatedFunction(new SqrFunction(), 33, 33, 1);
+        arrayTabFunction1 = new ArrayTabulatedFunction(new SqrFunction(), 33, 33, 2);
         mainFunction = new CompositeFunction(compFunction1, arrayTabFunction1);
-        Assertions.assertEquals(6561, mainFunction.apply(9));
+        Assertions.assertEquals(1089, mainFunction.apply(9));
     }
 
     @Test
@@ -119,9 +119,9 @@ public class CompositeFunctionTest extends AbstractTest {
         Assertions.assertEquals(20.657025, mainFunction.apply(4.545), EPSILON);
 
         compFunction1 = new CompositeFunction(new SqrFunction(), new SqrFunction());
-        listTabFunction1 = new LinkedListTabulatedFunction(new SqrFunction(), 33, 33, 1);
+        listTabFunction1 = new LinkedListTabulatedFunction(new SqrFunction(), 33, 33, 2);
         mainFunction = new CompositeFunction(listTabFunction1, compFunction1);
-        Assertions.assertEquals(1851.89072896, mainFunction.apply(-6.56), EPSILON);
+        Assertions.assertEquals(1406408618241L, mainFunction.apply(-6.56), EPSILON);
     }
 
     @Test

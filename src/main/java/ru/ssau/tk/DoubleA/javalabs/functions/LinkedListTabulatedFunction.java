@@ -1,6 +1,11 @@
 package ru.ssau.tk.DoubleA.javalabs.functions;
 
 public class LinkedListTabulatedFunction extends AbstractTabulatedFunction implements Insertable, Removable {
+    static class Node {
+        public Node previous, next;
+        public double x, y;
+    }
+
     private Node head;
 
     public LinkedListTabulatedFunction(double[] xValues, double[] yValues) {

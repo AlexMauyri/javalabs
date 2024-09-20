@@ -4,6 +4,7 @@ import ru.ssau.tk.DoubleA.javalabs.exceptions.InterpolationException;
 
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements Insertable, Removable {
     final private static int EXTENSION_MODIFIER = 5;
@@ -133,7 +134,26 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
 
     @Override
     public Iterator<Point> iterator() {
-        throw new UnsupportedOperationException();
+        return new Iterator<>() {
+            private int i;
+
+            {
+                i = 0;
+            }
+
+            @Override
+            public boolean hasNext() {
+                return i < count;
+            }
+
+            @Override
+            public Point next() {
+                if (!hasNext()) throw new NoSuchElementException();
+                Point point = new Point(getX(i), getY(i));
+                ++i;
+                return point;
+            }
+        };
     }
 
     @Override

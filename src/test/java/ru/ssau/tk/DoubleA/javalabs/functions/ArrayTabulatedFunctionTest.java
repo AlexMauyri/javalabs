@@ -4,6 +4,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 public class ArrayTabulatedFunctionTest extends AbstractTest {
     ArrayTabulatedFunction mathFunctionDiscrete;
     ArrayTabulatedFunction mathFunctionManual;
@@ -123,5 +126,39 @@ public class ArrayTabulatedFunctionTest extends AbstractTest {
 
         mathFunctionManual.setY(0, 2.0);
         Assertions.assertEquals(2.0, mathFunctionManual.getY(0));
+    }
+
+    @Test
+    void iteratorTest() {
+        Iterator<Point> iterator1 = mathFunctionDiscrete.iterator();
+        Iterator<Point> iterator2 = mathFunctionManual.iterator();
+        int i = 0;
+        while (iterator1.hasNext()) {
+            Point point = iterator1.next();
+            Assertions.assertEquals(mathFunctionDiscrete.getX(i), point.x, EPSILON);
+            i += 1;
+        }
+
+        i = 0;
+        while (iterator2.hasNext()) {
+            Point point = iterator2.next();
+            Assertions.assertEquals(mathFunctionManual.getX(i), point.x, EPSILON);
+            i += 1;
+        }
+
+        Assertions.assertThrows(NoSuchElementException.class, iterator1::next);
+        Assertions.assertThrows(NoSuchElementException.class, iterator2::next);
+
+        i = 0;
+        for (Point point : mathFunctionManual) {
+            Assertions.assertEquals(mathFunctionManual.getX(i), point.x);
+            ++i;
+        }
+
+        i = 0;
+        for (Point point : mathFunctionDiscrete) {
+            Assertions.assertEquals(mathFunctionDiscrete.getX(i), point.x);
+            ++i;
+        }
     }
 }

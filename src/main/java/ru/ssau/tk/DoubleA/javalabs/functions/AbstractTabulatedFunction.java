@@ -1,15 +1,20 @@
 package ru.ssau.tk.DoubleA.javalabs.functions;
 
+import ru.ssau.tk.DoubleA.javalabs.exceptions.ArrayIsNotSortedException;
+import ru.ssau.tk.DoubleA.javalabs.exceptions.DifferentLengthOfArraysException;
+
 abstract public class AbstractTabulatedFunction implements TabulatedFunction {
     // Count of element pairs in array/list
     protected int count;
 
     static void checkLengthIsTheSame(double[] xValues, double[] yValues) {
-
+        if (xValues.length != yValues.length) throw new DifferentLengthOfArraysException();
     }
 
-    void checkSorted(double[] xValues) {
-        
+    static void checkSorted(double[] xValues) {
+        for (int i = 1; i < xValues.length; ++i) {
+            if (xValues[i - 1] >= xValues[i]) throw new ArrayIsNotSortedException();
+        }
     }
 
     // Finds index of the largest element in array/list, which is less than x.

@@ -1,5 +1,7 @@
 package ru.ssau.tk.DoubleA.javalabs.functions;
 
+import ru.ssau.tk.DoubleA.javalabs.exceptions.InterpolationException;
+
 public class LinkedListTabulatedFunction extends AbstractTabulatedFunction implements Insertable, Removable {
     private Node head;
 
@@ -7,6 +9,9 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
         if (xValues.length < 2 || yValues.length < 2) {
             throw new IllegalArgumentException("Count of List Tabulated Function nodes cannot be less than 2");
         }
+
+        AbstractTabulatedFunction.checkLengthIsTheSame(xValues, yValues);
+        AbstractTabulatedFunction.checkSorted(xValues);
 
         count = 0;
         head = null;
@@ -287,6 +292,10 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
 
         if (head.x == head.previous.x) {
             return head.y;
+        }
+
+        if (!(x > getX(floorIndex) && x < getX(floorIndex + 1))) {
+            throw new InterpolationException();
         }
 
         Node floorNode = getNode(floorIndex);

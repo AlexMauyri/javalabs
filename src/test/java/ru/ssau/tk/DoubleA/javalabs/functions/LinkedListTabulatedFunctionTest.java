@@ -74,10 +74,10 @@ public class LinkedListTabulatedFunctionTest {
 
     @Test
     void testInterpolate() {
-        Assertions.assertEquals(13.5, manualList.interpolate(-6, 0));
-        Assertions.assertEquals(13.5, discreteList.interpolate(-6, 0));
-        Assertions.assertEquals(352.5, manualList.interpolate(20, 3));
-        Assertions.assertEquals(352.5, discreteList.interpolate(20, 3));
+        Assertions.assertEquals(6.0, manualList.interpolate(2, 1));
+        Assertions.assertEquals(13.5, discreteList.interpolate(3, 1));
+        Assertions.assertEquals(69.0, manualList.interpolate(8, 2));
+        Assertions.assertEquals(123.0, discreteList.interpolate(11, 3));
         Assertions.assertEquals(85.5, manualList.interpolate(9, 2));
         Assertions.assertEquals(85.5, discreteList.interpolate(9, 2));
     }

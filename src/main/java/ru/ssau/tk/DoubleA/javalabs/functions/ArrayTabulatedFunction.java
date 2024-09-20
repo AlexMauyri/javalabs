@@ -1,5 +1,7 @@
 package ru.ssau.tk.DoubleA.javalabs.functions;
 
+import ru.ssau.tk.DoubleA.javalabs.exceptions.InterpolationException;
+
 import java.util.Arrays;
 
 public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements Insertable, Removable {
@@ -12,6 +14,9 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
         if (xValues.length < 2 || yValues.length < 2) {
             throw new IllegalArgumentException("Count of Array Tabulated Function nodes cannot be less than 2");
         }
+
+        AbstractTabulatedFunction.checkLengthIsTheSame(xValues, yValues);
+        AbstractTabulatedFunction.checkSorted(xValues);
 
         this.xValues = Arrays.copyOf(xValues, xValues.length);
         this.yValues = Arrays.copyOf(yValues, yValues.length);
@@ -146,7 +151,7 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
             return yValues[0];
         }
 
-        return interpolate(x, 0);
+        return interpolate(x, getX(0), getX(1), getY(0), getY(1));
     }
 
     @Override
@@ -155,7 +160,7 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
             return yValues[0];
         }
 
-        return interpolate(x, count - 2);
+        return interpolate(x, getX(count - 2), getX(count - 1), getY(count - 2), getY(count - 1));
     }
 
     @Override
@@ -168,6 +173,10 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
 
         if (xValues[0] == xValues[count - 1]) {
             return yValues[0];
+        }
+
+        if (!(x > getX(floorIndex) && x < getX(floorIndex + 1))) {
+            throw new InterpolationException();
         }
 
         return interpolate(x, getX(floorIndex), getX(floorIndex + 1), getY(floorIndex), getY(floorIndex + 1));

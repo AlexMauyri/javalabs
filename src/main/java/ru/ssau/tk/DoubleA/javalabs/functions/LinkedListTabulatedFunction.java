@@ -2,6 +2,8 @@ package ru.ssau.tk.DoubleA.javalabs.functions;
 
 import ru.ssau.tk.DoubleA.javalabs.exceptions.InterpolationException;
 
+import java.util.Iterator;
+
 public class LinkedListTabulatedFunction extends AbstractTabulatedFunction implements Insertable, Removable {
     private Node head;
 
@@ -154,6 +156,11 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
             nodeToRemove.next.previous = nodeToRemove.previous;
         }
         count--;
+    }
+
+    @Override
+    public Iterator<Point> iterator() {
+        throw new UnsupportedOperationException();
     }
 
     @Override

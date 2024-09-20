@@ -3,6 +3,7 @@ package ru.ssau.tk.DoubleA.javalabs.functions;
 import ru.ssau.tk.DoubleA.javalabs.exceptions.InterpolationException;
 
 import java.util.Arrays;
+import java.util.Iterator;
 
 public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements Insertable, Removable {
     final private static int EXTENSION_MODIFIER = 5;
@@ -128,6 +129,11 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
         }
 
         --count;
+    }
+
+    @Override
+    public Iterator<Point> iterator() {
+        throw new UnsupportedOperationException();
     }
 
     @Override

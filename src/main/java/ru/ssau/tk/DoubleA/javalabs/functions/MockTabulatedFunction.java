@@ -1,5 +1,7 @@
 package ru.ssau.tk.DoubleA.javalabs.functions;
 
+import java.util.Iterator;
+
 public class MockTabulatedFunction extends AbstractTabulatedFunction {
     private final double x0;
     private final double x1;
@@ -17,6 +19,11 @@ public class MockTabulatedFunction extends AbstractTabulatedFunction {
 
         this.y0 = y0;
         this.y1 = y1;
+    }
+
+    @Override
+    public Iterator<Point> iterator() {
+        throw new UnsupportedOperationException();
     }
 
     @Override

@@ -9,10 +9,6 @@ import ru.ssau.tk.DoubleA.javalabs.functions.factory.TabulatedFunctionFactory;
 public class TabulatedFunctionOperationService {
     TabulatedFunctionFactory factory;
 
-    private interface BiOperation {
-        double apply(double u, double v);
-    }
-
     public TabulatedFunctionOperationService(TabulatedFunctionFactory factory) {
         this.factory = factory;
     }
@@ -21,7 +17,18 @@ public class TabulatedFunctionOperationService {
         this.factory = new ArrayTabulatedFunctionFactory();
     }
 
-    private TabulatedFunction doOperation(TabulatedFunction a, TabulatedFunction b, BiOperation operation) {
+    public static Point[] asPoints(TabulatedFunction tabulatedFunction) {
+        int i = 0;
+        Point[] points = new Point[tabulatedFunction.getCount()];
+        for (Point point : tabulatedFunction) {
+            points[i] = point;
+            ++i;
+        }
+
+        return points;
+    }
+
+    private TabulatedFunction doOperation(TabulatedFunction a, TabulatedFunction b, BiOperation operation) throws InconsistentFunctionsException {
         if (a.getCount() != b.getCount()) {
             throw new InconsistentFunctionsException();
         }
@@ -51,15 +58,12 @@ public class TabulatedFunctionOperationService {
         return doOperation(a, b, (double x, double y) -> x - y);
     }
 
-    public static Point[] asPoints(TabulatedFunction tabulatedFunction) {
-        int i = 0;
-        Point[] points = new Point[tabulatedFunction.getCount()];
-        for (Point point : tabulatedFunction) {
-            points[i] = point;
-            ++i;
-        }
+    public TabulatedFunction multiply(TabulatedFunction a, TabulatedFunction b) {
+        return doOperation(a, b, (double x, double y) -> x * y);
+    }
 
-        return points;
+    public TabulatedFunction divide(TabulatedFunction a, TabulatedFunction b) {
+        return doOperation(a, b, (double x, double y) -> x / y);
     }
 
     public TabulatedFunctionFactory getFactory() {
@@ -68,5 +72,9 @@ public class TabulatedFunctionOperationService {
 
     public void setFactory(TabulatedFunctionFactory factory) {
         this.factory = factory;
+    }
+
+    private interface BiOperation {
+        double apply(double u, double v);
     }
 }

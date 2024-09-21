@@ -61,6 +61,52 @@ public class TabulatedFunctionOperationServiceTest {
     }
 
     @Test
+    void doOperationMultiplyTest() {
+        TabulatedFunctionOperationService operationService = new TabulatedFunctionOperationService();
+
+        Assertions.assertThrows(InconsistentFunctionsException.class, () -> operationService.multiply(tabulatedFunction1, tabulatedFunction2));
+        Assertions.assertThrows(InconsistentFunctionsException.class, () -> operationService.multiply(tabulatedFunction2, tabulatedFunction3));
+
+        tabulatedFunction2 = new LinkedListTabulatedFunction(new double[]{1.0, 2.5, 3.5, 5.0}, new double[]{0.5, 3.8, -5.3, 2.7});
+
+        Assertions.assertArrayEquals(new Point[] {
+                new Point(1.0, 0.7),
+                new Point(2.5, 12.92),
+                new Point(3.5, -13.25),
+                new Point(5.0, 7.29)
+            }, TabulatedFunctionOperationService.asPoints(operationService.multiply(tabulatedFunction1, tabulatedFunction2)));
+        Assertions.assertArrayEquals(new Point[] {
+                new Point(1.0, 0.7),
+                new Point(2.5, 12.92),
+                new Point(3.5, -13.25),
+                new Point(5.0, 7.29)
+        }, TabulatedFunctionOperationService.asPoints(operationService.multiply(tabulatedFunction2, tabulatedFunction1)));
+    }
+
+    @Test
+    void doOperationDivideTest() {
+        TabulatedFunctionOperationService operationService = new TabulatedFunctionOperationService();
+
+        Assertions.assertThrows(InconsistentFunctionsException.class, () -> operationService.divide(tabulatedFunction1, tabulatedFunction2));
+        Assertions.assertThrows(InconsistentFunctionsException.class, () -> operationService.divide(tabulatedFunction2, tabulatedFunction3));
+
+        tabulatedFunction2 = new LinkedListTabulatedFunction(new double[]{1.0, 2.5, 3.5, 5.0}, new double[]{0.5, 3.8, -5.3, 2.7});
+
+        Assertions.assertArrayEquals(new Point[] {
+                new Point(1.0, 2.8),
+                new Point(2.5, 0.8947368421052),
+                new Point(3.5, -0.4716981132075),
+                new Point(5.0, 1.0)
+        }, TabulatedFunctionOperationService.asPoints(operationService.divide(tabulatedFunction1, tabulatedFunction2)));
+        Assertions.assertArrayEquals(new Point[] {
+                new Point(1.0, 0.3571428571428),
+                new Point(2.5, 1.1176470588235),
+                new Point(3.5, -2.12),
+                new Point(5.0, 1.0)
+        }, TabulatedFunctionOperationService.asPoints(operationService.divide(tabulatedFunction2, tabulatedFunction1)));
+    }
+
+    @Test
     void doOperationTest() {
         TabulatedFunctionOperationService service = new TabulatedFunctionOperationService();
 

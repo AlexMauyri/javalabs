@@ -2,13 +2,17 @@ package ru.ssau.tk.DoubleA.javalabs.functions;
 
 import ru.ssau.tk.DoubleA.javalabs.exceptions.InterpolationException;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements Insertable, Removable {
+public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements Insertable, Removable, Serializable {
     final private static int EXTENSION_MODIFIER = 5;
     final private static double EPSILON = 1E-7;
+    @Serial
+    private static final long serialVersionUID = 8682502839092533555L;
     private double[] xValues;
     private double[] yValues;
 

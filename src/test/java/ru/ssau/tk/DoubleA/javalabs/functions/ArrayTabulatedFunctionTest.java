@@ -3,6 +3,7 @@ package ru.ssau.tk.DoubleA.javalabs.functions;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import ru.ssau.tk.DoubleA.javalabs.exceptions.*;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -10,6 +11,21 @@ import java.util.NoSuchElementException;
 public class ArrayTabulatedFunctionTest extends AbstractTest {
     ArrayTabulatedFunction mathFunctionDiscrete;
     ArrayTabulatedFunction mathFunctionManual;
+
+    @Test
+    void constructorTest() {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new ArrayTabulatedFunction(new double[]{1.0}, new double[]{1.4}));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new ArrayTabulatedFunction(new double[]{1.0}, new double[]{}));
+
+        Assertions.assertThrows(DifferentLengthOfArraysException.class, () -> new ArrayTabulatedFunction(new double[]{1.0, 2.0, 3.0}, new double[]{1.4, 2.8}));
+        Assertions.assertThrows(DifferentLengthOfArraysException.class, () -> new ArrayTabulatedFunction(new double[]{1.0, 2.0}, new double[]{1.4, 2.8, 4.2}));
+
+        Assertions.assertThrows(ArrayIsNotSortedException.class, () -> new ArrayTabulatedFunction(new double[]{1.0, 3.0, 2.0}, new double[]{1.4, 2.8, 4.2}));
+        Assertions.assertThrows(ArrayIsNotSortedException.class, () -> new ArrayTabulatedFunction(new double[]{1.0, 2.0, -3.0}, new double[]{1.4, 2.8, 4.2}));
+
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new ArrayTabulatedFunction(new SqrFunction(), 1.0, 2.0, 1));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new ArrayTabulatedFunction(new SqrFunction(), 5.0, 5.0, 1));
+    }
 
     @BeforeEach
     void init() {
@@ -22,11 +38,19 @@ public class ArrayTabulatedFunctionTest extends AbstractTest {
 
     @Test
     void removeTest() {
+        Assertions.assertThrows(ArrayIndexOutOfBoundsException.class, () -> mathFunctionManual.remove(-2));
+        Assertions.assertThrows(ArrayIndexOutOfBoundsException.class, () -> mathFunctionManual.remove(6));
+        Assertions.assertThrows(ArrayIndexOutOfBoundsException.class, () -> mathFunctionDiscrete.remove(-2));
+        Assertions.assertThrows(ArrayIndexOutOfBoundsException.class, () -> mathFunctionDiscrete.remove(6));
+
         mathFunctionManual.remove(3);
         Assertions.assertEquals(3, mathFunctionManual.getCount());
 
         mathFunctionManual.remove(0);
         Assertions.assertEquals(2, mathFunctionManual.getCount());
+
+        Assertions.assertThrows(IllegalStateException.class, () -> mathFunctionManual.remove(1));
+        Assertions.assertThrows(IllegalStateException.class, () -> mathFunctionManual.remove(0));
     }
 
     @Test
@@ -46,8 +70,6 @@ public class ArrayTabulatedFunctionTest extends AbstractTest {
 
         mathFunctionManual.insert(1.9, 0.7);
         Assertions.assertEquals(2, mathFunctionManual.indexOfY(0.7));
-
-        Assertions.assertThrows(ArrayIndexOutOfBoundsException.class, () -> mathFunctionManual.getX(10));
     }
 
     @Test
@@ -76,6 +98,20 @@ public class ArrayTabulatedFunctionTest extends AbstractTest {
 
     @Test
     void getterTest() {
+        Assertions.assertEquals(1, mathFunctionManual.floorIndexOfX(2.5), EPSILON);
+        Assertions.assertEquals(0, mathFunctionManual.floorIndexOfX(2), EPSILON);
+        Assertions.assertEquals(3, mathFunctionManual.floorIndexOfX(5), EPSILON);
+        Assertions.assertEquals(3, mathFunctionDiscrete.floorIndexOfX(1.6), EPSILON);
+        Assertions.assertEquals(2, mathFunctionDiscrete.floorIndexOfX(1.5), EPSILON);
+        Assertions.assertEquals(6, mathFunctionDiscrete.floorIndexOfX(3), EPSILON);
+
+        Assertions.assertThrows(IllegalArgumentException.class, () -> mathFunctionManual.floorIndexOfX(0.5));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> mathFunctionManual.floorIndexOfX(-127));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> mathFunctionManual.floorIndexOfX(0.9));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> mathFunctionDiscrete.floorIndexOfX(0.5));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> mathFunctionDiscrete.floorIndexOfX(-127));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> mathFunctionDiscrete.floorIndexOfX(0.9));
+
         Assertions.assertEquals(1.2, mathFunctionDiscrete.getX(1), EPSILON);
         Assertions.assertEquals(2.0, mathFunctionDiscrete.getX(5), EPSILON);
         Assertions.assertEquals(4.0, mathFunctionDiscrete.getY(5), EPSILON);
@@ -102,9 +138,22 @@ public class ArrayTabulatedFunctionTest extends AbstractTest {
         Assertions.assertEquals(6, mathFunctionDiscrete.getCount());
         Assertions.assertEquals(4, mathFunctionManual.getCount());
 
-        Assertions.assertThrows(ArrayIndexOutOfBoundsException.class, () -> mathFunctionDiscrete.getX(10));
-        Assertions.assertThrows(ArrayIndexOutOfBoundsException.class, () -> mathFunctionDiscrete.getY(-1));
+        Assertions.assertThrows(ArrayIndexOutOfBoundsException.class, () -> mathFunctionManual.getX(-1));
+        Assertions.assertThrows(ArrayIndexOutOfBoundsException.class, () -> mathFunctionManual.getX(4));
         Assertions.assertThrows(ArrayIndexOutOfBoundsException.class, () -> mathFunctionDiscrete.getX(-1));
+        Assertions.assertThrows(ArrayIndexOutOfBoundsException.class, () -> mathFunctionDiscrete.getX(6));
+
+        Assertions.assertThrows(ArrayIndexOutOfBoundsException.class, () -> mathFunctionManual.getY(-1));
+        Assertions.assertThrows(ArrayIndexOutOfBoundsException.class, () -> mathFunctionManual.getY(4));
+        Assertions.assertThrows(ArrayIndexOutOfBoundsException.class, () -> mathFunctionDiscrete.getY(-1));
+        Assertions.assertThrows(ArrayIndexOutOfBoundsException.class, () -> mathFunctionDiscrete.getY(6));
+
+        Assertions.assertThrows(IllegalArgumentException.class, () -> mathFunctionManual.interpolate(10, -1));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> mathFunctionManual.interpolate(5, 3));
+        Assertions.assertThrows(InterpolationException.class, () -> mathFunctionManual.interpolate(21.7, 0));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> mathFunctionDiscrete.interpolate(10, -1));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> mathFunctionDiscrete.interpolate(5, 5));
+        Assertions.assertThrows(InterpolationException.class, () -> mathFunctionDiscrete.interpolate(4.36, 1));
     }
 
     @Test
@@ -126,6 +175,11 @@ public class ArrayTabulatedFunctionTest extends AbstractTest {
 
         mathFunctionManual.setY(0, 2.0);
         Assertions.assertEquals(2.0, mathFunctionManual.getY(0));
+
+        Assertions.assertThrows(ArrayIndexOutOfBoundsException.class, () -> mathFunctionManual.setY(-1, 0));
+        Assertions.assertThrows(ArrayIndexOutOfBoundsException.class, () -> mathFunctionManual.setY(4, 0));
+        Assertions.assertThrows(ArrayIndexOutOfBoundsException.class, () -> mathFunctionDiscrete.setY(-1, 0));
+        Assertions.assertThrows(ArrayIndexOutOfBoundsException.class, () -> mathFunctionDiscrete.setY(6, 0));
     }
 
     @Test

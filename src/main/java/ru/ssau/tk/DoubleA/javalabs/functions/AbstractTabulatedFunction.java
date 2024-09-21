@@ -7,11 +7,11 @@ abstract public class AbstractTabulatedFunction implements TabulatedFunction {
     // Count of element pairs in array/list
     protected int count;
 
-    static void checkLengthIsTheSame(double[] xValues, double[] yValues) {
+    static void checkLengthIsTheSame(double[] xValues, double[] yValues) throws DifferentLengthOfArraysException {
         if (xValues.length != yValues.length) throw new DifferentLengthOfArraysException();
     }
 
-    static void checkSorted(double[] xValues) {
+    static void checkSorted(double[] xValues) throws ArrayIsNotSortedException {
         for (int i = 1; i < xValues.length; ++i) {
             if (xValues[i - 1] >= xValues[i]) throw new ArrayIsNotSortedException();
         }

@@ -161,7 +161,7 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
 
     @Override
     public Iterator<Point> iterator() throws NoSuchElementException {
-        return new Iterator<Point>() {
+        return new Iterator<>() {
             private Node currentNode = head;
             private int internalCount = 0;
 
@@ -272,7 +272,7 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
         Node currentNode = head;
         int floorIndex = 0;
 
-        for (int curIndex = 0; currentNode.x < x && curIndex < count; curIndex++) {
+        for (int curIndex = 0; currentNode.x <= x && curIndex < count; curIndex++) {
             floorIndex = curIndex;
             currentNode = currentNode.next;
         }
@@ -287,7 +287,7 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
 
         Node currentNode = head, floorNode = head;
 
-        for (int index = 0; currentNode.x < x && index < count; index++) {
+        for (int index = 0; currentNode.x <= x && index < count; index++) {
             floorNode = currentNode;
             currentNode = currentNode.next;
         }
@@ -314,7 +314,7 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
     }
 
     @Override
-    protected double interpolate(double x, int floorIndex) throws IllegalArgumentException {
+    protected double interpolate(double x, int floorIndex) throws IllegalArgumentException, InterpolationException {
         if (floorIndex < 0) {
             throw new IllegalArgumentException("Floor Index cannot be less than zero");
         } else if (floorIndex >= count - 1) {

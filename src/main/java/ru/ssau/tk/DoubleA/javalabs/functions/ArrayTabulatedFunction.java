@@ -133,7 +133,7 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
     }
 
     @Override
-    public Iterator<Point> iterator() {
+    public Iterator<Point> iterator() throws NoSuchElementException {
         return new Iterator<>() {
             private int i;
 
@@ -164,7 +164,7 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
 
         int index = 0;
 
-        for (int i = 0; xValues[i] < x && i < count; ++i) {
+        for (int i = 0; i < count && xValues[i] <= x; ++i) {
             index = i;
         }
 
@@ -190,7 +190,7 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
     }
 
     @Override
-    protected double interpolate(double x, int floorIndex) throws IllegalArgumentException {
+    protected double interpolate(double x, int floorIndex) throws IllegalArgumentException, InterpolationException {
         if (floorIndex < 0) {
             throw new IllegalArgumentException("Floor Index cannot be less than zero");
         } else if (floorIndex >= count - 1) {

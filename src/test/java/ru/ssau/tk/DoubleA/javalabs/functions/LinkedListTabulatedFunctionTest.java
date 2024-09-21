@@ -2,17 +2,30 @@ package ru.ssau.tk.DoubleA.javalabs.functions;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import ru.ssau.tk.DoubleA.javalabs.exceptions.*;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 public class LinkedListTabulatedFunctionTest {
-    LinkedListTabulatedFunction manualList = new LinkedListTabulatedFunction(
-            new double[]{-3, 1.5, 6, 10.5, 15},
-            new double[]{9, 2.25, 36, 110.25, 225}
-    );
+    LinkedListTabulatedFunction manualList = new LinkedListTabulatedFunction(new double[]{-3, 1.5, 6, 10.5, 15}, new double[]{9, 2.25, 36, 110.25, 225});
     LinkedListTabulatedFunction discreteList = new LinkedListTabulatedFunction(new SqrFunction(), -3, 15, 5);
     LinkedListTabulatedFunction manualList2 = new LinkedListTabulatedFunction(new double[]{9, 11}, new double[]{18, 25});
+
+    @Test
+    void testConstructor() {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new LinkedListTabulatedFunction(new double[]{1.0}, new double[]{1.4}));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new LinkedListTabulatedFunction(new double[]{1.0}, new double[]{}));
+
+        Assertions.assertThrows(DifferentLengthOfArraysException.class, () -> new LinkedListTabulatedFunction(new double[]{1.0, 2.0, 3.0}, new double[]{1.4, 2.8}));
+        Assertions.assertThrows(DifferentLengthOfArraysException.class, () -> new LinkedListTabulatedFunction(new double[]{1.0, 2.0}, new double[]{1.4, 2.8, 4.2}));
+
+        Assertions.assertThrows(ArrayIsNotSortedException.class, () -> new LinkedListTabulatedFunction(new double[]{1.0, 3.0, 2.0}, new double[]{1.4, 2.8, 4.2}));
+        Assertions.assertThrows(ArrayIsNotSortedException.class, () -> new LinkedListTabulatedFunction(new double[]{1.0, 2.0, -3.0}, new double[]{1.4, 2.8, 4.2}));
+
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new LinkedListTabulatedFunction(new SqrFunction(), 1.0, 2.0, 1));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new LinkedListTabulatedFunction(new SqrFunction(), 5.0, 5.0, 1));
+    }
 
     @Test
     void testIterator() {
@@ -51,6 +64,16 @@ public class LinkedListTabulatedFunctionTest {
         Assertions.assertEquals(6, discreteList.getX(2));
         Assertions.assertEquals(2.25, manualList.getY(1));
         Assertions.assertEquals(2.25, discreteList.getY(1));
+
+        Assertions.assertThrows(IllegalArgumentException.class, () -> manualList.getX(-1));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> manualList.getX(5));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> discreteList.getX(-1));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> discreteList.getX(5));
+
+        Assertions.assertThrows(IllegalArgumentException.class, () -> manualList.getY(-1));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> manualList.getY(5));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> discreteList.getY(-1));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> discreteList.getY(5));
     }
 
     @Test
@@ -60,6 +83,11 @@ public class LinkedListTabulatedFunctionTest {
 
         discreteList.setY(3, 169);
         Assertions.assertEquals(169, discreteList.getY(3));
+
+        Assertions.assertThrows(IllegalArgumentException.class, () -> manualList.setY(-1, 0));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> manualList.setY(5, 0));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> discreteList.setY(-1, 0));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> discreteList.setY(5, 0));
     }
 
     @Test
@@ -100,6 +128,13 @@ public class LinkedListTabulatedFunctionTest {
         Assertions.assertEquals(123.0, discreteList.interpolate(11, 3));
         Assertions.assertEquals(85.5, manualList.interpolate(9, 2));
         Assertions.assertEquals(85.5, discreteList.interpolate(9, 2));
+
+        Assertions.assertThrows(IllegalArgumentException.class, () -> manualList.interpolate(1, -1));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> manualList.interpolate(2, 5));
+        Assertions.assertThrows(InterpolationException.class, () -> manualList.interpolate(10.5, 2));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> discreteList.interpolate(3, -1));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> discreteList.interpolate(4, 5));
+        Assertions.assertThrows(InterpolationException.class, () -> discreteList.interpolate(10.5, 3));
     }
 
     @Test
@@ -115,15 +150,22 @@ public class LinkedListTabulatedFunctionTest {
     }
 
     @Test
-    void testFloorNodeOfX() {
+    void testFloorOfX() {
         Assertions.assertEquals(5, manualList.floorIndexOfX(15.5));
         Assertions.assertEquals(5, discreteList.floorIndexOfX(15.5));
-        Assertions.assertEquals(1, manualList.floorIndexOfX(4));
-        Assertions.assertEquals(1, discreteList.floorIndexOfX(4));
+        Assertions.assertEquals(0, manualList.floorIndexOfX(-3));
+        Assertions.assertEquals(0, discreteList.floorIndexOfX(-3));
+
+        Assertions.assertThrows(IllegalArgumentException.class, () -> manualList.floorIndexOfX(-4));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> discreteList.floorIndexOfX(-5));
+
         Assertions.assertEquals(6, manualList.floorNodeOfX(9).x);
         Assertions.assertEquals(6, discreteList.floorNodeOfX(9).x);
-        Assertions.assertEquals(2.25, manualList.floorNodeOfX(4).y);
-        Assertions.assertEquals(2.25, discreteList.floorNodeOfX(4).y);
+        Assertions.assertEquals(9, manualList.floorNodeOfX(-3).y);
+        Assertions.assertEquals(9, discreteList.floorNodeOfX(-3).y);
+
+        Assertions.assertThrows(IllegalArgumentException.class, () -> manualList.floorNodeOfX(-4));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> discreteList.floorNodeOfX(-5));
     }
 
     @Test
@@ -132,6 +174,11 @@ public class LinkedListTabulatedFunctionTest {
         Assertions.assertEquals(15, discreteList.getNode(4).x);
         Assertions.assertEquals(9, manualList.getNode(0).y);
         Assertions.assertEquals(9, discreteList.getNode(0).y);
+
+        Assertions.assertThrows(IllegalArgumentException.class, () -> manualList.getNode(-1));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> manualList.getNode(5));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> discreteList.getNode(-1));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> discreteList.getNode(5));
     }
 
     @Test
@@ -174,6 +221,16 @@ public class LinkedListTabulatedFunctionTest {
         Assertions.assertEquals(10.5, manualList.getX(2));
         Assertions.assertEquals(-1, manualList.indexOfX(6));
         Assertions.assertEquals(-1, manualList.indexOfY(36));
+
+        Assertions.assertThrows(IllegalArgumentException.class, () -> manualList.remove(-2));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> manualList.remove(6));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> discreteList.remove(-2));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> discreteList.remove(6));
+
+        manualList2.remove(0);
+        manualList2.remove(2);
+        Assertions.assertThrows(IllegalStateException.class, () -> manualList2.remove(0));
+        Assertions.assertThrows(IllegalStateException.class, () -> manualList2.remove(1));
     }
 
     @Test

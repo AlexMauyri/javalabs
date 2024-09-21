@@ -2,50 +2,60 @@ package ru.ssau.tk.DoubleA.javalabs.functions;
 
 import java.util.Iterator;
 
-public class StrictTabulatedFunction {
+public class StrictTabulatedFunction implements TabulatedFunction {
     TabulatedFunction function;
 
     public StrictTabulatedFunction(TabulatedFunction function) {
         this.function = function;
     }
 
+    @Override
     public Iterator<Point> iterator() {
         return function.iterator();
     }
 
-    int getCount() {
+    @Override
+    public int getCount() {
         return function.getCount();
     }
 
-    double getX(int index) {
+    @Override
+    public double getX(int index) {
         return function.getX(index);
     }
 
-    double getY(int index) {
+    @Override
+    public double getY(int index) {
         return function.getY(index);
     }
 
-    void setY(int index, double value) {
+    @Override
+    public void setY(int index, double value) {
         function.setY(index, value);
     }
 
-    int indexOfX(double x) {
+    @Override
+    public int indexOfX(double x) {
         return function.indexOfX(x);
     }
 
-    int indexOfY(double y) {
+    @Override
+    public int indexOfY(double y) {
         return function.indexOfY(y);
     }
 
-    double leftBound() {
+    @Override
+    public double leftBound() {
         return function.leftBound();
     }
 
-    double rightBound() {
+    @Override
+    public double rightBound() {
         return function.rightBound();
     }
 
-    double apply(double x) throws UnsupportedOperationException {
+    @Override
+    public double apply(double x) throws UnsupportedOperationException {
         int indexX = indexOfX(x);
 
         if (indexX == -1) {

@@ -1,5 +1,6 @@
 package ru.ssau.tk.DoubleA.javalabs.io;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.xstream.XStream;
 import ru.ssau.tk.DoubleA.javalabs.functions.ArrayTabulatedFunction;
 import ru.ssau.tk.DoubleA.javalabs.functions.Point;
@@ -104,5 +105,20 @@ public final class FunctionsIO {
         XStream xStream = new XStream();
         xStream.allowTypeHierarchy(ArrayTabulatedFunction.class);
         return (ArrayTabulatedFunction) xStream.fromXML(reader);
+    }
+
+    static void serializeJson(BufferedWriter writer, ArrayTabulatedFunction function) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        writer.write(objectMapper.writeValueAsString(function));
+
+        writer.flush();
+    }
+
+    static ArrayTabulatedFunction deserializeJson(BufferedReader reader) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        Object function = objectMapper.readerFor(ArrayTabulatedFunction.class).readValue(reader);
+        return (ArrayTabulatedFunction)function;
     }
 }

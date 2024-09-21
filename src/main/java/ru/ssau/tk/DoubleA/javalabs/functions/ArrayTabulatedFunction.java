@@ -1,5 +1,8 @@
 package ru.ssau.tk.DoubleA.javalabs.functions;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import ru.ssau.tk.DoubleA.javalabs.exceptions.InterpolationException;
 
 import java.io.Serial;
@@ -13,10 +16,13 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
     final private static double EPSILON = 1E-7;
     @Serial
     private static final long serialVersionUID = 8682502839092533555L;
+    @JsonFormat(shape = JsonFormat.Shape.ARRAY)
     private double[] xValues;
+    @JsonFormat(shape = JsonFormat.Shape.ARRAY)
     private double[] yValues;
 
-    public ArrayTabulatedFunction(double[] xValues, double[] yValues) throws IllegalArgumentException {
+    @JsonCreator
+    public ArrayTabulatedFunction(@JsonProperty(value = "xValues") double[] xValues, @JsonProperty(value = "yValues") double[] yValues) throws IllegalArgumentException {
         if (xValues.length < 2 || yValues.length < 2) {
             throw new IllegalArgumentException("Count of Array Tabulated Function nodes cannot be less than 2");
         }

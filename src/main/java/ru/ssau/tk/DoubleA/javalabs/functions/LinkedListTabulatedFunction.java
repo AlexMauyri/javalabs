@@ -2,10 +2,15 @@ package ru.ssau.tk.DoubleA.javalabs.functions;
 
 import ru.ssau.tk.DoubleA.javalabs.exceptions.InterpolationException;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class LinkedListTabulatedFunction extends AbstractTabulatedFunction implements Insertable, Removable {
+public class LinkedListTabulatedFunction extends AbstractTabulatedFunction implements Insertable, Removable, Serializable {
+    @Serial
+    private static final long serialVersionUID = -6245561391336153225L;
+
     private Node head;
 
     public LinkedListTabulatedFunction(double[] xValues, double[] yValues) throws IllegalArgumentException {

@@ -1,5 +1,7 @@
 package ru.ssau.tk.DoubleA.javalabs.io;
 
+import com.thoughtworks.xstream.XStream;
+import ru.ssau.tk.DoubleA.javalabs.functions.ArrayTabulatedFunction;
 import ru.ssau.tk.DoubleA.javalabs.functions.Point;
 import ru.ssau.tk.DoubleA.javalabs.functions.TabulatedFunction;
 import ru.ssau.tk.DoubleA.javalabs.functions.factory.TabulatedFunctionFactory;
@@ -90,5 +92,17 @@ public final class FunctionsIO {
 
         Object function = objectInputStream.readObject();
         return (TabulatedFunction)function;
+    }
+
+    static void serializeXml(BufferedWriter writer, ArrayTabulatedFunction function) throws IOException {
+        XStream xStream = new XStream();
+        writer.write(xStream.toXML(function));
+        writer.flush();
+    }
+
+    static ArrayTabulatedFunction deserializeXml(BufferedReader reader) {
+        XStream xStream = new XStream();
+        xStream.allowTypeHierarchy(ArrayTabulatedFunction.class);
+        return (ArrayTabulatedFunction) xStream.fromXML(reader);
     }
 }

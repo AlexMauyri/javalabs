@@ -3,6 +3,7 @@ package ru.ssau.tk.DoubleA.javalabs.functions;
 import ru.ssau.tk.DoubleA.javalabs.exceptions.InterpolationException;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public class LinkedListTabulatedFunction extends AbstractTabulatedFunction implements Insertable, Removable {
     private Node head;
@@ -159,8 +160,31 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
     }
 
     @Override
-    public Iterator<Point> iterator() {
-        throw new UnsupportedOperationException();
+    public Iterator<Point> iterator() throws NoSuchElementException {
+        return new Iterator<Point>() {
+            private Node currentNode = head;
+            private int internalCount = 0;
+
+            @Override
+            public boolean hasNext() {
+                return internalCount < count;
+            }
+
+            @Override
+            public Point next() {
+                if (currentNode == null) throw new NoSuchElementException();
+
+                Point point = new Point(currentNode.x, currentNode.y);
+                ++internalCount;
+
+                if (hasNext()) {
+                    currentNode = currentNode.next;
+                } else {
+                    currentNode = null;
+                }
+                return point;
+            }
+        };
     }
 
     @Override

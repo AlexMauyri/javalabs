@@ -3,7 +3,12 @@ package ru.ssau.tk.DoubleA.javalabs.functions;
 import ru.ssau.tk.DoubleA.javalabs.exceptions.ArrayIsNotSortedException;
 import ru.ssau.tk.DoubleA.javalabs.exceptions.DifferentLengthOfArraysException;
 
-abstract public class AbstractTabulatedFunction implements TabulatedFunction {
+import java.io.Serial;
+import java.io.Serializable;
+
+abstract public class AbstractTabulatedFunction implements TabulatedFunction, Serializable {
+    @Serial
+    private static final long serialVersionUID = -3369307346104661539L;
     // Count of element pairs in array/list
     protected int count;
 

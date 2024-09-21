@@ -3,6 +3,9 @@ package ru.ssau.tk.DoubleA.javalabs.functions;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import ru.ssau.tk.DoubleA.javalabs.functions.factory.ArrayTabulatedFunctionFactory;
+import ru.ssau.tk.DoubleA.javalabs.functions.factory.LinkedListTabulatedFunctionFactory;
+import ru.ssau.tk.DoubleA.javalabs.functions.factory.TabulatedFunctionFactory;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -28,6 +31,76 @@ public class UnmodifiableTabulatedFunctionTest extends AbstractTest {
                     new double[]{9, 2.25, 36, 110.25, 225}
                 )
         );
+    }
+
+    @Test
+    void createUnmodifiableTest() {
+        TabulatedFunctionFactory factory = new ArrayTabulatedFunctionFactory();
+        TabulatedFunction function = factory.createUnmodifiable(
+                new double[]{1.0, 2.5, 3.5, 5.0},
+                new double[]{1.4, 3.4, 2.5, 2.7}
+        );
+
+        Assertions.assertEquals(3.4, function.apply(2.5), EPSILON);
+        Assertions.assertEquals(2.95, function.apply(3.0), EPSILON);
+        Assertions.assertEquals(0.06666, function.apply(0.0), EPSILON);
+        Assertions.assertEquals(3.366, function.apply(10.0), EPSILON);
+
+        Assertions.assertEquals(5.0, function.getX(3), EPSILON);
+        Assertions.assertEquals(1.0, function.getX(0), EPSILON);
+        Assertions.assertEquals(3.4, function.getY(1), EPSILON);
+        Assertions.assertEquals(2.5, function.getY(2), EPSILON);
+
+        Assertions.assertEquals(1.0, function.leftBound(), EPSILON);
+        Assertions.assertEquals(5.0, function.rightBound(), EPSILON);
+
+        Assertions.assertEquals(1, function.indexOfX(2.5));
+        Assertions.assertEquals(-1, function.indexOfX(9.0));
+        Assertions.assertEquals(1, function.indexOfY(3.4));
+        Assertions.assertEquals(-1, function.indexOfY(2.4));
+
+        Assertions.assertEquals(4, function.getCount());
+
+        Iterator<Point> iterator = function.iterator();
+        int i = 0;
+        while (iterator.hasNext()) {
+            Point point = iterator.next();
+            Assertions.assertEquals(function.getX(i), point.x, EPSILON);
+            i += 1;
+        }
+
+        Assertions.assertThrows(NoSuchElementException.class, iterator::next);
+
+        i = 0;
+        for (Point point : function) {
+            Assertions.assertEquals(function.getX(i), point.x);
+            ++i;
+        }
+
+        Assertions.assertThrows(UnsupportedOperationException.class, () -> function.setY(2, 10));
+
+        factory = new LinkedListTabulatedFunctionFactory();
+        TabulatedFunction function2 = factory.createUnmodifiable(
+                new double[]{-3, 1.5, 6, 10.5, 15},
+                new double[]{9, 2.25, 36, 110.25, 225}
+        );
+
+        Assertions.assertEquals(13.5, function2.apply(-6));
+        Assertions.assertEquals(352.5, function2.apply(20));
+        Assertions.assertEquals(2.25, function2.apply(1.5));
+        Assertions.assertEquals(85.5, function2.apply(9));
+
+        Assertions.assertEquals(6, function2.getX(2));
+        Assertions.assertEquals(2.25, function2.getY(1));
+
+
+        Assertions.assertEquals(-3, function2.leftBound());
+        Assertions.assertEquals(15, function2.rightBound());
+
+        Assertions.assertEquals(5, function2.getCount());
+
+
+        Assertions.assertThrows(UnsupportedOperationException.class, () -> function2.setY(3, 5));
     }
 
     @Test

@@ -13,6 +13,15 @@ public class ArrayTabulatedFunctionTest extends AbstractTest {
     ArrayTabulatedFunction mathFunctionManual;
 
     @Test
+    void testToString() {
+        ArrayTabulatedFunction mathFunctionManual = new ArrayTabulatedFunction(new double[]{9, 11}, new double[]{18, 25});
+        ArrayTabulatedFunction mathFunctionDiscrete = new ArrayTabulatedFunction(new SqrFunction(), -3, 15, 5);
+
+        Assertions.assertEquals("ArrayTabulatedFunction size = 2\n[9.0; 18.0]\n[11.0; 25.0]", mathFunctionManual.toString());
+        Assertions.assertEquals("ArrayTabulatedFunction size = 5\n[-3.0; 9.0]\n[1.5; 2.25]\n[6.0; 36.0]\n[10.5; 110.25]\n[15.0; 225.0]", mathFunctionDiscrete.toString());
+    }
+
+    @Test
     void constructorTest() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> new ArrayTabulatedFunction(new double[]{1.0}, new double[]{1.4}));
         Assertions.assertThrows(IllegalArgumentException.class, () -> new ArrayTabulatedFunction(new double[]{1.0}, new double[]{}));

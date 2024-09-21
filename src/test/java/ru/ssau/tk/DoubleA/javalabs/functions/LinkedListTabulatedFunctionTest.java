@@ -13,6 +13,13 @@ public class LinkedListTabulatedFunctionTest {
     LinkedListTabulatedFunction manualList2 = new LinkedListTabulatedFunction(new double[]{9, 11}, new double[]{18, 25});
 
     @Test
+    void testToString() {
+        Assertions.assertEquals("LinkedListTabulatedFunction size = 5\n[-3.0; 9.0]\n[1.5; 2.25]\n[6.0; 36.0]\n[10.5; 110.25]\n[15.0; 225.0]", manualList.toString());
+        Assertions.assertEquals("LinkedListTabulatedFunction size = 5\n[-3.0; 9.0]\n[1.5; 2.25]\n[6.0; 36.0]\n[10.5; 110.25]\n[15.0; 225.0]", discreteList.toString());
+        Assertions.assertEquals("LinkedListTabulatedFunction size = 2\n[9.0; 18.0]\n[11.0; 25.0]", manualList2.toString());
+    }
+
+    @Test
     void testConstructor() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> new LinkedListTabulatedFunction(new double[]{1.0}, new double[]{1.4}));
         Assertions.assertThrows(IllegalArgumentException.class, () -> new LinkedListTabulatedFunction(new double[]{1.0}, new double[]{}));

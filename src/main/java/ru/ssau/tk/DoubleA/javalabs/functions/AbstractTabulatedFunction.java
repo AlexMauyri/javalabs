@@ -17,6 +17,18 @@ abstract public class AbstractTabulatedFunction implements TabulatedFunction {
         }
     }
 
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        stringBuilder.append(this.getClass().getSimpleName()).append(" size = ").append(this.count);
+        for (Point point : this) {
+            stringBuilder.append("\n[").append(point.x).append("; ").append(point.y).append(']');
+        }
+
+        return stringBuilder.toString();
+    }
+
     // Finds index of the largest element in array/list, which is less than x.
     abstract protected int floorIndexOfX(double x);
 

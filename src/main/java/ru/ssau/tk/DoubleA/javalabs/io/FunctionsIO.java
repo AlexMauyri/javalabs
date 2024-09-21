@@ -4,7 +4,6 @@ import ru.ssau.tk.DoubleA.javalabs.functions.Point;
 import ru.ssau.tk.DoubleA.javalabs.functions.TabulatedFunction;
 import ru.ssau.tk.DoubleA.javalabs.functions.factory.TabulatedFunctionFactory;
 
-
 import java.io.*;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -58,6 +57,21 @@ public final class FunctionsIO {
             } catch (ParseException e) {
                 throw new IOException(e);
             }
+        }
+
+        return factory.create(xValues, yValues);
+    }
+
+    static TabulatedFunction readTabulatedFunction(BufferedInputStream inputStream, TabulatedFunctionFactory factory) throws IOException {
+        DataInputStream dataInputStream = new DataInputStream(inputStream);
+
+        int elementsCount = dataInputStream.readInt();
+        double[] xValues = new double[elementsCount];
+        double[] yValues = new double[elementsCount];
+
+        for (int counter = 0; counter < elementsCount; counter++) {
+            xValues[counter] = dataInputStream.readDouble();
+            yValues[counter] = dataInputStream.readDouble();
         }
 
         return factory.create(xValues, yValues);

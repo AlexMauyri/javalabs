@@ -71,7 +71,7 @@ public class UnmodifiableTabulatedFunctionTest extends AbstractTest {
         Assertions.assertThrows(NoSuchElementException.class, iterator::next);
 
         i = 0;
-        for (Point point : tabulatedFunction.function) {
+        for (Point point : tabulatedFunction) {
             Assertions.assertEquals(tabulatedFunction.getX(i), point.x);
             ++i;
         }

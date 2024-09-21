@@ -14,8 +14,8 @@ public class TabulatedFunctionFileWriter {
             AbstractTabulatedFunction tabulatedFunction1 = new ArrayTabulatedFunction(new SqrFunction(), 1.0, 3.0, 25);
             AbstractTabulatedFunction tabulatedFunction2 = new LinkedListTabulatedFunction(new NRootCalculateFunction(5), 1.5, 10.0, 10);
 
-            bufferedWriter1.write(tabulatedFunction1.toString());
-            bufferedWriter2.write(tabulatedFunction2.toString());
+            FunctionsIO.writeTabulatedFunction(bufferedWriter1, tabulatedFunction1);
+            FunctionsIO.writeTabulatedFunction(bufferedWriter2, tabulatedFunction2);
         } catch (IOException e) {
             e.printStackTrace();
         }

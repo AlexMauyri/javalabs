@@ -2,13 +2,13 @@ package ru.ssau.tk.DoubleA.javalabs.io;
 
 import ru.ssau.tk.DoubleA.javalabs.functions.Point;
 import ru.ssau.tk.DoubleA.javalabs.functions.TabulatedFunction;
+import ru.ssau.tk.DoubleA.javalabs.functions.factory.TabulatedFunctionFactory;
 
-import java.io.BufferedWriter;
-import java.io.PrintWriter;
 
-import java.io.BufferedOutputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.util.Locale;
 
 public final class FunctionsIO {
     private FunctionsIO() {
@@ -38,5 +38,28 @@ public final class FunctionsIO {
         }
 
         dataOutputStream.flush();
+    }
+
+    static TabulatedFunction readTabulatedFunction(BufferedReader reader, TabulatedFunctionFactory factory) throws IOException {
+        String string = reader.readLine();
+        int count = Integer.parseInt(string);
+
+        double[] xValues = new double[count];
+        double[] yValues = new double[count];
+
+        NumberFormat numberFormat = NumberFormat.getInstance(Locale.forLanguageTag("ru"));
+
+        for (int i = 0; i < count; ++i) {
+            string = reader.readLine();
+            String[] numbers = string.split(" ");
+            try {
+                xValues[i] = numberFormat.parse(numbers[0]).doubleValue();
+                yValues[i] = numberFormat.parse(numbers[1]).doubleValue();
+            } catch (ParseException e) {
+                throw new IOException(e);
+            }
+        }
+
+        return factory.create(xValues, yValues);
     }
 }

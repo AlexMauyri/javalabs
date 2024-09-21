@@ -3,6 +3,9 @@ package ru.ssau.tk.DoubleA.javalabs.functions;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 public class LinkedListTabulatedFunctionTest {
     LinkedListTabulatedFunction manualList = new LinkedListTabulatedFunction(
             new double[]{-3, 1.5, 6, 10.5, 15},
@@ -10,6 +13,23 @@ public class LinkedListTabulatedFunctionTest {
     );
     LinkedListTabulatedFunction discreteList = new LinkedListTabulatedFunction(new SqrFunction(), -3, 15, 5);
     LinkedListTabulatedFunction manualList2 = new LinkedListTabulatedFunction(new double[]{9, 11}, new double[]{18, 25});
+
+    @Test
+    void testIterator() {
+        Iterator<Point> iterator = manualList.iterator();
+
+        int i = 0;
+        while (iterator.hasNext()) {
+            Point point = iterator.next();
+            Assertions.assertEquals(manualList.getX(i++), point.x);
+        }
+        Assertions.assertThrows(NoSuchElementException.class, iterator::next);
+
+        i = 0;
+        for (Point point : manualList) {
+            Assertions.assertEquals(manualList.getX(i++), point.x);
+        }
+    }
 
     @Test
     void testGetCount() {

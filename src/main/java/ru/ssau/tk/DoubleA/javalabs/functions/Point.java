@@ -8,4 +8,19 @@ public class Point {
         this.x = x;
         this.y = y;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+
+        if (obj.getClass() != this.getClass()) {
+            return false;
+        }
+
+        final Point point = (Point) obj;
+
+        return this.x == point.x && this.y == point.y;
+    }
 }

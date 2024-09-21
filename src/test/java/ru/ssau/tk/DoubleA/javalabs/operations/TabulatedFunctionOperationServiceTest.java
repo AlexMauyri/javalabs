@@ -3,6 +3,7 @@ package ru.ssau.tk.DoubleA.javalabs.operations;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import ru.ssau.tk.DoubleA.javalabs.exceptions.InconsistentFunctionsException;
 import ru.ssau.tk.DoubleA.javalabs.functions.*;
 
 
@@ -56,6 +57,131 @@ public class TabulatedFunctionOperationServiceTest {
                         new Point(11, 25)
                 },
                 TabulatedFunctionOperationService.asPoints(tabulatedFunction3)
+        );
+    }
+
+    @Test
+    void doOperationTest() {
+        TabulatedFunctionOperationService service = new TabulatedFunctionOperationService();
+
+        Assertions.assertArrayEquals(
+                new Point[] {
+                        new Point(1.0, 2.8),
+                        new Point(2.5, 6.8),
+                        new Point(3.5, 5.0),
+                        new Point(5.0, 5.4)
+                },
+                TabulatedFunctionOperationService.asPoints(
+                        service.addition(tabulatedFunction1, tabulatedFunction1)
+                )
+        );
+
+        tabulatedFunction2 = new LinkedListTabulatedFunction(
+                new double[]{1.0, 2.5, 3.5, 5.0},
+                new double[]{1.6, 3.5, 1.4, 6.4}
+        );
+
+        Assertions.assertArrayEquals(
+                new Point[] {
+                        new Point(1.0, 3.0),
+                        new Point(2.5, 6.9),
+                        new Point(3.5, 3.9),
+                        new Point(5.0, 9.1)
+                },
+                TabulatedFunctionOperationService.asPoints(
+                        service.addition(tabulatedFunction1, tabulatedFunction2)
+                )
+        );
+
+        Assertions.assertArrayEquals(
+                new Point[] {
+                        new Point(1.0, 0.2),
+                        new Point(2.5, 0.1),
+                        new Point(3.5, -1.1),
+                        new Point(5.0, 3.7)
+                },
+                TabulatedFunctionOperationService.asPoints(
+                        service.subtraction(tabulatedFunction2, tabulatedFunction1)
+                )
+        );
+
+        tabulatedFunction2 = new LinkedListTabulatedFunction(
+                new double[]{1.0, 2.5, 3.6, 5.0},
+                new double[]{1.6, 3.5, 1.4, 6.4}
+        );
+
+        Assertions.assertThrows(InconsistentFunctionsException.class,
+                () -> service.addition(tabulatedFunction1, tabulatedFunction2));
+        Assertions.assertThrows(InconsistentFunctionsException.class,
+                () -> service.subtraction(tabulatedFunction1, tabulatedFunction2));
+
+        tabulatedFunction1 = new LinkedListTabulatedFunction(
+                new double[]{1.0, 2.5, 3.6, 5.0},
+                new double[]{2.4, 1.5, 0.0, -1.5}
+        );
+
+        Assertions.assertArrayEquals(
+                new Point[] {
+                        new Point(1.0, 4.0),
+                        new Point(2.5, 5.0),
+                        new Point(3.6, 1.4),
+                        new Point(5.0, 4.9)
+                },
+                TabulatedFunctionOperationService.asPoints(
+                        service.addition(tabulatedFunction2, tabulatedFunction1)
+                )
+        );
+
+        Assertions.assertArrayEquals(
+                new Point[] {
+                        new Point(1.0, -0.8),
+                        new Point(2.5, 2.0),
+                        new Point(3.6, 1.4),
+                        new Point(5.0, 7.9)
+                },
+                TabulatedFunctionOperationService.asPoints(
+                        service.subtraction(tabulatedFunction2, tabulatedFunction1)
+                )
+        );
+
+        tabulatedFunction1 = new StrictTabulatedFunction(
+                new UnmodifiableTabulatedFunction(
+                        new LinkedListTabulatedFunction(
+                                new double[]{1.0, 2.5, 3.6, 5.0},
+                                new double[]{2.4, 1.5, 0.0, -1.5}
+                        )
+                )
+        );
+
+        tabulatedFunction2 = new UnmodifiableTabulatedFunction(
+                new LinkedListTabulatedFunction(
+                        new double[]{1.0, 2.5, 3.6, 5.0},
+                        new double[]{1.6, 3.5, 1.4, 6.4}
+                )
+        );
+
+        Assertions.assertArrayEquals(
+                new Point[] {
+                        new Point(1.0, 4.0),
+                        new Point(2.5, 5.0),
+                        new Point(3.6, 1.4),
+                        new Point(5.0, 4.9)
+                },
+                TabulatedFunctionOperationService.asPoints(
+                        service.addition(tabulatedFunction2, tabulatedFunction1)
+                )
+        );
+
+        Assertions.assertArrayEquals(
+                new Point[] {
+                        new Point(1.0, -0.8),
+                        new Point(2.5, 2.0),
+                        new Point(3.6, 1.4),
+                        new Point(5.0, 7.9)
+                },
+                TabulatedFunctionOperationService.asPoints(
+                        service.subtraction(tabulatedFunction2, tabulatedFunction1)
+                )
         );
     }
 }

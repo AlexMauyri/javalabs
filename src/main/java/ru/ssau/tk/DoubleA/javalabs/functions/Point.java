@@ -20,7 +20,7 @@ public class Point {
         }
 
         final Point point = (Point) obj;
-
-        return this.x == point.x && this.y == point.y;
+        final double EPSILON = 1E-10;
+        return Math.abs(this.x - point.x) < EPSILON && Math.abs(this.y - point.y) < EPSILON;
     }
 }

@@ -12,6 +12,8 @@ public class UnmodifiableTabulatedFunctionTest extends AbstractTest {
     TabulatedFunction tabulatedFunction1;
     TabulatedFunction tabulatedFunction2;
 
+    StrictTabulatedFunction tabulatedFunction;
+
     @BeforeEach
     void init() {
         tabulatedFunction1 = new UnmodifiableTabulatedFunction(
@@ -26,6 +28,53 @@ public class UnmodifiableTabulatedFunctionTest extends AbstractTest {
                     new double[]{9, 2.25, 36, 110.25, 225}
                 )
         );
+    }
+
+    @Test
+    void unmodifiableAndStrictTest() {
+        tabulatedFunction = new StrictTabulatedFunction(tabulatedFunction1);
+
+        Assertions.assertDoesNotThrow(() -> tabulatedFunction.apply(2.5));
+        Assertions.assertThrows(UnsupportedOperationException.class, () -> tabulatedFunction.apply(2.4));
+        Assertions.assertDoesNotThrow(() -> tabulatedFunction.apply(3.5));
+        Assertions.assertThrows(UnsupportedOperationException.class, () -> tabulatedFunction.apply(4.0));
+        Assertions.assertDoesNotThrow(() -> tabulatedFunction.apply(5.0));
+        Assertions.assertThrows(UnsupportedOperationException.class, () -> tabulatedFunction.apply(6.0));
+        Assertions.assertDoesNotThrow(() -> tabulatedFunction.apply(1.0));
+        Assertions.assertThrows(UnsupportedOperationException.class, () -> tabulatedFunction.apply(0.0));
+
+        Assertions.assertThrows(UnsupportedOperationException.class, () -> tabulatedFunction.setY(2, 10));
+
+        Assertions.assertEquals(5.0, tabulatedFunction.getX(3), EPSILON);
+        Assertions.assertEquals(1.0, tabulatedFunction.getX(0), EPSILON);
+        Assertions.assertEquals(3.4, tabulatedFunction.getY(1), EPSILON);
+        Assertions.assertEquals(2.5, tabulatedFunction.getY(2), EPSILON);
+
+        Assertions.assertEquals(1.0, tabulatedFunction.leftBound(), EPSILON);
+        Assertions.assertEquals(5.0, tabulatedFunction.rightBound(), EPSILON);
+
+        Assertions.assertEquals(1, tabulatedFunction.indexOfX(2.5));
+        Assertions.assertEquals(-1, tabulatedFunction.indexOfX(9.0));
+        Assertions.assertEquals(1, tabulatedFunction.indexOfY(3.4));
+        Assertions.assertEquals(-1, tabulatedFunction.indexOfY(2.4));
+
+        Assertions.assertEquals(4, tabulatedFunction.getCount());
+
+        Iterator<Point> iterator = tabulatedFunction.iterator();
+        int i = 0;
+        while (iterator.hasNext()) {
+            Point point = iterator.next();
+            Assertions.assertEquals(tabulatedFunction.getX(i), point.x, EPSILON);
+            i += 1;
+        }
+
+        Assertions.assertThrows(NoSuchElementException.class, iterator::next);
+
+        i = 0;
+        for (Point point : tabulatedFunction) {
+            Assertions.assertEquals(tabulatedFunction.getX(i), point.x);
+            ++i;
+        }
     }
 
     @Test

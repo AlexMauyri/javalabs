@@ -6,11 +6,9 @@ import ru.ssau.tk.DoubleA.javalabs.functions.factory.ArrayTabulatedFunctionFacto
 import ru.ssau.tk.DoubleA.javalabs.functions.factory.TabulatedFunctionFactory;
 
 import java.io.*;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
 
-public class TabulatedFunctionFileWriterReaderTest {
+public class TabulatedFunctionFileWriterReaderTest extends AbstractTest {
 
     TabulatedFunction[] functions;
 
@@ -51,20 +49,9 @@ public class TabulatedFunctionFileWriterReaderTest {
     }
 
     @AfterAll
-    static void close() throws IOException {
+    static void close() {
         Path path = Path.of("temp//");
 
-        deleteFiles(path);
-    }
-
-    private static void deleteFiles(Path path) {
-        try (DirectoryStream<Path> files = Files.newDirectoryStream(path)) {
-            for (Path file : files) {
-                if (Files.isDirectory(file)) deleteFiles(file);
-                Files.delete(file);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        cleanUpDirectory(path);
     }
 }

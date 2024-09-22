@@ -5,6 +5,9 @@ import ru.ssau.tk.DoubleA.javalabs.exceptions.DifferentLengthOfArraysException;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.Formatter;
+import java.math.RoundingMode;
+import java.math.BigDecimal;
 
 abstract public class AbstractTabulatedFunction implements TabulatedFunction, Serializable {
     @Serial
@@ -25,10 +28,14 @@ abstract public class AbstractTabulatedFunction implements TabulatedFunction, Se
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-
+        Formatter formatter = new Formatter();
         stringBuilder.append(this.getClass().getSimpleName()).append(" size = ").append(this.count);
         for (Point point : this) {
-            stringBuilder.append("\n[").append(point.x).append("; ").append(point.y).append(']');
+            stringBuilder.append("\n[").append(BigDecimal.valueOf(point.x)
+                    .setScale(6, RoundingMode.HALF_UP)
+                    .doubleValue()).append("; ").append(BigDecimal.valueOf(point.y)
+                    .setScale(6, RoundingMode.HALF_UP)
+                    .doubleValue()).append(']');
         }
 
         return stringBuilder.toString();

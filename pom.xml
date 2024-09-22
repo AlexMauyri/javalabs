@@ -60,6 +60,12 @@
       <artifactId>xstream</artifactId>
       <version>1.4.20</version>
     </dependency>
+      <dependency>
+          <groupId>junit</groupId>
+          <artifactId>junit</artifactId>
+          <version>RELEASE</version>
+          <scope>test</scope>
+      </dependency>
 
   </dependencies>
 

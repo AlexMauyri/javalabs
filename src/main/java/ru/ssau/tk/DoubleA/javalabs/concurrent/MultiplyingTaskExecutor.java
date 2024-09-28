@@ -25,10 +25,15 @@ public class MultiplyingTaskExecutor {
             list.get(i).start();
         }
 
-        try {
-            Thread.sleep(TIME_FOR_WAITING);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+
+        while (!list.isEmpty()) {
+
+            for (int i = 0; i < list.size(); ++i) {
+                if (!list.get(i).isAlive()) {
+                    list.remove(i--);
+                }
+            }
+
         }
 
         System.out.println(function);

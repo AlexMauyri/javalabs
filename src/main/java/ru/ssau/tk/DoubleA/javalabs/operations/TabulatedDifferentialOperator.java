@@ -1,5 +1,6 @@
 package ru.ssau.tk.DoubleA.javalabs.operations;
 
+import ru.ssau.tk.DoubleA.javalabs.concurrent.SynchronizedTabulatedFunction;
 import ru.ssau.tk.DoubleA.javalabs.functions.Point;
 import ru.ssau.tk.DoubleA.javalabs.functions.TabulatedFunction;
 import ru.ssau.tk.DoubleA.javalabs.functions.factory.ArrayTabulatedFunctionFactory;
@@ -41,6 +42,14 @@ public class TabulatedDifferentialOperator implements DifferentialOperator<Tabul
         yValues[pointsLength - 1] = yValues[index - 1];
 
         return factory.create(xValues, yValues);
+    }
+
+    public synchronized TabulatedFunction deriveSynchronously(TabulatedFunction function) {
+        if ( !(function instanceof SynchronizedTabulatedFunction) ) {
+            function = new SynchronizedTabulatedFunction(function);
+        }
+
+        return ((SynchronizedTabulatedFunction) function).doSynchronously(TabulatedDifferentialOperator.this::derive);
     }
 
     @Override

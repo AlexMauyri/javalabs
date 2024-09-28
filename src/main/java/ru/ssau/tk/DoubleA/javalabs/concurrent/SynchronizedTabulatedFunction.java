@@ -10,8 +10,16 @@ import java.util.NoSuchElementException;
 public class SynchronizedTabulatedFunction implements TabulatedFunction {
     final TabulatedFunction tabulatedFunction;
 
+    public interface Operation<T> {
+        T apply(SynchronizedTabulatedFunction function);
+    }
+
     public SynchronizedTabulatedFunction(TabulatedFunction tabulatedFunction) {
         this.tabulatedFunction = tabulatedFunction;
+    }
+
+    public synchronized <T> T doSynchronously(Operation<? extends T> operation) {
+        return operation.apply(this);
     }
 
     @Override

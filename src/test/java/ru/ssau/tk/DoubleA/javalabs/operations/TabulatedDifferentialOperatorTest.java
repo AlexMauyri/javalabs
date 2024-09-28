@@ -42,4 +42,28 @@ public class TabulatedDifferentialOperatorTest {
         Assertions.assertEquals(25.5, tabulatedFunction.apply(2147259312));
 
     }
+
+    @Test
+    void testSynchronization() {
+        tabulatedFunction = new LinkedListTabulatedFunction(new double[]{-3, 1.5, 6, 10.5, 15}, new double[]{9, 2.25, 36, 110.25, 225});
+        differentialOperator = new TabulatedDifferentialOperator(new LinkedListTabulatedFunctionFactory());
+        tabulatedFunction = differentialOperator.deriveSynchronously(tabulatedFunction);
+
+        Assertions.assertEquals(16.5, tabulatedFunction.apply(6));
+        Assertions.assertEquals(25.5, tabulatedFunction.apply(10.5));
+        Assertions.assertEquals(tabulatedFunction.apply(10.5), tabulatedFunction.apply(15));
+        Assertions.assertEquals(22.5, tabulatedFunction.apply(9));
+        Assertions.assertEquals(0.5, tabulatedFunction.apply(-2));
+        Assertions.assertEquals(25.5, tabulatedFunction.apply(2147259312));
+
+        tabulatedFunction = new ArrayTabulatedFunction(new double[]{-3, 1.5, 6, 10.5, 15}, new double[]{9, 2.25, 36, 110.25, 225});
+        tabulatedFunction = differentialOperator.deriveSynchronously(tabulatedFunction);
+
+        Assertions.assertEquals(16.5, tabulatedFunction.apply(6));
+        Assertions.assertEquals(25.5, tabulatedFunction.apply(10.5));
+        Assertions.assertEquals(tabulatedFunction.apply(10.5), tabulatedFunction.apply(15));
+        Assertions.assertEquals(12.5, tabulatedFunction.apply(4));
+        Assertions.assertEquals(-7.5, tabulatedFunction.apply(-6));
+        Assertions.assertEquals(25.5, tabulatedFunction.apply(27));
+    }
 }

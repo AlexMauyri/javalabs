@@ -36,8 +36,11 @@ public class TabulatedIntegrationOperator implements MathFunction {
             summedIntegrationResult += future.get();
         }
 
-        executorService.shutdown();
         return summedIntegrationResult;
+    }
+
+    public void shutdown() {
+        executorService.shutdown();
     }
 
     @Override

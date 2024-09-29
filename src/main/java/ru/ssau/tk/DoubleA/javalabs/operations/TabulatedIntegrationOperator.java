@@ -12,6 +12,12 @@ public class TabulatedIntegrationOperator implements MathFunction {
     private final ExecutorService executorService;
     private final int numberOfThreads;
 
+    public TabulatedIntegrationOperator() {
+        int numberOfThreads = Runtime.getRuntime().availableProcessors() - 1;
+        this.executorService = Executors.newFixedThreadPool(numberOfThreads);
+        this.numberOfThreads = numberOfThreads;
+    }
+
     public TabulatedIntegrationOperator(int numberOfThreads) {
         this.executorService = Executors.newFixedThreadPool(numberOfThreads);
         this.numberOfThreads = numberOfThreads;
@@ -20,12 +26,12 @@ public class TabulatedIntegrationOperator implements MathFunction {
     public double integrate(TabulatedFunction tabulatedFunction, int overallNumberOfSections) throws InterruptedException, ExecutionException {
         double integrationSegmentLength = (tabulatedFunction.rightBound() - tabulatedFunction.leftBound()) / numberOfThreads;
         List<Future<Double>> futures = new ArrayList<>();
+        int sectionsPerThread = Math.max(overallNumberOfSections / numberOfThreads, 1);
 
         for (int threadIndex = 0; threadIndex < numberOfThreads; threadIndex++) {
             double leftBound = tabulatedFunction.leftBound() + threadIndex * integrationSegmentLength;
             double rightBound = leftBound + integrationSegmentLength;
 
-            int sectionsPerThread = Math.max(overallNumberOfSections / numberOfThreads, 1);
             IntegrationTask task = new IntegrationTask(tabulatedFunction, leftBound, rightBound, sectionsPerThread);
 
             futures.add(executorService.submit(task));

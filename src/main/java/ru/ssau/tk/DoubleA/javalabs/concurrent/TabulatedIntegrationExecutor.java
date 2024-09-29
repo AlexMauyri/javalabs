@@ -9,11 +9,10 @@ import java.util.concurrent.ExecutionException;
 
 public class TabulatedIntegrationExecutor {
     public static void main(String[] args) throws ExecutionException, InterruptedException {
-        int maxAllowedThreads = Runtime.getRuntime().availableProcessors()-1;
-        TabulatedIntegrationOperator integrationOperator = new TabulatedIntegrationOperator(maxAllowedThreads);
+        TabulatedIntegrationOperator integrationOperator = new TabulatedIntegrationOperator();
 
-        TabulatedFunction tabulatedFunction = new LinkedListTabulatedFunction(new SqrFunction(), 1, 127, 12700);
-        System.out.println(integrationOperator.integrate(tabulatedFunction, 3));
+        TabulatedFunction tabulatedFunction = new LinkedListTabulatedFunction(new SqrFunction(), 1, 127, 100000);
+        System.out.println(integrationOperator.integrate(tabulatedFunction, 100));
 
         integrationOperator.shutdown();
     }

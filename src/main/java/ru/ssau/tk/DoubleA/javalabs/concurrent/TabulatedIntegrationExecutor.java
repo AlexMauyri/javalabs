@@ -1,16 +1,20 @@
-package ru.ssau.tk.DoubleA.javalabs.operations;
+package ru.ssau.tk.DoubleA.javalabs.concurrent;
 
 import ru.ssau.tk.DoubleA.javalabs.functions.LinkedListTabulatedFunction;
 import ru.ssau.tk.DoubleA.javalabs.functions.SqrFunction;
 import ru.ssau.tk.DoubleA.javalabs.functions.TabulatedFunction;
+import ru.ssau.tk.DoubleA.javalabs.operations.TabulatedIntegrationOperator;
 
 import java.util.concurrent.ExecutionException;
 
 public class TabulatedIntegrationExecutor {
     public static void main(String[] args) throws ExecutionException, InterruptedException {
-        TabulatedFunction tabulatedFunction = new LinkedListTabulatedFunction(new SqrFunction(), 1, 127, 1500);
-        TabulatedIntegrationOperator integrationOperator = new TabulatedIntegrationOperator(100);
+        int maxAllowedThreads = Runtime.getRuntime().availableProcessors()-1;
+        TabulatedIntegrationOperator integrationOperator = new TabulatedIntegrationOperator(maxAllowedThreads);
 
-        System.out.println(integrationOperator.integrate(tabulatedFunction, 1000));
+        TabulatedFunction tabulatedFunction = new LinkedListTabulatedFunction(new SqrFunction(), 1, 127, 12700);
+        System.out.println(integrationOperator.integrate(tabulatedFunction, 3));
+
+        integrationOperator.shutdown();
     }
 }

@@ -1,18 +1,21 @@
-CREATE TABLE calculation_result
+CREATE TABLE IF NOT EXISTS calculation
 (
-    calculationID SERIAL PRIMARY KEY,
-    appliedValue  DOUBLE PRECISION NOT NULL,
-    resultValue   DOUBLE PRECISION NOT NULL
+    calculation_id   SERIAL PRIMARY KEY,
+    applied_value    DOUBLE PRECISION NOT NULL,
+    result_value     DOUBLE PRECISION NOT NULL,
+    calculation_hash BIGINT           NOT NULL
 );
 
-CREATE TABLE applied_functions_data
+CREATE TABLE IF NOT EXISTS applied_function
 (
-    applicationID SERIAL PRIMARY KEY,
-    calculationID INTEGER REFERENCES calculation_result (calculationID) ON DELETE CASCADE NOT NULL,
-    functionOrder INTEGER                                                                 NOT NULL,
-    functionHash  BIGINT                                                                  NOT NULL
+    application_id      SERIAL PRIMARY KEY,
+    calculation_id      INTEGER REFERENCES calculation (calculation_id) ON DELETE CASCADE NOT NULL,
+    function_order      INTEGER                                                           NOT NULL,
+    function_serialized BYTEA                                                             NOT NULL,
+    mod_unmodifiable    BOOLEAN,
+    mod_strict          BOOLEAN
 );
 
-CREATE INDEX idx_calculation_result_appliedValue ON calculation_result (appliedValue);
-CREATE INDEX idx_applied_functions_data_calculationID ON applied_functions_data (calculationID);
-CREATE INDEX idx_applied_functions_data_functionOrder ON applied_functions_data (functionOrder);
+CREATE INDEX idx_calculation_calculation_hash ON calculation (calculation_hash);
+CREATE INDEX idx_applied_function_calculation_id ON calculation (calculation_id);
+CREATE INDEX idx_applied_function_function_order ON applied_function (function_order);

@@ -3,6 +3,7 @@ package ru.ssau.tk.DoubleA.javalabs.persistence.dao;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.query.Query;
 import ru.ssau.tk.DoubleA.javalabs.persistence.entity.Calculation;
 
 import java.util.List;
@@ -12,14 +13,37 @@ public class CalculationDAOImpl implements DAO<Calculation> {
     SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory();
 
     @Override
-    public Optional<Calculation> read(int id) {
+    public void create(Calculation entity) {
+        try (Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+            session.persist(entity);
+            session.getTransaction().commit();
+        }
+    }
+
+    @Override
+    public Calculation read(int id) {
         Calculation calculation = null;
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
             calculation = session.get(Calculation.class, id);
             session.getTransaction().commit();
         }
-        return Optional.ofNullable(calculation);
+        return calculation;
+    }
+
+    public List<Calculation> readByHash(long hash) {
+        List<Calculation> calculation = null;
+        try (Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+
+            Query<Calculation> query = session.createQuery("from Calculation obj where obj.hash = :value", Calculation.class);
+            query.setParameter("value", hash);
+            calculation = query.list();
+
+            session.getTransaction().commit();
+        }
+        return calculation;
     }
 
     @Override
@@ -27,19 +51,10 @@ public class CalculationDAOImpl implements DAO<Calculation> {
         List<Calculation> calculations = null;
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
-            calculations = session.createQuery("from Calculation", Calculation.class).list();
+            calculations = session.createQuery("from Calculation obj", Calculation.class).list();
             session.getTransaction().commit();
         }
         return calculations;
-    }
-
-    @Override
-    public void create(Calculation entity) {
-        try (Session session = sessionFactory.openSession()) {
-            session.beginTransaction();
-            session.persist(entity);
-            session.getTransaction().commit();
-        }
     }
 
     @Override

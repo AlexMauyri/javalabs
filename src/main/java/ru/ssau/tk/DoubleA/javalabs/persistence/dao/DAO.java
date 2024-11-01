@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface DAO<T> {
-    Optional<T> read(int id);
+    T read(int id);
 
     List<T> readAll();
 

@@ -1,6 +1,8 @@
 package ru.ssau.tk.DoubleA.javalabs.functions;
 
-public interface MathFunction {
+import java.io.Serializable;
+
+public interface MathFunction extends Serializable {
     double apply(double x);
 
     default CompositeFunction andThen(MathFunction afterFunction) {

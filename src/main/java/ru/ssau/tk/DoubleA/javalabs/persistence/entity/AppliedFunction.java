@@ -18,7 +18,7 @@ public class AppliedFunction {
     @Column(name = "function_order", nullable = false)
     private int functionOrder;
 
-    @Column(name = "calculation_id", nullable = false)
+    @Column(name = "function_serialized", nullable = false)
     private byte[] functionSerialized;
 
     @Column(name = "mod_unmodifiable")

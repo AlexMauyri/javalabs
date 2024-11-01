@@ -360,6 +360,24 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
         }
     }
 
+    @Override
+    public int hashCode() {
+        return hashNode(head);
+    }
+
+    private int hashNode(Node head) {
+        int result = 1;
+        int index = 0;
+        while (head != null) {
+            long xBits = Double.doubleToLongBits(head.x);
+            long yBits = Double.doubleToLongBits(head.y);
+            result = 31 * result + index++;
+            result = 31 * result + Long.hashCode(xBits) ^ (Long.hashCode(yBits) << 16);
+            head = head.next;
+        }
+        return result;
+    }
+
     static class Node implements Serializable{
         @Serial
         private static final long serialVersionUID = 7621550250080520168L;

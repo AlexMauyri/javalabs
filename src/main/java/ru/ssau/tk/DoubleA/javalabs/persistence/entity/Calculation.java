@@ -22,9 +22,6 @@ public class Calculation {
     @Column (name = "calculation_hash", nullable = false)
     private long hash;
 
-    @OneToMany (mappedBy = "calculation", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Calculation> appliedFunctions;
-
     public long getId() {
         return id;
     }
@@ -55,13 +52,5 @@ public class Calculation {
 
     public void setHash(long hash) {
         this.hash = hash;
-    }
-
-    public Set<Calculation> getAppliedFunctions() {
-        return appliedFunctions;
-    }
-
-    public void setAppliedFunctions(Set<Calculation> appliedFunctions) {
-        this.appliedFunctions = appliedFunctions;
     }
 }

@@ -285,4 +285,18 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
     public double rightBound() {
         return xValues[count - 1];
     }
+
+    @Override
+    public int hashCode() {
+        int result = 1;
+        for (double xValue : xValues) {
+            long bits = Double.doubleToLongBits(xValue);
+            result = 31 * result + Long.hashCode(bits);
+        }
+        for (double yValue : yValues) {
+            long bits = Double.doubleToLongBits(yValue);
+            result = 31 * result + Long.hashCode(bits);
+        }
+        return result;
+    }
 }

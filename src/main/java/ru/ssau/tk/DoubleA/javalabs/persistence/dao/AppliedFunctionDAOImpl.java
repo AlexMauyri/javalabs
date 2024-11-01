@@ -3,23 +3,37 @@ package ru.ssau.tk.DoubleA.javalabs.persistence.dao;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.query.Query;
 import ru.ssau.tk.DoubleA.javalabs.persistence.entity.AppliedFunction;
 
 import java.util.List;
-import java.util.Optional;
 
 public class AppliedFunctionDAOImpl implements DAO<AppliedFunction> {
     SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory();
 
     @Override
-    public Optional<AppliedFunction> read(int id) {
+    public AppliedFunction read(int id) {
         AppliedFunction appliedFunction = null;
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
             appliedFunction = session.get(AppliedFunction.class, id);
             session.getTransaction().commit();
         }
-        return Optional.ofNullable(appliedFunction);
+        return appliedFunction;
+    }
+
+    public List<AppliedFunction> readByCalculationId(int id) {
+        List<AppliedFunction> appliedFunction = null;
+        try (Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+
+            Query<AppliedFunction> query = session.createQuery("from AppliedFunction obj where obj.calculationId = :value order by obj.functionOrder asc", AppliedFunction.class);
+            query.setParameter("value", id);
+            appliedFunction = query.list();
+
+            session.getTransaction().commit();
+        }
+        return appliedFunction;
     }
 
     @Override
@@ -27,7 +41,7 @@ public class AppliedFunctionDAOImpl implements DAO<AppliedFunction> {
         List<AppliedFunction> appliedFunction = null;
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
-            appliedFunction = session.createQuery("from AppliedFunction", AppliedFunction.class).list();
+            appliedFunction = session.createQuery("from AppliedFunction obj", AppliedFunction.class).list();
             session.getTransaction().commit();
         }
         return appliedFunction;

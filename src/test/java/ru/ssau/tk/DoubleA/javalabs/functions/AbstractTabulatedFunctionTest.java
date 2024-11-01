@@ -26,6 +26,8 @@ public class AbstractTabulatedFunctionTest extends AbstractTest {
         Assertions.assertThrows(DifferentLengthOfArraysException.class, () -> AbstractTabulatedFunction.checkLengthIsTheSame(xValues, yValues));
         yValues = new double[]{3.5, 2.5};
         Assertions.assertDoesNotThrow(() -> AbstractTabulatedFunction.checkLengthIsTheSame(xValues, yValues));
+        Assertions.assertEquals("Hello", new ArrayIsNotSortedException("Hello").getMessage());
+        Assertions.assertEquals("Hello", new DifferentLengthOfArraysException("Hello").getMessage());
     }
 
     @Test

@@ -5,6 +5,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.ssau.tk.DoubleA.javalabs.exceptions.InconsistentFunctionsException;
 import ru.ssau.tk.DoubleA.javalabs.functions.*;
+import ru.ssau.tk.DoubleA.javalabs.functions.factory.ArrayTabulatedFunctionFactory;
+import ru.ssau.tk.DoubleA.javalabs.functions.factory.LinkedListTabulatedFunctionFactory;
 
 
 public class TabulatedFunctionOperationServiceTest {
@@ -109,6 +111,9 @@ public class TabulatedFunctionOperationServiceTest {
     @Test
     void doOperationTest() {
         TabulatedFunctionOperationService service = new TabulatedFunctionOperationService();
+
+        Assertions.assertThrows(InconsistentFunctionsException.class, () -> service.addition(tabulatedFunction1, tabulatedFunction2));
+        Assertions.assertEquals("Hello", new InconsistentFunctionsException("Hello").getMessage());
 
         Assertions.assertArrayEquals(
                 new Point[] {
@@ -229,5 +234,18 @@ public class TabulatedFunctionOperationServiceTest {
                         service.subtraction(tabulatedFunction2, tabulatedFunction1)
                 )
         );
+    }
+
+    @Test
+    void constructorWithFactoryTest() {
+        ArrayTabulatedFunctionFactory factory = new ArrayTabulatedFunctionFactory();
+        TabulatedFunctionOperationService operationService2 = new TabulatedFunctionOperationService(
+                factory
+        );
+
+        Assertions.assertEquals(factory, operationService2.getFactory());
+        LinkedListTabulatedFunctionFactory factory2 = new LinkedListTabulatedFunctionFactory();
+        operationService2.setFactory(factory2);
+        Assertions.assertEquals(factory2, operationService2.getFactory());
     }
 }

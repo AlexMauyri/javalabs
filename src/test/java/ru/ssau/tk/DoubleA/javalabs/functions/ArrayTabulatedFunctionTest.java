@@ -25,6 +25,8 @@ public class ArrayTabulatedFunctionTest extends AbstractTest {
     void constructorTest() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> new ArrayTabulatedFunction(new double[]{1.0}, new double[]{1.4}));
         Assertions.assertThrows(IllegalArgumentException.class, () -> new ArrayTabulatedFunction(new double[]{1.0}, new double[]{}));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new ArrayTabulatedFunction(new double[]{1.0, 2.0}, new double[]{}));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new ArrayTabulatedFunction(new double[]{1.0}, new double[]{1.0, 2.0}));
 
         Assertions.assertThrows(DifferentLengthOfArraysException.class, () -> new ArrayTabulatedFunction(new double[]{1.0, 2.0, 3.0}, new double[]{1.4, 2.8}));
         Assertions.assertThrows(DifferentLengthOfArraysException.class, () -> new ArrayTabulatedFunction(new double[]{1.0, 2.0}, new double[]{1.4, 2.8, 4.2}));
@@ -60,6 +62,17 @@ public class ArrayTabulatedFunctionTest extends AbstractTest {
 
         Assertions.assertThrows(IllegalStateException.class, () -> mathFunctionManual.remove(1));
         Assertions.assertThrows(IllegalStateException.class, () -> mathFunctionManual.remove(0));
+
+        mathFunctionManual = new ArrayTabulatedFunction(
+                new double[]{1.0, 2.5, 3.5, 5.0, 7.0, 9.0, 10.0},
+                new double[]{1.4, 3.4, 2.5, 2.7, 3.4, 5.4, 6.5}
+        );
+        mathFunctionManual.remove(0);
+        mathFunctionManual.remove(0);
+        mathFunctionManual.remove(0);
+        mathFunctionManual.remove(0);
+        mathFunctionManual.remove(0);
+        Assertions.assertEquals(2, mathFunctionManual.getCount());
     }
 
     @Test
@@ -91,7 +104,7 @@ public class ArrayTabulatedFunctionTest extends AbstractTest {
         mathFunctionDiscrete = new ArrayTabulatedFunction(
                 new DerivativeFunction(
                         new NRootCalculateFunction(5)
-                ), 10, 25, 20
+                ), 25, 10, 20
         );
 
         Assertions.assertEquals(0.02982, mathFunctionDiscrete.apply(10.7894), EPSILON);
@@ -103,6 +116,22 @@ public class ArrayTabulatedFunctionTest extends AbstractTest {
         Assertions.assertEquals(2.95, mathFunctionManual.apply(3.0), EPSILON);
         Assertions.assertEquals(0.06666, mathFunctionManual.apply(0.0), EPSILON);
         Assertions.assertEquals(3.366, mathFunctionManual.apply(10.0), EPSILON);
+
+        mathFunctionDiscrete = new ArrayTabulatedFunction(
+                new SqrFunction(),
+                1.0,
+                1.0,
+                5
+        );
+        Assertions.assertEquals(1.0, mathFunctionDiscrete.apply(1.5), EPSILON);
+
+        mathFunctionDiscrete = new ArrayTabulatedFunction(
+                new SqrFunction(),
+                1.0,
+                5.0,
+                5
+        );
+        Assertions.assertEquals(2.5, mathFunctionDiscrete.apply(1.5), EPSILON);
     }
 
     @Test
@@ -163,6 +192,7 @@ public class ArrayTabulatedFunctionTest extends AbstractTest {
         Assertions.assertThrows(IllegalArgumentException.class, () -> mathFunctionDiscrete.interpolate(10, -1));
         Assertions.assertThrows(IllegalArgumentException.class, () -> mathFunctionDiscrete.interpolate(5, 5));
         Assertions.assertThrows(InterpolationException.class, () -> mathFunctionDiscrete.interpolate(4.36, 1));
+        Assertions.assertEquals("Hello", new InterpolationException("Hello").getMessage());
     }
 
     @Test

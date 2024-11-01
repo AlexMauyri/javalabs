@@ -22,5 +22,23 @@ class MockTabulatedFunctionTest extends AbstractTest {
         Assertions.assertEquals(4.6, mockTabulatedFunction.apply(2.0), EPSILON);
         Assertions.assertEquals(0.2, mockTabulatedFunction.apply(10.0), EPSILON);
         Assertions.assertEquals(2.95, mockTabulatedFunction.apply(5.0), EPSILON);
+        Assertions.assertThrows(UnsupportedOperationException.class, () -> mockTabulatedFunction.iterator());
+
+        mockTabulatedFunction = new MockTabulatedFunction(6.0, 4.0, 3.5, 2.4);
+        Assertions.assertEquals(1, mockTabulatedFunction.floorIndexOfX(6.0));
+        Assertions.assertEquals(2, mockTabulatedFunction.getCount());
+        Assertions.assertEquals(6.0, mockTabulatedFunction.getX(1));
+        Assertions.assertEquals(-1, mockTabulatedFunction.getX(2));
+        Assertions.assertEquals(2.4, mockTabulatedFunction.getY(1));
+        Assertions.assertEquals(-1, mockTabulatedFunction.getY(2));
+        Assertions.assertEquals(1, mockTabulatedFunction.indexOfX(6.0));
+        Assertions.assertEquals(1, mockTabulatedFunction.indexOfY(2.4));
+        Assertions.assertEquals(0, mockTabulatedFunction.indexOfY(3.5));
+        Assertions.assertEquals(-1, mockTabulatedFunction.indexOfY(1.0));
+        mockTabulatedFunction.setY(0, 1.0);
+        mockTabulatedFunction.setY(1, 2.0);
+        mockTabulatedFunction.setY(2, 0.0);
+        Assertions.assertEquals(1.0, mockTabulatedFunction.getY(0));
+        Assertions.assertEquals(2.0, mockTabulatedFunction.getY(1));
     }
 }

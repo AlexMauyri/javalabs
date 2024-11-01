@@ -5,6 +5,7 @@ import ru.ssau.tk.DoubleA.javalabs.functions.CompositeFunction;
 import ru.ssau.tk.DoubleA.javalabs.functions.MathFunction;
 import ru.ssau.tk.DoubleA.javalabs.functions.SqrFunction;
 import ru.ssau.tk.DoubleA.javalabs.operations.MiddleSteppingDifferentialOperator;
+import ru.ssau.tk.DoubleA.javalabs.persistence.entity.Calculation;
 
 import java.util.Arrays;
 
@@ -22,9 +23,16 @@ public class TESTI {
         MathFunction finalFunction = differentialOperator.derive(new CompositeFunction(tabulatedFunction, sqrFunction));
         double y = finalFunction.apply(x);
 
-        calculationService.addCalculationRoute(x, y, Arrays.asList(
+//        calculationService.addCalculationRoute(x, y, Arrays.asList(
+//                tabulatedFunction,
+//                sqrFunction,
+//                differentialOperator));
+
+        Calculation calculation = calculationService.findCalculation(5, Arrays.asList(
                 tabulatedFunction,
                 sqrFunction,
                 differentialOperator));
+
+        System.out.println(calculation.getResultY());
     }
 }

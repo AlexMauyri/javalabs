@@ -23,10 +23,10 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
 
         count = 0;
         head = null;
-        int xValuesLength = xValues.length, yValuesLength = yValues.length;
+        int xValuesLength = xValues.length;
 
-        for (int xIndex = 0, yIndex = 0; xIndex < xValuesLength && yIndex < yValuesLength; xIndex++, yIndex++) {
-            this.addNode(xValues[xIndex], yValues[yIndex]);
+        for (int index = 0; index < xValuesLength; index++) {
+            this.addNode(xValues[index], yValues[index]);
         }
     }
 

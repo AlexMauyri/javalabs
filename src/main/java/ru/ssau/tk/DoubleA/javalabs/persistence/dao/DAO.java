@@ -1,5 +1,7 @@
 package ru.ssau.tk.DoubleA.javalabs.persistence.dao;
 
+import ru.ssau.tk.DoubleA.javalabs.persistence.entity.Calculation;
+
 import java.util.List;
 import java.util.Optional;
 

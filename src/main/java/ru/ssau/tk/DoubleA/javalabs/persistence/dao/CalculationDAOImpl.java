@@ -1,16 +1,25 @@
 package ru.ssau.tk.DoubleA.javalabs.persistence.dao;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.query.Query;
+import ru.ssau.tk.DoubleA.javalabs.persistence.Operations;
+import ru.ssau.tk.DoubleA.javalabs.persistence.Sorting;
 import ru.ssau.tk.DoubleA.javalabs.persistence.entity.Calculation;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class CalculationDAOImpl implements DAO<Calculation> {
     SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory();
+
+    EntityManager entityManager = sessionFactory.openSession();
 
     @Override
     public void create(Calculation entity) {
@@ -55,6 +64,59 @@ public class CalculationDAOImpl implements DAO<Calculation> {
             session.getTransaction().commit();
         }
         return calculations;
+    }
+
+    public List<Calculation> readAll(Double appliedValue,
+                                     Double resultValue,
+                                     Operations operationX,
+                                     Operations operationY,
+                                     Sorting sortingX,
+                                     Sorting sortingY) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Calculation> query = criteriaBuilder.createQuery(Calculation.class);
+        Root<Calculation> root = query.from(Calculation.class);
+
+        List<Predicate> predicates = new ArrayList<>();
+        if (appliedValue != null) {
+            doOperations(predicates, root, criteriaBuilder, operationX, appliedValue, "appliedX");
+        }
+        if (resultValue != null) {
+            doOperations(predicates, root, criteriaBuilder, operationY, resultValue, "resultY");
+        }
+
+        doSort(query, root, criteriaBuilder, "appliedX", sortingX);
+        doSort(query, root, criteriaBuilder, "resultY", sortingY);
+
+        query = query.where(predicates.toArray(Predicate[]::new)).orderBy(criteriaBuilder.asc(root.get("appliedX")));
+        return entityManager.createQuery(query).getResultList();
+    }
+
+    private void doOperations(List<Predicate> predicates,
+                              Root<Calculation> root,
+                              CriteriaBuilder criteriaBuilder,
+                              Operations operation,
+                              double value,
+                              String field) {
+
+        switch (operation) {
+            case equal -> predicates.add(criteriaBuilder.equal(root.get(field), value));
+            case lessThen -> predicates.add(criteriaBuilder.lessThan(root.get(field), value));
+            case greaterThen -> predicates.add(criteriaBuilder.greaterThan(root.get(field), value));
+            case greaterOrEqual -> predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get(field), value));
+            case lessOrEqual -> predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get(field), value));
+            case notEqual -> predicates.add(criteriaBuilder.notEqual(root.get(field), value));
+        }
+    }
+
+    private void doSort(CriteriaQuery<Calculation> query,
+                        Root<Calculation> root,
+                        CriteriaBuilder criteriaBuilder,
+                        String field,
+                        Sorting sorting) {
+        switch (sorting) {
+            case ASCENDING -> query.orderBy(criteriaBuilder.asc(root.get(field)));
+            case DESCENDING -> query.orderBy(criteriaBuilder.desc(root.get(field)));
+        }
     }
 
     @Override

@@ -1,5 +1,6 @@
 package ru.ssau.tk.DoubleA.javalabs.persistence;
 
+import jakarta.persistence.EntityManager;
 import ru.ssau.tk.DoubleA.javalabs.functions.MathFunction;
 import ru.ssau.tk.DoubleA.javalabs.functions.StrictTabulatedFunction;
 import ru.ssau.tk.DoubleA.javalabs.functions.TabulatedFunction;
@@ -18,6 +19,7 @@ import java.util.zip.CRC32;
 public class CalculationService {
     AppliedFunctionDAOImpl appliedFunctionDAO = new AppliedFunctionDAOImpl();
     CalculationDAOImpl calculationDAO = new CalculationDAOImpl();
+
 
     public void addCalculationRoute(double appliedValue, double resultValue, List<MathFunction> appliedFunctionData) {
         try {
@@ -64,6 +66,28 @@ public class CalculationService {
         }
 
         return new CalculationDataDTO(calculation.getAppliedX(), calculation.getResultY(), appliedFunctionData);
+    }
+
+    public List<CalculationDataDTO> getAllCalculations(double appliedValue,
+                                                       double resultValue,
+                                                       Operations operationX,
+                                                       Operations operationY,
+                                                       Sorting sortingX,
+                                                       Sorting sortingY) {
+        List<Calculation> calculations = calculationDAO.readAll(
+                appliedValue,
+                resultValue,
+                operationX,
+                operationY,
+                sortingX,
+                sortingY
+        );
+        List<CalculationDataDTO> calculationDataDTOs = new ArrayList<>();
+        for (Calculation calculation : calculations) {
+            calculationDataDTOs.add(this.getCalculationRoute(calculation.getId()));
+        }
+
+        return calculationDataDTOs;
     }
 
     public Calculation findCalculation(double appliedValue, List<MathFunction> appliedFunctionData) {

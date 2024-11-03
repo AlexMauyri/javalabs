@@ -26,4 +26,12 @@ public class CalculationDataDTO {
     public List<MathFunction> getAppliedFunctionData() {
         return appliedFunctionData;
     }
+
+    @Override
+    public String toString() {
+        return "CalculationDataDTO{" +
+                "appliedValue=" + appliedValue +
+                ", resultValue=" + resultValue +
+                '}';
+    }
 }

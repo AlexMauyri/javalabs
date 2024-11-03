@@ -4,10 +4,13 @@ import ru.ssau.tk.DoubleA.javalabs.functions.Point;
 import ru.ssau.tk.DoubleA.javalabs.functions.TabulatedFunction;
 import ru.ssau.tk.DoubleA.javalabs.operations.TabulatedFunctionOperationService;
 
+import java.io.Serial;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 public class SynchronizedTabulatedFunction implements TabulatedFunction {
+    @Serial
+    private static final long serialVersionUID = 9074831341125091364L;
     final TabulatedFunction tabulatedFunction;
 
     public interface Operation<T> {
@@ -115,5 +118,10 @@ public class SynchronizedTabulatedFunction implements TabulatedFunction {
         synchronized (tabulatedFunction) {
             return tabulatedFunction.apply(x);
         }
+    }
+
+    @Override
+    public int hashCode() {
+        return tabulatedFunction.hashCode();
     }
 }

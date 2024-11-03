@@ -6,7 +6,11 @@ import ru.ssau.tk.DoubleA.javalabs.functions.TabulatedFunction;
 import ru.ssau.tk.DoubleA.javalabs.functions.factory.ArrayTabulatedFunctionFactory;
 import ru.ssau.tk.DoubleA.javalabs.functions.factory.TabulatedFunctionFactory;
 
+import java.io.Serial;
+
 public class TabulatedDifferentialOperator implements DifferentialOperator<TabulatedFunction>{
+    @Serial
+    private static final long serialVersionUID = 7661467984142842293L;
     private TabulatedFunctionFactory factory;
 
     public TabulatedDifferentialOperator(TabulatedFunctionFactory factory) {
@@ -55,5 +59,10 @@ public class TabulatedDifferentialOperator implements DifferentialOperator<Tabul
     @Override
     public double apply(double x) {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public int hashCode() {
+        return 443626594;
     }
 }

@@ -6,6 +6,7 @@ import ru.ssau.tk.DoubleA.javalabs.functions.TabulatedFunction;
 import ru.ssau.tk.DoubleA.javalabs.functions.UnmodifiableTabulatedFunction;
 import ru.ssau.tk.DoubleA.javalabs.persistence.dao.AppliedFunctionDAOImpl;
 import ru.ssau.tk.DoubleA.javalabs.persistence.dao.CalculationDAOImpl;
+import ru.ssau.tk.DoubleA.javalabs.persistence.dto.CalculationDataDTO;
 import ru.ssau.tk.DoubleA.javalabs.persistence.entity.AppliedFunction;
 import ru.ssau.tk.DoubleA.javalabs.persistence.entity.Calculation;
 
@@ -44,7 +45,7 @@ public class CalculationService {
         }
     }
 
-    public CalculationData getCalculationRoute(int calculationId) throws IllegalArgumentException {
+    public CalculationDataDTO getCalculationRoute(int calculationId) throws IllegalArgumentException {
         Calculation calculation = calculationDAO.read(calculationId);
         if (calculation == null) {
             throw new IllegalArgumentException("Calculation not found for id: " + calculationId);
@@ -55,10 +56,14 @@ public class CalculationService {
         List<MathFunction> appliedFunctionData = new ArrayList<>();
         for (AppliedFunction appliedFunction : appliedFunctions) {
             MathFunction function = deserializeFunction(appliedFunction.getFunctionSerialized());
+            if (function instanceof TabulatedFunction) {
+                if (appliedFunction.getModStrict()) function = new StrictTabulatedFunction((TabulatedFunction) function);
+                if (appliedFunction.getModUnmodifiable()) function = new UnmodifiableTabulatedFunction((TabulatedFunction) function);
+            }
             appliedFunctionData.add(function);
         }
 
-        return new CalculationData(calculation.getAppliedX(), calculation.getResultY(), appliedFunctionData);
+        return new CalculationDataDTO(calculation.getAppliedX(), calculation.getResultY(), appliedFunctionData);
     }
 
     public Calculation findCalculation(double appliedValue, List<MathFunction> appliedFunctionData) {
@@ -72,7 +77,6 @@ public class CalculationService {
         }
         return null;
     }
-
 
     private byte[] serializeFunction(MathFunction function) {
         try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -93,35 +97,11 @@ public class CalculationService {
         }
     }
 
-    private long computeHash(List<MathFunction> appliedFunctionData) {
+    public long computeHash(List<MathFunction> appliedFunctionData) {
         CRC32 crc = new CRC32();
         for (MathFunction function : appliedFunctionData) {
             crc.update(function.hashCode());
         }
         return crc.getValue();
-    }
-
-    public static class CalculationData {
-        private final double appliedValue;
-        private final double resultValue;
-        private final List<MathFunction> appliedFunctionData;
-
-        private CalculationData(double appliedValue, double resultValue, List<MathFunction> appliedFunctionData) {
-            this.appliedValue = appliedValue;
-            this.resultValue = resultValue;
-            this.appliedFunctionData = appliedFunctionData;
-        }
-
-        public double getAppliedValue() {
-            return appliedValue;
-        }
-
-        public double getResultValue() {
-            return resultValue;
-        }
-
-        public List<MathFunction> getAppliedFunctionData() {
-            return appliedFunctionData;
-        }
     }
 }

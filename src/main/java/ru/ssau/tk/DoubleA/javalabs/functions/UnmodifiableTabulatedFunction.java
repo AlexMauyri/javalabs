@@ -1,8 +1,11 @@
 package ru.ssau.tk.DoubleA.javalabs.functions;
 
+import java.io.Serial;
 import java.util.Iterator;
 
 public class UnmodifiableTabulatedFunction implements TabulatedFunction {
+    @Serial
+    private static final long serialVersionUID = 687593488411140331L;
     TabulatedFunction tabulatedFunction;
 
     public UnmodifiableTabulatedFunction(TabulatedFunction tabulatedFunction) {
@@ -57,5 +60,10 @@ public class UnmodifiableTabulatedFunction implements TabulatedFunction {
     @Override
     public double apply(double x) {
         return tabulatedFunction.apply(x);
+    }
+
+    @Override
+    public int hashCode() {
+        return tabulatedFunction.hashCode();
     }
 }

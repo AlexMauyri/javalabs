@@ -27,7 +27,7 @@ public class AppliedFunctionDAOImpl implements DAO<AppliedFunction> {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
 
-            Query<AppliedFunction> query = session.createQuery("from AppliedFunction obj where obj.calculationId = :value order by obj.functionOrder asc", AppliedFunction.class);
+            Query<AppliedFunction> query = session.createQuery("from AppliedFunction obj where obj.calculationId.id = :value order by obj.functionOrder asc", AppliedFunction.class);
             query.setParameter("value", id);
             appliedFunction = query.list();
 

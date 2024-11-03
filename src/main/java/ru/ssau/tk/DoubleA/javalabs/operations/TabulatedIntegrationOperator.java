@@ -4,11 +4,14 @@ import ru.ssau.tk.DoubleA.javalabs.concurrent.IntegrationTask;
 import ru.ssau.tk.DoubleA.javalabs.functions.MathFunction;
 import ru.ssau.tk.DoubleA.javalabs.functions.TabulatedFunction;
 
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
 
 public class TabulatedIntegrationOperator implements MathFunction {
+    @Serial
+    private static final long serialVersionUID = 7604611741409988062L;
     private final ExecutorService executorService;
     private final int numberOfThreads;
 
@@ -52,5 +55,10 @@ public class TabulatedIntegrationOperator implements MathFunction {
     @Override
     public double apply(double x) {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public int hashCode() {
+        return 462792689;
     }
 }

@@ -122,6 +122,8 @@ public class SynchronizedTabulatedFunction implements TabulatedFunction {
 
     @Override
     public int hashCode() {
-        return tabulatedFunction.hashCode();
+        synchronized (tabulatedFunction) {
+            return tabulatedFunction.hashCode();
+        }
     }
 }

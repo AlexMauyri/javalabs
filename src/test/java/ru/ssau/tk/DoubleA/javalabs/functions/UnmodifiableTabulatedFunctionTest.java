@@ -107,6 +107,8 @@ public class UnmodifiableTabulatedFunctionTest extends AbstractTest {
     void unmodifiableAndStrictTest() {
         tabulatedFunction = new StrictTabulatedFunction(tabulatedFunction1);
 
+        Assertions.assertEquals(tabulatedFunction1.hashCode(), tabulatedFunction.hashCode());
+
         Assertions.assertDoesNotThrow(() -> tabulatedFunction.apply(2.5));
         Assertions.assertThrows(UnsupportedOperationException.class, () -> tabulatedFunction.apply(2.4));
         Assertions.assertDoesNotThrow(() -> tabulatedFunction.apply(3.5));

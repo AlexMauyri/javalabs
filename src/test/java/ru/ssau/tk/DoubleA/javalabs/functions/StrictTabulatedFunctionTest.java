@@ -24,6 +24,8 @@ public class StrictTabulatedFunctionTest {
         Assertions.assertEquals(0, strictManualList.indexOfY(9));
         Assertions.assertEquals(-3, strictDiscreteList.leftBound());
         Assertions.assertEquals(15, strictManualList.rightBound());
+        Assertions.assertEquals(discreteFunction.hashCode(), strictDiscreteList.hashCode());
+
 
         Iterator<Point> iterator = strictDiscreteList.iterator();
         int i = 0;

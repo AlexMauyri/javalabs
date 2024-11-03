@@ -10,6 +10,7 @@ public class DerivativeFunctionTest extends AbstractTest {
     void test() {
         derivativeFunction.setMathFunction(new SqrFunction());
         Assertions.assertEquals(8, derivativeFunction.apply(4), EPSILON);
+        Assertions.assertEquals(new SqrFunction().hashCode(), derivativeFunction.hashCode());
 
         derivativeFunction.setMathFunction(new UnitFunction());
         Assertions.assertEquals(0, derivativeFunction.apply(4), EPSILON);

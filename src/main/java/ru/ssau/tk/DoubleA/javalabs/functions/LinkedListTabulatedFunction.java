@@ -368,7 +368,7 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
     private int hashNode(Node head) {
         int result = 1;
         int index = 0;
-        while (head != null) {
+        for (int i = 0; i < count; i++) {
             long xBits = Double.doubleToLongBits(head.x);
             long yBits = Double.doubleToLongBits(head.y);
             result = 31 * result + index++;

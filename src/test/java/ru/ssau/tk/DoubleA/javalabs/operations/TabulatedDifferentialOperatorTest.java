@@ -83,5 +83,7 @@ public class TabulatedDifferentialOperatorTest {
         Assertions.assertEquals(25.5, tabulatedFunction.apply(10.5));
         Assertions.assertEquals(tabulatedFunction.apply(10.5), tabulatedFunction.apply(15));
         Assertions.assertEquals(12.5, tabulatedFunction.apply(4));
+
+        Assertions.assertEquals(443626594, differentialOperator.hashCode());
     }
 }

@@ -11,5 +11,6 @@ public class ConstantFunctionTest extends AbstractTest {
         Assertions.assertEquals(constFunction.getCONSTANT(), constFunction.apply(1), EPSILON);
         Assertions.assertEquals(constFunction.getCONSTANT(), constFunction.apply(-1), EPSILON);
         Assertions.assertEquals(constFunction.getCONSTANT(), constFunction.apply(0), EPSILON);
+        Assertions.assertEquals(Double.hashCode(constFunction.getCONSTANT()), constFunction.hashCode());
     }
 }

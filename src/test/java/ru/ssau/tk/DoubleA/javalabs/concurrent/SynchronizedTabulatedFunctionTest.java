@@ -58,6 +58,8 @@ public class SynchronizedTabulatedFunctionTest extends AbstractTest {
         Assertions.assertThrows(ArrayIndexOutOfBoundsException.class, () -> function1.getY(4));
         Assertions.assertThrows(IllegalArgumentException.class, () -> function2.getY(-1));
         Assertions.assertThrows(IllegalArgumentException.class, () -> function2.getY(5));
+
+        Assertions.assertEquals(new ArrayTabulatedFunction(new double[]{1.0, 2.5, 3.5, 5.0},new double[]{1.4, 3.4, 2.5, 2.7}).hashCode(), function1.hashCode());
     }
 
     @Test

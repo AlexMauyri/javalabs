@@ -46,7 +46,7 @@ public class CalculationDAOImpl implements DAO<Calculation> {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
 
-            Query<Calculation> query = session.createQuery("from Calculation obj where obj.hash = :value", Calculation.class);
+            Query<Calculation> query = session.createQuery(loadQueryFromFile("readByHash_Calculation.hql"), Calculation.class);
             query.setParameter("value", hash);
             calculation = query.list();
 
@@ -60,18 +60,13 @@ public class CalculationDAOImpl implements DAO<Calculation> {
         List<Calculation> calculations = null;
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
-            calculations = session.createQuery("from Calculation obj", Calculation.class).list();
+            calculations = session.createQuery(loadQueryFromFile("readAll_Calculation.hql"), Calculation.class).list();
             session.getTransaction().commit();
         }
         return calculations;
     }
 
-    public List<Calculation> readAll(Double appliedValue,
-                                     Double resultValue,
-                                     Operations operationX,
-                                     Operations operationY,
-                                     Sorting sortingX,
-                                     Sorting sortingY) {
+    public List<Calculation> readAll(Double appliedValue, Double resultValue, Operations operationX, Operations operationY, Sorting sortingX, Sorting sortingY) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Calculation> query = criteriaBuilder.createQuery(Calculation.class);
         Root<Calculation> root = query.from(Calculation.class);
@@ -91,13 +86,7 @@ public class CalculationDAOImpl implements DAO<Calculation> {
         return entityManager.createQuery(query).getResultList();
     }
 
-    private void doOperations(List<Predicate> predicates,
-                              Root<Calculation> root,
-                              CriteriaBuilder criteriaBuilder,
-                              Operations operation,
-                              double value,
-                              String field) {
-
+    private void doOperations(List<Predicate> predicates, Root<Calculation> root, CriteriaBuilder criteriaBuilder, Operations operation, double value, String field) {
         switch (operation) {
             case equal -> predicates.add(criteriaBuilder.equal(root.get(field), value));
             case lessThen -> predicates.add(criteriaBuilder.lessThan(root.get(field), value));
@@ -108,11 +97,7 @@ public class CalculationDAOImpl implements DAO<Calculation> {
         }
     }
 
-    private void doSort(CriteriaQuery<Calculation> query,
-                        Root<Calculation> root,
-                        CriteriaBuilder criteriaBuilder,
-                        String field,
-                        Sorting sorting) {
+    private void doSort(CriteriaQuery<Calculation> query, Root<Calculation> root, CriteriaBuilder criteriaBuilder, String field, Sorting sorting) {
         switch (sorting) {
             case ASCENDING -> query.orderBy(criteriaBuilder.asc(root.get(field)));
             case DESCENDING -> query.orderBy(criteriaBuilder.desc(root.get(field)));
@@ -123,7 +108,7 @@ public class CalculationDAOImpl implements DAO<Calculation> {
     public void update(Calculation entity) {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
-            session.refresh(entity);
+            session.merge(entity);
             session.getTransaction().commit();
         }
     }

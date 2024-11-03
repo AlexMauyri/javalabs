@@ -2,6 +2,9 @@ package ru.ssau.tk.DoubleA.javalabs.functions;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import ru.ssau.tk.DoubleA.javalabs.persistence.CalculationService;
+
+import java.util.Arrays;
 
 public class CompositeFunctionTest extends AbstractTest {
 
@@ -190,6 +193,7 @@ public class CompositeFunctionTest extends AbstractTest {
         );
         mainFunction = new CompositeFunction(listTabFunction1, arrayTabFunction1);
         Assertions.assertEquals(-1411.592936, mainFunction.apply(6.66), EPSILON);
+        Assertions.assertEquals((int) new CalculationService().computeHash(Arrays.asList(listTabFunction1, arrayTabFunction1)), mainFunction.hashCode());
 
         arrayTabFunction1 = new ArrayTabulatedFunction(new SqrFunction(), -18, 3, 100);
         listTabFunction1 = new LinkedListTabulatedFunction(

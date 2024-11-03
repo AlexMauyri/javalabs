@@ -1,0 +1,1 @@
+from Calculation obj where obj.appliedX = :xValue and obj.resultY = :yValue

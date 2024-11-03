@@ -27,7 +27,7 @@ public class AppliedFunctionDAOImpl implements DAO<AppliedFunction> {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
 
-            Query<AppliedFunction> query = session.createQuery("from AppliedFunction obj where obj.calculationId.id = :value order by obj.functionOrder asc", AppliedFunction.class);
+            Query<AppliedFunction> query = session.createQuery(loadQueryFromFile("readByCalculationId_AppliedFunction.hql"), AppliedFunction.class);
             query.setParameter("value", id);
             appliedFunction = query.list();
 
@@ -41,7 +41,7 @@ public class AppliedFunctionDAOImpl implements DAO<AppliedFunction> {
         List<AppliedFunction> appliedFunction = null;
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
-            appliedFunction = session.createQuery("from AppliedFunction obj", AppliedFunction.class).list();
+            appliedFunction = session.createQuery(loadQueryFromFile("readAll_AppliedFunction.hql"), AppliedFunction.class).list();
             session.getTransaction().commit();
         }
         return appliedFunction;
@@ -60,7 +60,7 @@ public class AppliedFunctionDAOImpl implements DAO<AppliedFunction> {
     public void update(AppliedFunction entity) {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
-            session.refresh(entity);
+            session.merge(entity);
             session.getTransaction().commit();
         }
     }

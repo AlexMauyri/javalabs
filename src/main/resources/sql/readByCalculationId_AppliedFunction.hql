@@ -1,0 +1,1 @@
+from AppliedFunction obj where obj.calculationId.id = :value order by obj.functionOrder asc

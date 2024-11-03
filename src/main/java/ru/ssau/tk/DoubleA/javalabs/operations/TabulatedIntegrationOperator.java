@@ -12,7 +12,7 @@ import java.util.concurrent.*;
 public class TabulatedIntegrationOperator implements MathFunction {
     @Serial
     private static final long serialVersionUID = 7604611741409988062L;
-    private final ExecutorService executorService;
+    private final transient ExecutorService executorService;
     private final int numberOfThreads;
 
     public TabulatedIntegrationOperator() {

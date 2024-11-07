@@ -19,3 +19,10 @@ CREATE TABLE IF NOT EXISTS applied_function
 CREATE INDEX idx_calculation_calculation_hash ON calculation (calculation_hash);
 CREATE INDEX idx_applied_function_calculation_id ON calculation (calculation_id);
 CREATE INDEX idx_applied_function_function_order ON applied_function (function_order);
+
+CREATE TABLE IF NOT EXISTS log
+(
+    id        SERIAL PRIMARY KEY,
+    timestamp TIMESTAMP NOT NULL,
+    message   TEXT NOT NULL
+);

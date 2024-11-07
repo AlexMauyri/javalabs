@@ -1,5 +1,8 @@
 package ru.ssau.tk.DoubleA.javalabs.persistence.dao;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -9,7 +12,8 @@ import ru.ssau.tk.DoubleA.javalabs.persistence.entity.AppliedFunction;
 import java.util.List;
 
 public class AppliedFunctionDAOImpl implements DAO<AppliedFunction> {
-    SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory();
+    private static final Logger logger = LogManager.getLogger(AppliedFunctionDAOImpl.class);
+    private static final SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory();
 
     @Override
     public AppliedFunction read(int id) {
@@ -18,6 +22,9 @@ public class AppliedFunctionDAOImpl implements DAO<AppliedFunction> {
             session.beginTransaction();
             appliedFunction = session.get(AppliedFunction.class, id);
             session.getTransaction().commit();
+            logger.info("Read AppliedFunction with ID: {}", id);
+        } catch (HibernateException e) {
+            logger.error(e);
         }
         return appliedFunction;
     }
@@ -32,6 +39,9 @@ public class AppliedFunctionDAOImpl implements DAO<AppliedFunction> {
             appliedFunction = query.list();
 
             session.getTransaction().commit();
+            logger.info("Read AppliedFunction with Calculation ID: {}", id);
+        } catch (HibernateException e) {
+            logger.error(e);
         }
         return appliedFunction;
     }
@@ -43,6 +53,9 @@ public class AppliedFunctionDAOImpl implements DAO<AppliedFunction> {
             session.beginTransaction();
             appliedFunction = session.createQuery(loadQueryFromFile("readAll_AppliedFunction.hql"), AppliedFunction.class).list();
             session.getTransaction().commit();
+            logger.info("Read All AppliedFunction");
+        } catch (HibernateException e) {
+            logger.error(e);
         }
         return appliedFunction;
     }
@@ -53,6 +66,9 @@ public class AppliedFunctionDAOImpl implements DAO<AppliedFunction> {
             session.beginTransaction();
             session.persist(entity);
             session.getTransaction().commit();
+            logger.info("Create AppliedFunction with ID: {}", entity.getId());
+        } catch (HibernateException e) {
+            logger.error(e);
         }
     }
 
@@ -62,6 +78,15 @@ public class AppliedFunctionDAOImpl implements DAO<AppliedFunction> {
             session.beginTransaction();
             session.merge(entity);
             session.getTransaction().commit();
+            logger.info("Update AppliedFunction with ID: {}. New values: {}, {}, {}, {}, {}",
+                    entity.getId(),
+                    entity.getCalculationId().getId(),
+                    entity.getFunctionOrder(),
+                    entity.getFunctionSerialized(),
+                    entity.getModUnmodifiable(),
+                    entity.getModStrict());
+        } catch (HibernateException e) {
+            logger.error(e);
         }
     }
 
@@ -71,6 +96,9 @@ public class AppliedFunctionDAOImpl implements DAO<AppliedFunction> {
             session.beginTransaction();
             session.remove(session.get(AppliedFunction.class, id));
             session.getTransaction().commit();
+            logger.info("Delete AppliedFunction with ID: {}", id);
+        } catch (HibernateException e) {
+            logger.error(e);
         }
     }
 }

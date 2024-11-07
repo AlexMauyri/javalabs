@@ -5,6 +5,9 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -17,7 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CalculationDAOImpl implements DAO<Calculation> {
-    SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory();
+    private static final Logger logger = LogManager.getLogger(CalculationDAOImpl.class);
+    private static final SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory();
 
     EntityManager entityManager = sessionFactory.openSession();
 
@@ -27,6 +31,9 @@ public class CalculationDAOImpl implements DAO<Calculation> {
             session.beginTransaction();
             session.persist(entity);
             session.getTransaction().commit();
+            logger.info("Created new calculation with ID: {}", entity.getId());
+        } catch (HibernateException e) {
+            logger.error(e);
         }
     }
 
@@ -37,6 +44,9 @@ public class CalculationDAOImpl implements DAO<Calculation> {
             session.beginTransaction();
             calculation = session.get(Calculation.class, id);
             session.getTransaction().commit();
+            logger.info("Read calculation with ID: {}", id);
+        } catch (HibernateException e) {
+            logger.error(e);
         }
         return calculation;
     }
@@ -51,6 +61,9 @@ public class CalculationDAOImpl implements DAO<Calculation> {
             calculation = query.list();
 
             session.getTransaction().commit();
+            logger.info("Read calculation with hash: {}", hash);
+        } catch (HibernateException e) {
+            logger.error(e);
         }
         return calculation;
     }
@@ -62,6 +75,9 @@ public class CalculationDAOImpl implements DAO<Calculation> {
             session.beginTransaction();
             calculations = session.createQuery(loadQueryFromFile("readAll_Calculation.hql"), Calculation.class).list();
             session.getTransaction().commit();
+            logger.info("Read all calculations");
+        } catch (HibernateException e) {
+            logger.error(e);
         }
         return calculations;
     }
@@ -83,7 +99,16 @@ public class CalculationDAOImpl implements DAO<Calculation> {
         if (sortingY != null) doSort(query, root, criteriaBuilder, "resultY", sortingY);
 
         query = query.where(predicates.toArray(Predicate[]::new));
-        return entityManager.createQuery(query).getResultList();
+        List<Calculation> result = entityManager.createQuery(query).getResultList();
+
+        logger.info("Read all calculations with sorting by: {}, {}, {}, {}, {}, {}", 
+                appliedValue,
+                resultValue,
+                operationX != null ? operationX.toString() : null,
+                operationY != null ? operationY.toString() : null, 
+                sortingX != null ? sortingX.toString() : null, 
+                sortingY != null ? sortingY.toString() : null);
+        return result;
     }
 
     private void doOperation(List<Predicate> predicates, Root<Calculation> root, CriteriaBuilder criteriaBuilder, Operations operation, double value, String field) {
@@ -110,6 +135,13 @@ public class CalculationDAOImpl implements DAO<Calculation> {
             session.beginTransaction();
             session.merge(entity);
             session.getTransaction().commit();
+            logger.info("Update Calculation with ID: {}. New values: {}, {}, {}",
+                    entity.getId(),
+                    entity.getAppliedX(),
+                    entity.getResultY(),
+                    entity.getHash());
+        } catch (HibernateException e) {
+            logger.error(e);
         }
     }
 
@@ -119,6 +151,9 @@ public class CalculationDAOImpl implements DAO<Calculation> {
             session.beginTransaction();
             session.remove(session.get(Calculation.class, id));
             session.getTransaction().commit();
+            logger.info("Delete Calculation with ID: {}", id);
+        } catch (HibernateException e) {
+            logger.error(e);
         }
     }
 }

@@ -1,7 +1,5 @@
 package ru.ssau.tk.DoubleA.javalabs.persistence.dao;
 
-import ru.ssau.tk.DoubleA.javalabs.persistence.entity.Calculation;
-
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;

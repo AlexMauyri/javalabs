@@ -18,7 +18,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CalculationServiceTest {
     private final CalculationDAOImpl calculationDAO = new CalculationDAOImpl();
-    //private final List<Calculation> createdCalculations = new ArrayList<>();
     private final CalculationService calculationService = new CalculationService();
 
     private final double[] xVal = new double[]{9, -111, 343245};
@@ -50,6 +49,110 @@ public class CalculationServiceTest {
         for (int i = 0; i < 3; i++) {
             calculationDAO.delete(calculationService.findCalculation(xVal[i], functionSets.get(i)).getId());
         }
+    }
+
+    @Test
+    void testFiltering() {
+        List<CalculationDataDTO> list = calculationService.getAllCalculations(3.0,
+                null,
+                Operations.lessOrEqual,
+                null,
+                null,
+                null);
+
+        assertEquals(1, list.size());
+        assertEquals(-111, list.getFirst().getAppliedValue());
+        assertEquals(4004, list.getFirst().getResultValue());
+        list = calculationService.getAllCalculations(3.0,
+                null,
+                Operations.greaterThen,
+                null,
+                null,
+                null);
+
+        assertEquals(2, list.size());
+        assertEquals(9, list.getFirst().getAppliedValue());
+        assertEquals(-700, list.getFirst().getResultValue());
+        assertEquals(343245, list.get(1).getAppliedValue());
+        assertEquals(34, list.get(1).getResultValue());
+
+        list = calculationService.getAllCalculations(-120.0,
+                null,
+                Operations.lessThen,
+                null,
+                null,
+                null);
+
+        assertEquals(0, list.size());
+
+        list = calculationService.getAllCalculations(8.0,
+                1.0,
+                Operations.greaterThen,
+                Operations.greaterThen,
+                null,
+                null);
+
+        assertEquals(1, list.size());
+        assertEquals(343245, list.getFirst().getAppliedValue());
+        assertEquals(34, list.getFirst().getResultValue());
+
+        list = calculationService.getAllCalculations(-111.0,
+                4004.0,
+                Operations.equal,
+                Operations.equal,
+                null,
+                null);
+
+        assertEquals(1, list.size());
+        assertEquals(-111, list.getFirst().getAppliedValue());
+        assertEquals(4004, list.getFirst().getResultValue());
+    }
+
+    @Test
+    void testSorting() {
+        List<CalculationDataDTO> list = calculationService.getAllCalculations(null,
+                null,
+                null,
+                null,
+                Sorting.ASCENDING,
+                null);
+
+        assertEquals(-111, list.getFirst().getAppliedValue());
+        assertEquals(9, list.get(1).getAppliedValue());
+        assertEquals(343245, list.get(2).getAppliedValue());
+
+        list = calculationService.getAllCalculations(null,
+                null,
+                null,
+                null,
+                Sorting.DESCENDING,
+                null);
+
+        assertEquals(343245, list.getFirst().getAppliedValue());
+        assertEquals(9, list.get(1).getAppliedValue());
+        assertEquals(-111, list.get(2).getAppliedValue());
+
+        list = calculationService.getAllCalculations(null,
+                null,
+                null,
+                null,
+                null,
+                Sorting.ASCENDING);
+
+        assertEquals(-700, list.getFirst().getResultValue());
+        assertEquals(34, list.get(1).getResultValue());
+        assertEquals(4004, list.get(2).getResultValue());
+
+        list = calculationService.getAllCalculations(null,
+                null,
+                null,
+                null,
+                null,
+                Sorting.DESCENDING);
+
+        assertEquals(4004, list.getFirst().getResultValue());
+        assertEquals(34, list.get(1).getResultValue());
+        assertEquals(-700, list.get(2).getResultValue());
     }
 
     @Test

@@ -72,21 +72,21 @@ public class CalculationDAOImpl implements DAO<Calculation> {
         Root<Calculation> root = query.from(Calculation.class);
 
         List<Predicate> predicates = new ArrayList<>();
-        if (appliedValue != null) {
-            doOperations(predicates, root, criteriaBuilder, operationX, appliedValue, "appliedX");
+        if (appliedValue != null && operationX != null) {
+            doOperation(predicates, root, criteriaBuilder, operationX, appliedValue, "appliedX");
         }
-        if (resultValue != null) {
-            doOperations(predicates, root, criteriaBuilder, operationY, resultValue, "resultY");
+        if (resultValue != null && operationY != null) {
+            doOperation(predicates, root, criteriaBuilder, operationY, resultValue, "resultY");
         }
 
-        doSort(query, root, criteriaBuilder, "appliedX", sortingX);
-        doSort(query, root, criteriaBuilder, "resultY", sortingY);
+        if (sortingX != null) doSort(query, root, criteriaBuilder, "appliedX", sortingX);
+        if (sortingY != null) doSort(query, root, criteriaBuilder, "resultY", sortingY);
 
-        query = query.where(predicates.toArray(Predicate[]::new)).orderBy(criteriaBuilder.asc(root.get("appliedX")));
+        query = query.where(predicates.toArray(Predicate[]::new));
         return entityManager.createQuery(query).getResultList();
     }
 
-    private void doOperations(List<Predicate> predicates, Root<Calculation> root, CriteriaBuilder criteriaBuilder, Operations operation, double value, String field) {
+    private void doOperation(List<Predicate> predicates, Root<Calculation> root, CriteriaBuilder criteriaBuilder, Operations operation, double value, String field) {
         switch (operation) {
             case equal -> predicates.add(criteriaBuilder.equal(root.get(field), value));
             case lessThen -> predicates.add(criteriaBuilder.lessThan(root.get(field), value));

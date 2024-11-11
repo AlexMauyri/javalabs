@@ -13,6 +13,8 @@ target/
 *.iws
 *.iml
 *.ipr
+/src/main/resources/hibernate.cfg.xml
+/src/main/resources/log4j2.xml
 
 ### Eclipse ###
 .apt_generated

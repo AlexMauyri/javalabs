@@ -82,7 +82,9 @@ public class CalculationDAOImpl implements DAO<Calculation> {
         return calculations;
     }
 
-    public List<Calculation> readAll(Double appliedValue, Double resultValue, Operations operationX, Operations operationY, Sorting sortingX, Sorting sortingY) {
+    public List<Calculation> readAll(Double appliedValue, Double resultValue,
+                                     Operations operationX, Operations operationY,
+                                     Sorting sortingX, Sorting sortingY) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Calculation> query = criteriaBuilder.createQuery(Calculation.class);
         Root<Calculation> root = query.from(Calculation.class);
@@ -111,7 +113,9 @@ public class CalculationDAOImpl implements DAO<Calculation> {
         return result;
     }
 
-    private void doOperation(List<Predicate> predicates, Root<Calculation> root, CriteriaBuilder criteriaBuilder, Operations operation, double value, String field) {
+    private void doOperation(List<Predicate> predicates, Root<Calculation> root,
+                             CriteriaBuilder criteriaBuilder, Operations operation,
+                             double value, String field) {
         switch (operation) {
             case equal -> predicates.add(criteriaBuilder.equal(root.get(field), value));
             case lessThen -> predicates.add(criteriaBuilder.lessThan(root.get(field), value));
@@ -122,7 +126,8 @@ public class CalculationDAOImpl implements DAO<Calculation> {
         }
     }
 
-    private void doSort(CriteriaQuery<Calculation> query, Root<Calculation> root, CriteriaBuilder criteriaBuilder, String field, Sorting sorting) {
+    private void doSort(CriteriaQuery<Calculation> query, Root<Calculation> root,
+                        CriteriaBuilder criteriaBuilder, String field, Sorting sorting) {
         switch (sorting) {
             case ASCENDING -> query.orderBy(criteriaBuilder.asc(root.get(field)));
             case DESCENDING -> query.orderBy(criteriaBuilder.desc(root.get(field)));

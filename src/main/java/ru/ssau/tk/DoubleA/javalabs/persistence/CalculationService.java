@@ -68,7 +68,9 @@ public class CalculationService {
         return new CalculationDataDTO(calculation.getAppliedX(), calculation.getResultY(), appliedFunctionData);
     }
 
-    public List<CalculationDataDTO> getAllCalculations(Double appliedValue, Double resultValue, Operations operationX, Operations operationY, Sorting sortingX, Sorting sortingY) {
+    public List<CalculationDataDTO> getAllCalculations(Double appliedValue, Double resultValue,
+                                                       Operations operationX, Operations operationY,
+                                                       Sorting sortingX, Sorting sortingY) {
         List<Calculation> calculations = calculationDAO.readAll(
                 appliedValue,   resultValue,
                 operationX,     operationY,

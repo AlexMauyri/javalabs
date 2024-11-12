@@ -1,4 +1,4 @@
-package ru.ssau.tk.DoubleA.javalabs;
+package ru.ssau.tk.DoubleA.javalabs.bootloader;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

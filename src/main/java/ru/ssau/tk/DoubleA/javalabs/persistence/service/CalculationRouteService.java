@@ -1,11 +1,16 @@
-package ru.ssau.tk.DoubleA.javalabs.persistence;
+package ru.ssau.tk.DoubleA.javalabs.persistence.service;
 
+import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import ru.ssau.tk.DoubleA.javalabs.functions.MathFunction;
 import ru.ssau.tk.DoubleA.javalabs.functions.StrictTabulatedFunction;
 import ru.ssau.tk.DoubleA.javalabs.functions.TabulatedFunction;
 import ru.ssau.tk.DoubleA.javalabs.functions.UnmodifiableTabulatedFunction;
-import ru.ssau.tk.DoubleA.javalabs.persistence.dao.AppliedFunctionDAOImpl;
-import ru.ssau.tk.DoubleA.javalabs.persistence.dao.CalculationDAOImpl;
+import ru.ssau.tk.DoubleA.javalabs.persistence.Operations;
+import ru.ssau.tk.DoubleA.javalabs.persistence.Sorting;
+import ru.ssau.tk.DoubleA.javalabs.persistence.dao.AppliedFunctionGenericDAOImpl;
+import ru.ssau.tk.DoubleA.javalabs.persistence.dao.CalculationGenericDAOImpl;
 import ru.ssau.tk.DoubleA.javalabs.persistence.dto.CalculationDataDTO;
 import ru.ssau.tk.DoubleA.javalabs.persistence.entity.AppliedFunction;
 import ru.ssau.tk.DoubleA.javalabs.persistence.entity.Calculation;
@@ -15,11 +20,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.CRC32;
 
-public class CalculationService {
-    AppliedFunctionDAOImpl appliedFunctionDAO = new AppliedFunctionDAOImpl();
-    CalculationDAOImpl calculationDAO = new CalculationDAOImpl();
+@Service
+public class CalculationRouteService {
 
-    public void addCalculationRoute(double appliedValue, double resultValue, List<MathFunction> appliedFunctionData) {
+    @Autowired
+    private AppliedFunctionGenericDAOImpl appliedFunctionDAO;
+
+    @Autowired
+    private CalculationGenericDAOImpl calculationDAO;
+
+    @Transactional
+    public void create(double appliedValue, double resultValue, List<MathFunction> appliedFunctionData) {
         try {
             Calculation calculation = new Calculation();
             calculation.setAppliedX(appliedValue);
@@ -45,7 +56,8 @@ public class CalculationService {
         }
     }
 
-    public CalculationDataDTO getCalculationRoute(int calculationId) throws IllegalArgumentException {
+    @Transactional
+    public CalculationDataDTO getByCalculationId(int calculationId) throws IllegalArgumentException {
         Calculation calculation = calculationDAO.read(calculationId);
         if (calculation == null) {
             throw new IllegalArgumentException("Calculation not found for id: " + calculationId);
@@ -68,9 +80,10 @@ public class CalculationService {
         return new CalculationDataDTO(calculation.getAppliedX(), calculation.getResultY(), appliedFunctionData);
     }
 
-    public List<CalculationDataDTO> getAllCalculations(Double appliedValue, Double resultValue,
-                                                       Operations operationX, Operations operationY,
-                                                       Sorting sortingX, Sorting sortingY) {
+    @Transactional
+    public List<CalculationDataDTO> getAllByFilter(Double appliedValue, Double resultValue,
+                                                   Operations operationX, Operations operationY,
+                                                   Sorting sortingX, Sorting sortingY) {
         List<Calculation> calculations = calculationDAO.readAll(
                 appliedValue,   resultValue,
                 operationX,     operationY,
@@ -79,13 +92,14 @@ public class CalculationService {
 
         List<CalculationDataDTO> calculationDataDTOs = new ArrayList<>();
         for (Calculation calculation : calculations) {
-            calculationDataDTOs.add(this.getCalculationRoute(calculation.getId()));
+            calculationDataDTOs.add(this.getByCalculationId(calculation.getId()));
         }
 
         return calculationDataDTOs;
     }
 
-    public Calculation findCalculation(double appliedValue, List<MathFunction> appliedFunctionData) {
+    @Transactional
+    public Calculation getByAppliedValueAndRoute(double appliedValue, List<MathFunction> appliedFunctionData) {
         long hash = computeHash(appliedFunctionData);
         List<Calculation> calculations = calculationDAO.readByHash(hash);
 

@@ -1,5 +1,9 @@
-package ru.ssau.tk.DoubleA.javalabs.persistence;
+package ru.ssau.tk.DoubleA.javalabs.persistence.service;
 
+import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import ru.ssau.tk.DoubleA.javalabs.bootloader.MathApplication;
 import ru.ssau.tk.DoubleA.javalabs.functions.*;
 import ru.ssau.tk.DoubleA.javalabs.operations.MiddleSteppingDifferentialOperator;
 import ru.ssau.tk.DoubleA.javalabs.operations.TabulatedIntegrationOperator;
@@ -7,7 +11,9 @@ import ru.ssau.tk.DoubleA.javalabs.operations.TabulatedIntegrationOperator;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.ssau.tk.DoubleA.javalabs.persistence.dao.CalculationDAOImpl;
+import ru.ssau.tk.DoubleA.javalabs.persistence.Operations;
+import ru.ssau.tk.DoubleA.javalabs.persistence.Sorting;
+import ru.ssau.tk.DoubleA.javalabs.persistence.dao.CalculationGenericDAOImpl;
 import ru.ssau.tk.DoubleA.javalabs.persistence.dto.CalculationDataDTO;
 import ru.ssau.tk.DoubleA.javalabs.persistence.entity.Calculation;
 
@@ -16,9 +22,15 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class CalculationServiceTest {
-    private final CalculationDAOImpl calculationDAO = new CalculationDAOImpl();
-    private final CalculationService calculationService = new CalculationService();
+@SpringBootTest(classes = MathApplication.class)
+@Transactional
+public class CalculationRouteServiceTest {
+
+    @Autowired
+    private CalculationGenericDAOImpl calculationDAO;
+
+    @Autowired
+    private CalculationRouteService calculationRouteService;
 
     private final double[] xVal = new double[]{9, -111, 343245};
     private final double[] yVal = new double[]{-700, 4004, 34};
@@ -40,20 +52,20 @@ public class CalculationServiceTest {
     @BeforeEach
     public void setUp() {
         for (int i = 0; i < 3; i++) {
-            calculationService.addCalculationRoute(xVal[i], yVal[i], functionSets.get(i));
+            calculationRouteService.create(xVal[i], yVal[i], functionSets.get(i));
         }
     }
 
     @AfterEach
     public void tearDown() {
         for (int i = 0; i < 3; i++) {
-            calculationDAO.delete(calculationService.findCalculation(xVal[i], functionSets.get(i)).getId());
+            calculationDAO.delete(calculationRouteService.getByAppliedValueAndRoute(xVal[i], functionSets.get(i)).getId());
         }
     }
 
     @Test
     void testFiltering() {
-        List<CalculationDataDTO> list = calculationService.getAllCalculations(3.0,
+        List<CalculationDataDTO> list = calculationRouteService.getAllByFilter(3.0,
                 null,
                 Operations.lessOrEqual,
                 null,
@@ -63,7 +75,7 @@ public class CalculationServiceTest {
         assertEquals(1, list.size());
         assertEquals(-111, list.getFirst().getAppliedValue());
         assertEquals(4004, list.getFirst().getResultValue());
-        list = calculationService.getAllCalculations(3.0,
+        list = calculationRouteService.getAllByFilter(3.0,
                 null,
                 Operations.greaterThen,
                 null,
@@ -76,7 +88,7 @@ public class CalculationServiceTest {
         assertEquals(343245, list.get(1).getAppliedValue());
         assertEquals(34, list.get(1).getResultValue());
 
-        list = calculationService.getAllCalculations(-120.0,
+        list = calculationRouteService.getAllByFilter(-120.0,
                 null,
                 Operations.lessThen,
                 null,
@@ -85,7 +97,7 @@ public class CalculationServiceTest {
 
         assertEquals(0, list.size());
 
-        list = calculationService.getAllCalculations(8.0,
+        list = calculationRouteService.getAllByFilter(8.0,
                 1.0,
                 Operations.greaterThen,
                 Operations.greaterThen,
@@ -96,7 +108,7 @@ public class CalculationServiceTest {
         assertEquals(343245, list.getFirst().getAppliedValue());
         assertEquals(34, list.getFirst().getResultValue());
 
-        list = calculationService.getAllCalculations(-111.0,
+        list = calculationRouteService.getAllByFilter(-111.0,
                 4004.0,
                 Operations.equal,
                 Operations.equal,
@@ -110,7 +122,7 @@ public class CalculationServiceTest {
 
     @Test
     void testSorting() {
-        List<CalculationDataDTO> list = calculationService.getAllCalculations(null,
+        List<CalculationDataDTO> list = calculationRouteService.getAllByFilter(null,
                 null,
                 null,
                 null,
@@ -121,7 +133,7 @@ public class CalculationServiceTest {
         assertEquals(9, list.get(1).getAppliedValue());
         assertEquals(343245, list.get(2).getAppliedValue());
 
-        list = calculationService.getAllCalculations(null,
+        list = calculationRouteService.getAllByFilter(null,
                 null,
                 null,
                 null,
@@ -132,7 +144,7 @@ public class CalculationServiceTest {
         assertEquals(9, list.get(1).getAppliedValue());
         assertEquals(-111, list.get(2).getAppliedValue());
 
-        list = calculationService.getAllCalculations(null,
+        list = calculationRouteService.getAllByFilter(null,
                 null,
                 null,
                 null,
@@ -143,7 +155,7 @@ public class CalculationServiceTest {
         assertEquals(34, list.get(1).getResultValue());
         assertEquals(4004, list.get(2).getResultValue());
 
-        list = calculationService.getAllCalculations(null,
+        list = calculationRouteService.getAllByFilter(null,
                 null,
                 null,
                 null,
@@ -158,18 +170,18 @@ public class CalculationServiceTest {
     @Test
     public void testFindAndHash() {
         for (int i = 0; i < 3; i++) {
-            Calculation calculation = calculationService.findCalculation(xVal[i], functionSets.get(i));
+            Calculation calculation = calculationRouteService.getByAppliedValueAndRoute(xVal[i], functionSets.get(i));
             assertEquals(xVal[i], calculation.getAppliedX());
             assertEquals(yVal[i], calculation.getResultY());
-            assertEquals(calculationService.computeHash(functionSets.get(i)), calculation.getHash());
+            assertEquals(calculationRouteService.computeHash(functionSets.get(i)), calculation.getHash());
         }
     }
 
     @Test
-    public void testGetCalculationRoute() {
+    public void testGetByCalculationId() {
         for (int i = 0; i < 3; i++) {
-            Calculation calculation = calculationService.findCalculation(xVal[i], functionSets.get(i));
-            CalculationDataDTO data = calculationService.getCalculationRoute(calculation.getId());
+            Calculation calculation = calculationRouteService.getByAppliedValueAndRoute(xVal[i], functionSets.get(i));
+            CalculationDataDTO data = calculationRouteService.getByCalculationId(calculation.getId());
             assertEquals(xVal[i], data.getAppliedValue());
             assertEquals(yVal[i], data.getResultValue());
 

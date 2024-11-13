@@ -3,21 +3,21 @@ package ru.ssau.tk.DoubleA.javalabs.persistence.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table (name = "calculation")
+@Table(name = "calculation")
 public class Calculation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column (name = "calculation_id")
+    @Column(name = "calculation_id")
     private int id;
 
-    @Column (name = "applied_value", nullable = false)
+    @Column(name = "applied_value", nullable = false)
     private double appliedX;
 
-    @Column (name = "result_value", nullable = false)
+    @Column(name = "result_value", nullable = false)
     private double resultY;
 
-    @Column (name = "calculation_hash", nullable = false)
+    @Column(name = "calculation_hash", nullable = false)
     private long hash;
 
     public int getId() {

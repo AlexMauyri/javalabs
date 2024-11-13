@@ -6,7 +6,13 @@ import java.io.InputStreamReader;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public interface DAO<T> {
+public interface GenericDAO<T> {
+    T read(int id);
+    List<T> readAll();
+    void create(T entity);
+    void update(T entity);
+    void delete(int id);
+
     default String loadQueryFromFile(String filename) {
         String filePath = "sql/" + filename;
         InputStream inputStream = getClass().getClassLoader().getResourceAsStream(filePath);
@@ -17,14 +23,4 @@ public interface DAO<T> {
                 .lines()
                 .collect(Collectors.joining("\n"));
     }
-
-    T read(int id);
-
-    List<T> readAll();
-
-    void create(T entity);
-
-    void update(T entity);
-
-    void delete(int id);
 }

@@ -1,21 +1,29 @@
 package ru.ssau.tk.DoubleA.javalabs.persistence.dao;
 
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import ru.ssau.tk.DoubleA.javalabs.bootloader.MathApplication;
 import ru.ssau.tk.DoubleA.javalabs.persistence.entity.Calculation;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class CalculationDAOImplTest {
-    private CalculationDAOImpl calculationDAO = new CalculationDAOImpl();
+@SpringBootTest(classes = MathApplication.class)
+@Transactional
+public class CalculationGenericDAOImplTest {
+
+    @Autowired
+    private CalculationGenericDAOImpl calculationDAO;
+
     private List<Calculation> createdCalculations = new ArrayList<>();
     private double[] xVal = new double[]{47, -62, 91, -99, -23};
     private double[] yVal = new double[]{-30, -4, -73, 42, 3};
-    private long[] hash = new long[]{1,2,3,3,3};
+    private long[] hash = new long[]{1, 2, 3, 3, 3};
 
     @AfterEach
     public void tearDown() {
@@ -56,10 +64,10 @@ public class CalculationDAOImplTest {
 
         for (int id = 0; id <= 2; id++) {
             assertNotNull(calculationByHash.get(id));
-            assertEquals(createdCalculations.get(id+2).getId(), calculationByHash.get(id).getId());
-            assertEquals(xVal[id+2], calculationByHash.get(id).getAppliedX());
-            assertEquals(yVal[id+2], calculationByHash.get(id).getResultY());
-            assertEquals(hash[id+2], calculationByHash.get(id).getHash());
+            assertEquals(createdCalculations.get(id + 2).getId(), calculationByHash.get(id).getId());
+            assertEquals(xVal[id + 2], calculationByHash.get(id).getAppliedX());
+            assertEquals(yVal[id + 2], calculationByHash.get(id).getResultY());
+            assertEquals(hash[id + 2], calculationByHash.get(id).getHash());
         }
 
         List<Calculation> calculationsFull = calculationDAO.readAll();
@@ -74,7 +82,7 @@ public class CalculationDAOImplTest {
     void testUpdateAndDelete() {
         double[] xValNew = new double[]{47, -1, 91, -99, -23};
         double[] yValNew = new double[]{-30, -89, -73, 42, 3};
-        long[] hashNew = new long[]{1,2,2,2,2};
+        long[] hashNew = new long[]{1, 2, 2, 2, 2};
 
         for (int id = 0; id <= 4; id++) {
             Calculation calculation = new Calculation();
@@ -111,10 +119,10 @@ public class CalculationDAOImplTest {
 
         for (int id = 0; id <= 3; id++) {
             assertNotNull(calculationByHash.get(id));
-            assertEquals(createdCalculations.get(id+1).getId(), calculationByHash.get(id).getId());
-            assertEquals(xValNew[id+1], calculationByHash.get(id).getAppliedX());
-            assertEquals(yValNew[id+1], calculationByHash.get(id).getResultY());
-            assertEquals(hashNew[id+1], calculationByHash.get(id).getHash());
+            assertEquals(createdCalculations.get(id + 1).getId(), calculationByHash.get(id).getId());
+            assertEquals(xValNew[id + 1], calculationByHash.get(id).getAppliedX());
+            assertEquals(yValNew[id + 1], calculationByHash.get(id).getResultY());
+            assertEquals(hashNew[id + 1], calculationByHash.get(id).getHash());
         }
     }
 }

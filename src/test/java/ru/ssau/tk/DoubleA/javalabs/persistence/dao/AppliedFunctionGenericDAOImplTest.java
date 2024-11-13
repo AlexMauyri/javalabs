@@ -1,8 +1,12 @@
 package ru.ssau.tk.DoubleA.javalabs.persistence.dao;
 
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import ru.ssau.tk.DoubleA.javalabs.bootloader.MathApplication;
 import ru.ssau.tk.DoubleA.javalabs.persistence.entity.AppliedFunction;
 import ru.ssau.tk.DoubleA.javalabs.persistence.entity.Calculation;
 
@@ -11,9 +15,16 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class AppliedFunctionDAOImplTest {
-    private CalculationDAOImpl calculationDAO = new CalculationDAOImpl();
-    private AppliedFunctionDAOImpl appliedFunctionDAO = new AppliedFunctionDAOImpl();
+@SpringBootTest(classes = MathApplication.class)
+@Transactional
+public class AppliedFunctionGenericDAOImplTest {
+
+    @Autowired
+    private CalculationGenericDAOImpl calculationDAO;
+
+    @Autowired
+    private AppliedFunctionGenericDAOImpl appliedFunctionDAO;
+
     private Calculation calculation;
     private List<AppliedFunction> functions = new ArrayList<>();
     private byte[] testSerializedFunction = new byte[]{0, 1, 2, 3, 4};
@@ -77,13 +88,13 @@ public class AppliedFunctionDAOImplTest {
         assertNotNull(appliedFunctionsFull);
 
         for (int id = 6; id <= 10; id++) {
-            AppliedFunction appliedFunction = appliedFunctionDAO.read(functions.get(id-1).getId());
+            AppliedFunction appliedFunction = appliedFunctionDAO.read(functions.get(id - 1).getId());
 
             assertNotNull(appliedFunction);
-            assertEquals(functions.get(id-1).getId(), appliedFunction.getId());
+            assertEquals(functions.get(id - 1).getId(), appliedFunction.getId());
             assertEquals(calculation.getId(), appliedFunction.getCalculationId().getId());
             assertEquals(id, appliedFunction.getFunctionOrder());
-            assertEquals(testSerializedFunction[id-6], appliedFunction.getFunctionSerialized()[id-6]);
+            assertEquals(testSerializedFunction[id - 6], appliedFunction.getFunctionSerialized()[id - 6]);
             if (id == 9) {
                 assertEquals(false, appliedFunction.getModStrict());
                 assertEquals(true, appliedFunction.getModUnmodifiable());
@@ -104,8 +115,8 @@ public class AppliedFunctionDAOImplTest {
         byte[] testSerializedFunction2 = new byte[]{5, 6, 7, 8, 9};
 
         for (int id = 1; id <= 5; id++) {
-            AppliedFunction appliedFunction = appliedFunctionDAO.read(functions.get(id-1).getId());
-            appliedFunction.setFunctionOrder(id+12);
+            AppliedFunction appliedFunction = appliedFunctionDAO.read(functions.get(id - 1).getId());
+            appliedFunction.setFunctionOrder(id + 12);
             appliedFunction.setFunctionSerialized(testSerializedFunction2);
             if (id == 4) {
                 appliedFunction.setModStrict(true);
@@ -119,13 +130,13 @@ public class AppliedFunctionDAOImplTest {
         }
 
         for (int id = 1; id <= 5; id++) {
-            AppliedFunction appliedFunction = appliedFunctionDAO.read(functions.get(id-1).getId());
+            AppliedFunction appliedFunction = appliedFunctionDAO.read(functions.get(id - 1).getId());
 
             assertNotNull(appliedFunction);
-            assertEquals(functions.get(id-1).getId(), appliedFunction.getId());
+            assertEquals(functions.get(id - 1).getId(), appliedFunction.getId());
             assertEquals(calculation.getId(), appliedFunction.getCalculationId().getId());
-            assertEquals(id+12, appliedFunction.getFunctionOrder());
-            assertEquals(testSerializedFunction2[id-1], appliedFunction.getFunctionSerialized()[id-1]);
+            assertEquals(id + 12, appliedFunction.getFunctionOrder());
+            assertEquals(testSerializedFunction2[id - 1], appliedFunction.getFunctionSerialized()[id - 1]);
             if (id == 4) {
                 assertEquals(true, appliedFunction.getModStrict());
                 assertEquals(false, appliedFunction.getModUnmodifiable());
@@ -138,7 +149,7 @@ public class AppliedFunctionDAOImplTest {
             appliedFunctionDAO.delete(appliedFunction.getId());
             appliedFunction = appliedFunctionDAO.read(appliedFunction.getId());
             assertNull(appliedFunction);
-            appliedFunction = appliedFunctionDAO.read(functions.get(id-1).getId());
+            appliedFunction = appliedFunctionDAO.read(functions.get(id - 1).getId());
             assertNull(appliedFunction);
         }
     }

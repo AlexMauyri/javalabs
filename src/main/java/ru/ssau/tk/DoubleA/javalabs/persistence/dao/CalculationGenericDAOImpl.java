@@ -1,17 +1,15 @@
 package ru.ssau.tk.DoubleA.javalabs.persistence.dao;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
-import org.hibernate.query.Query;
+import org.springframework.stereotype.Repository;
 import ru.ssau.tk.DoubleA.javalabs.persistence.Operations;
 import ru.ssau.tk.DoubleA.javalabs.persistence.Sorting;
 import ru.ssau.tk.DoubleA.javalabs.persistence.entity.Calculation;
@@ -19,51 +17,47 @@ import ru.ssau.tk.DoubleA.javalabs.persistence.entity.Calculation;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CalculationDAOImpl implements DAO<Calculation> {
-    private static final Logger logger = LogManager.getLogger(CalculationDAOImpl.class);
-    private static final SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory();
+@Repository
+public class CalculationGenericDAOImpl implements GenericDAO<Calculation> {
+    private final Logger logger = LogManager.getLogger(CalculationGenericDAOImpl.class);
 
-    EntityManager entityManager = sessionFactory.openSession();
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Override
     public void create(Calculation entity) {
-        try (Session session = sessionFactory.openSession()) {
-            session.beginTransaction();
-            session.persist(entity);
-            session.getTransaction().commit();
+        try {
+            entityManager.persist(entity);
             logger.info("Created new calculation with ID: {}", entity.getId());
-        } catch (HibernateException e) {
+        } catch (RuntimeException e) {
             logger.error(e);
+            throw e;
         }
     }
 
     @Override
     public Calculation read(int id) {
         Calculation calculation = null;
-        try (Session session = sessionFactory.openSession()) {
-            session.beginTransaction();
-            calculation = session.get(Calculation.class, id);
-            session.getTransaction().commit();
+        try {
+            calculation = entityManager.find(Calculation.class, id);
             logger.info("Read calculation with ID: {}", id);
-        } catch (HibernateException e) {
+        } catch (RuntimeException e) {
             logger.error(e);
+            throw e;
         }
         return calculation;
     }
 
     public List<Calculation> readByHash(long hash) {
         List<Calculation> calculation = null;
-        try (Session session = sessionFactory.openSession()) {
-            session.beginTransaction();
-
-            Query<Calculation> query = session.createQuery(loadQueryFromFile("readByHash_Calculation.hql"), Calculation.class);
+        try {
+            TypedQuery<Calculation> query = entityManager.createQuery(loadQueryFromFile("readByHash_Calculation.hql"), Calculation.class);
             query.setParameter("value", hash);
-            calculation = query.list();
-
-            session.getTransaction().commit();
+            calculation = query.getResultList();
             logger.info("Read calculation with hash: {}", hash);
-        } catch (HibernateException e) {
+        } catch (RuntimeException e) {
             logger.error(e);
+            throw e;
         }
         return calculation;
     }
@@ -71,13 +65,12 @@ public class CalculationDAOImpl implements DAO<Calculation> {
     @Override
     public List<Calculation> readAll() {
         List<Calculation> calculations = null;
-        try (Session session = sessionFactory.openSession()) {
-            session.beginTransaction();
-            calculations = session.createQuery(loadQueryFromFile("readAll_Calculation.hql"), Calculation.class).list();
-            session.getTransaction().commit();
+        try {
+            calculations = entityManager.createQuery(loadQueryFromFile("readAll_Calculation.hql"), Calculation.class).getResultList();
             logger.info("Read all calculations");
-        } catch (HibernateException e) {
+        } catch (RuntimeException e) {
             logger.error(e);
+            throw e;
         }
         return calculations;
     }
@@ -101,15 +94,21 @@ public class CalculationDAOImpl implements DAO<Calculation> {
         if (sortingY != null) doSort(query, root, criteriaBuilder, "resultY", sortingY);
 
         query = query.where(predicates.toArray(Predicate[]::new));
-        List<Calculation> result = entityManager.createQuery(query).getResultList();
 
-        logger.info("Read all calculations with sorting by: {}, {}, {}, {}, {}, {}", 
-                appliedValue,
-                resultValue,
-                operationX != null ? operationX.toString() : null,
-                operationY != null ? operationY.toString() : null, 
-                sortingX != null ? sortingX.toString() : null, 
-                sortingY != null ? sortingY.toString() : null);
+        List<Calculation> result;
+        try {
+            result = entityManager.createQuery(query).getResultList();
+            logger.info("Read all calculations with sorting by: {}, {}, {}, {}, {}, {}",
+                    appliedValue,
+                    resultValue,
+                    operationX != null ? operationX.toString() : null,
+                    operationY != null ? operationY.toString() : null,
+                    sortingX != null ? sortingX.toString() : null,
+                    sortingY != null ? sortingY.toString() : null);
+        } catch (RuntimeException e) {
+            logger.error(e);
+            throw e;
+        }
         return result;
     }
 
@@ -136,29 +135,27 @@ public class CalculationDAOImpl implements DAO<Calculation> {
 
     @Override
     public void update(Calculation entity) {
-        try (Session session = sessionFactory.openSession()) {
-            session.beginTransaction();
-            session.merge(entity);
-            session.getTransaction().commit();
+        try {
+            entityManager.merge(entity);
             logger.info("Update Calculation with ID: {}. New values: {}, {}, {}",
                     entity.getId(),
                     entity.getAppliedX(),
                     entity.getResultY(),
                     entity.getHash());
-        } catch (HibernateException e) {
+        } catch (RuntimeException e) {
             logger.error(e);
+            throw e;
         }
     }
 
     @Override
     public void delete(int id) {
-        try (Session session = sessionFactory.openSession()) {
-            session.beginTransaction();
-            session.remove(session.get(Calculation.class, id));
-            session.getTransaction().commit();
+        try {
+            entityManager.remove(entityManager.find(Calculation.class, id));
             logger.info("Delete Calculation with ID: {}", id);
-        } catch (HibernateException e) {
+        } catch (RuntimeException e) {
             logger.error(e);
+            throw e;
         }
     }
 }

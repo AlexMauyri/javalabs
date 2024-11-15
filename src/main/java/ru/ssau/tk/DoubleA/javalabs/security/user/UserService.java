@@ -39,13 +39,16 @@ public class UserService implements UserDetailsService {
         return userDAO.getUserById(id);
     }
 
+    public User getUserByUsername(String username) {
+        return userDAO.findByUsername(username);
+    }
+
 
     public void registerUser(UserDTO userDTO) {
         userDAO.registerUser(
                 convertToUser(userDTO)
         );
     }
-
 
     private User convertToUser(UserDTO userDTO) {
         User user = new User();
@@ -55,4 +58,11 @@ public class UserService implements UserDetailsService {
         return user;
     }
 
+    public User deleteUserById(int id) {
+        return userDAO.deleteUserById(id);
+    }
+
+    public User updateUserRole(int id) {
+        return userDAO.updateUserRole(id);
+    }
 }

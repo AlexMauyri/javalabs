@@ -40,6 +40,9 @@ public class SecurityConfig {
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
                         .requestMatchers(HttpMethod.POST, "/auth/**").anonymous()
+                        .requestMatchers("/users/whoami").authenticated()
+                        .requestMatchers("/users/**").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/users/**").hasAuthority("ADMIN")
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)

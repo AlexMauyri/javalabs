@@ -81,13 +81,42 @@ public class UserDAO {
         return user;
     }
 
-    public User registerUser(User user) {
+    public void registerUser(User user) {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
             session.persist(user);
             session.getTransaction().commit();
             logger.info("New user: {}", user.getUsername());
         } catch (HibernateException e) {
+            logger.error(e);
+        }
+    }
+
+    public User deleteUserById(int id) {
+        User user = null;
+        try (Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+            user = session.get(User.class, id);
+            session.remove(user);
+            session.getTransaction().commit();
+            logger.info("Deleted user: {}", user.getUsername());
+        } catch (HibernateException e) {
+            logger.error(e);
+        }
+        return user;
+    }
+
+    public User updateUserRole(int id) {
+        User user = null;
+        try (Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+            user = session.get(User.class, id);
+            user.setRole((user.getRole() == Role.USER? Role.ADMIN: Role.USER));
+            session.refresh(user);
+            session.getTransaction().commit();
+            logger.info("Updated user role: {}", user.getUsername());
+        }
+        catch (HibernateException e) {
             logger.error(e);
         }
         return user;

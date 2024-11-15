@@ -21,8 +21,7 @@ public class User {
     private int user_id;
     private String username;
     private String password;
-    @Enumerated(EnumType.ORDINAL)
-    @Column(name = "role_id")
+    @Enumerated(EnumType.STRING)
     private Role role;
 
 }

@@ -16,17 +16,6 @@ public class UserDAO {
     private static final SessionFactory sessionFactory = new Configuration().configure().addAnnotatedClass(User.class).buildSessionFactory();
     private static final Logger logger = LogManager.getLogger(UserDAO.class);
 
-    public void save(User user) {
-        try (Session session = sessionFactory.openSession()) {
-            session.beginTransaction();
-            session.persist(user);
-            session.getTransaction().commit();
-            logger.info("Created new user: {}", user.getUsername());
-        } catch (HibernateException e) {
-            logger.error(e);
-        }
-    }
-
     public User findByUsername(String username) {
         User user = null;
         try (Session session = sessionFactory.openSession()) {
@@ -112,7 +101,7 @@ public class UserDAO {
             session.beginTransaction();
             user = session.get(User.class, id);
             user.setRole((user.getRole() == Role.USER? Role.ADMIN: Role.USER));
-            session.refresh(user);
+            session.merge(user);
             session.getTransaction().commit();
             logger.info("Updated user role: {}", user.getUsername());
         }

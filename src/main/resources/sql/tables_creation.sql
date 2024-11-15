@@ -27,17 +27,12 @@ CREATE TABLE IF NOT EXISTS log
     message   TEXT      NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS roles
-(
-    role_id   SERIAL PRIMARY KEY,
-    role_name TEXT
-);
+CREATE TYPE roles AS ENUM ('ADMIN', 'USER');
 
 CREATE TABLE IF NOT EXISTS users
 (
     user_id  SERIAL PRIMARY KEY,
     username VARCHAR(20) NOT NULL UNIQUE,
     password VARCHAR(30) NOT NULL,
-    role_id  INT         NOT NULL,
-    FOREIGN KEY (role_id) REFERENCES roles (role_id)
+    role     roles       NOT NULL
 );

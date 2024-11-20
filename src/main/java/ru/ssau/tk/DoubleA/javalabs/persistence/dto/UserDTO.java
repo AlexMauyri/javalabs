@@ -1,4 +1,4 @@
-package ru.ssau.tk.DoubleA.javalabs.security.user;
+package ru.ssau.tk.DoubleA.javalabs.persistence.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

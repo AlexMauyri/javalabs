@@ -1,4 +1,4 @@
-package ru.ssau.tk.DoubleA.javalabs.security.user;
+package ru.ssau.tk.DoubleA.javalabs.persistence.controller;
 
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -8,6 +8,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import ru.ssau.tk.DoubleA.javalabs.security.jwt.JWTService;
+import ru.ssau.tk.DoubleA.javalabs.persistence.dto.UserDTO;
+import ru.ssau.tk.DoubleA.javalabs.persistence.service.UserService;
 
 @RestController
 @RequestMapping("/auth")
@@ -30,11 +32,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<String> loginUser(@RequestBody UserDTO user) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
-        if (authentication.isAuthenticated()) {
-            String token = jwtService.generateToken(user.getUsername());
-            return new ResponseEntity<>(String.format("Login successful! %s", token), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("Login failed!", HttpStatus.UNAUTHORIZED);
-        }
+        String token = jwtService.generateToken(user.getUsername());
+        return new ResponseEntity<>(token, HttpStatus.OK);
     }
 }

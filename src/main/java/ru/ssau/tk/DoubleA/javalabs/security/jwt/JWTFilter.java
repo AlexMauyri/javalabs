@@ -11,7 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import ru.ssau.tk.DoubleA.javalabs.security.user.UserService;
+import ru.ssau.tk.DoubleA.javalabs.persistence.service.UserService;
 import org.springframework.context.ApplicationContext;
 
 import java.io.IOException;

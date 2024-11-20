@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import ru.ssau.tk.DoubleA.javalabs.persistence.entity.User;
 
 import java.io.Serial;
 import java.util.Collection;

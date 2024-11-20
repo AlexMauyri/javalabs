@@ -1,4 +1,4 @@
-package ru.ssau.tk.DoubleA.javalabs.security.user;
+package ru.ssau.tk.DoubleA.javalabs.persistence.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -6,6 +6,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import ru.ssau.tk.DoubleA.javalabs.persistence.dao.UserDAO;
+import ru.ssau.tk.DoubleA.javalabs.security.user.Role;
+import ru.ssau.tk.DoubleA.javalabs.persistence.entity.User;
+import ru.ssau.tk.DoubleA.javalabs.persistence.dto.UserDTO;
+import ru.ssau.tk.DoubleA.javalabs.security.user.UserDetailsImpl;
 
 import java.util.List;
 

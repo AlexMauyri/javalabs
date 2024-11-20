@@ -1,4 +1,4 @@
-package ru.ssau.tk.DoubleA.javalabs.security.user;
+package ru.ssau.tk.DoubleA.javalabs.persistence.dao;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -7,6 +7,8 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.springframework.stereotype.Repository;
+import ru.ssau.tk.DoubleA.javalabs.security.user.Role;
+import ru.ssau.tk.DoubleA.javalabs.persistence.entity.User;
 
 import java.util.List;
 

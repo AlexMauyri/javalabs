@@ -19,7 +19,7 @@ public class CalculationController {
     private CalculationService calculationService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<Calculation> getCalculation(@PathVariable int id) {
+    public ResponseEntity<Calculation> getCalculation(@PathVariable("id") int id) {
         Calculation calculation = calculationService.getById(id);
         if (calculation != null) {
             return ResponseEntity.ok(calculation);
@@ -29,7 +29,7 @@ public class CalculationController {
     }
 
     @GetMapping("/hash/{hash}")
-    public ResponseEntity<List<Calculation>> getCalculationByHash(@PathVariable long hash) {
+    public ResponseEntity<List<Calculation>> getCalculationByHash(@PathVariable("hash") long hash) {
         List<Calculation> calculations = calculationService.getByHash(hash);
         if (!calculations.isEmpty()) {
             return ResponseEntity.ok(calculations);
@@ -40,12 +40,12 @@ public class CalculationController {
 
     @GetMapping("/filter")
     public ResponseEntity<List<Calculation>> getBySort(
-            @RequestParam(required = false) Double appliedValue,
-            @RequestParam(required = false) Double resultValue,
-            @RequestParam(required = false) Operations operationX,
-            @RequestParam(required = false) Operations operationY,
-            @RequestParam(required = false) Sorting sortingX,
-            @RequestParam(required = false) Sorting sortingY) {
+            @RequestParam(required = false, name = "appliedValue") Double appliedValue,
+            @RequestParam(required = false, name = "resultValue") Double resultValue,
+            @RequestParam(required = false, name = "operationX") Operations operationX,
+            @RequestParam(required = false, name = "operationY") Operations operationY,
+            @RequestParam(required = false, name = "sortingX") Sorting sortingX,
+            @RequestParam(required = false, name = "sortingY") Sorting sortingY) {
 
         List<Calculation> calculations = calculationService.getAllByFilter(
                 appliedValue, resultValue, operationX, operationY, sortingX, sortingY);
@@ -76,7 +76,7 @@ public class CalculationController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> delete(@PathVariable int id) {
+    public ResponseEntity<String> delete(@PathVariable("id") int id) {
         Calculation calculation = calculationService.getById(id);
         if (calculation != null) {
             calculationService.deleteById(id);

@@ -14,7 +14,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import ru.ssau.tk.DoubleA.javalabs.bootloader.MathApplication;
 import ru.ssau.tk.DoubleA.javalabs.persistence.entity.Calculation;
-import ru.ssau.tk.DoubleA.javalabs.persistence.entity.User;
 
 import java.util.ArrayList;
 import java.util.List;

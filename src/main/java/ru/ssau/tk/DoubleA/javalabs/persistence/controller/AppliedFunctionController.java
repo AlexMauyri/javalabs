@@ -17,7 +17,7 @@ public class AppliedFunctionController {
     private AppliedFunctionService appliedFunctionService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<AppliedFunction> getFunction(@PathVariable int id) {
+    public ResponseEntity<AppliedFunction> getFunction(@PathVariable("id") int id) {
         AppliedFunction function = appliedFunctionService.getById(id);
         if (function != null) {
             return ResponseEntity.ok(function);
@@ -27,7 +27,7 @@ public class AppliedFunctionController {
     }
 
     @GetMapping("/calculation/{calculationId}")
-    public ResponseEntity<List<AppliedFunction>> getCalculationFunctions(@PathVariable int calculationId) {
+    public ResponseEntity<List<AppliedFunction>> getCalculationFunctions(@PathVariable("calculationId") int calculationId) {
         List<AppliedFunction> functions = appliedFunctionService.getByCalculationId(calculationId);
         if (!functions.isEmpty()) {
             return ResponseEntity.ok(functions);
@@ -60,7 +60,7 @@ public class AppliedFunctionController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> delete(@PathVariable int id) {
+    public ResponseEntity<String> delete(@PathVariable("id") int id) {
         AppliedFunction function = appliedFunctionService.getById(id);
         if (function != null) {
             appliedFunctionService.deleteById(id);

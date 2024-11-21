@@ -1,5 +1,8 @@
 package ru.ssau.tk.DoubleA.javalabs.functions;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.io.Serial;
 
 public class NRootCalculateFunction implements MathFunction {
@@ -7,7 +10,8 @@ public class NRootCalculateFunction implements MathFunction {
     private static final long serialVersionUID = -3283696080044004085L;
     private int rootDegree;
 
-    public NRootCalculateFunction(int rootDegree) {
+    @JsonCreator
+    public NRootCalculateFunction(@JsonProperty("rootDegree") int rootDegree) {
         this.rootDegree = rootDegree;
     }
 

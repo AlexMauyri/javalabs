@@ -1,5 +1,8 @@
 package ru.ssau.tk.DoubleA.javalabs.functions;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.io.Serial;
 import java.util.Iterator;
 
@@ -8,7 +11,8 @@ public class StrictTabulatedFunction implements TabulatedFunction {
     private static final long serialVersionUID = -4295153131215268126L;
     TabulatedFunction function;
 
-    public StrictTabulatedFunction(TabulatedFunction function) {
+    @JsonCreator
+    public StrictTabulatedFunction(@JsonProperty(value = "function") TabulatedFunction function) {
         this.function = function;
     }
 

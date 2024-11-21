@@ -1,5 +1,8 @@
 package ru.ssau.tk.DoubleA.javalabs.functions;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.io.Serial;
 import java.util.Iterator;
 
@@ -8,7 +11,8 @@ public class UnmodifiableTabulatedFunction implements TabulatedFunction {
     private static final long serialVersionUID = 687593488411140331L;
     TabulatedFunction tabulatedFunction;
 
-    public UnmodifiableTabulatedFunction(TabulatedFunction tabulatedFunction) {
+    @JsonCreator
+    public UnmodifiableTabulatedFunction(@JsonProperty(value = "tabulatedFunction") TabulatedFunction tabulatedFunction) {
         this.tabulatedFunction = tabulatedFunction;
     }
 

@@ -1,9 +1,17 @@
 package ru.ssau.tk.DoubleA.javalabs.operations;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import ru.ssau.tk.DoubleA.javalabs.functions.MathFunction;
 
+import java.io.Serial;
+
 public class MiddleSteppingDifferentialOperator extends SteppingDifferentialOperator {
-    public MiddleSteppingDifferentialOperator(double step) {
+    @Serial
+    private static final long serialVersionUID = -5045274039176809169L;
+
+    @JsonCreator
+    public MiddleSteppingDifferentialOperator(@JsonProperty("step") double step) {
         super(step);
     }
 

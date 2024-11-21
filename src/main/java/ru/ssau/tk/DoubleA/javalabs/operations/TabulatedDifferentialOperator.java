@@ -1,5 +1,6 @@
 package ru.ssau.tk.DoubleA.javalabs.operations;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import ru.ssau.tk.DoubleA.javalabs.concurrent.SynchronizedTabulatedFunction;
 import ru.ssau.tk.DoubleA.javalabs.functions.Point;
 import ru.ssau.tk.DoubleA.javalabs.functions.TabulatedFunction;
@@ -17,6 +18,7 @@ public class TabulatedDifferentialOperator implements DifferentialOperator<Tabul
         this.factory = factory;
     }
 
+    @JsonCreator
     public TabulatedDifferentialOperator() {
         this.factory = new ArrayTabulatedFunctionFactory();
     }

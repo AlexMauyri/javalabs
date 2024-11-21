@@ -1,5 +1,6 @@
 package ru.ssau.tk.DoubleA.javalabs.functions;
 
+import com.fasterxml.jackson.annotation.*;
 import ru.ssau.tk.DoubleA.javalabs.exceptions.InterpolationException;
 
 import java.io.Serial;
@@ -13,7 +14,8 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
 
     private Node head;
 
-    public LinkedListTabulatedFunction(double[] xValues, double[] yValues) throws IllegalArgumentException {
+    @JsonCreator
+    public LinkedListTabulatedFunction(@JsonProperty("xValues") double[] xValues, @JsonProperty("yValues") double[] yValues) throws IllegalArgumentException {
         if (xValues.length < 2 || yValues.length < 2) {
             throw new IllegalArgumentException("Count of List Tabulated Function nodes cannot be less than 2");
         }
@@ -381,7 +383,34 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
     static class Node implements Serializable{
         @Serial
         private static final long serialVersionUID = 7621550250080520168L;
-        public Node previous, next;
+        public Node previous;
+        public Node next;
         public double x, y;
+    }
+
+    @JsonGetter("xValues")
+    public double[] getXValues() {
+        return toArrays()[0];
+    }
+
+    @JsonGetter("yValues")
+    public double[] getYValues() {
+        return toArrays()[1];
+    }
+
+    private double[][] toArrays() {
+        double[] xValues = new double[count];
+        double[] yValues = new double[count];
+
+        Node current = head;
+        int i = 0;
+        while (i != count) {
+            xValues[i] = current.x;
+            yValues[i] = current.y;
+            current = current.next;
+            i++;
+        }
+
+        return new double[][] { xValues, yValues };
     }
 }

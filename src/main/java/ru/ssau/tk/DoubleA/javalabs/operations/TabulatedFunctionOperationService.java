@@ -1,5 +1,6 @@
 package ru.ssau.tk.DoubleA.javalabs.operations;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import ru.ssau.tk.DoubleA.javalabs.exceptions.InconsistentFunctionsException;
 import ru.ssau.tk.DoubleA.javalabs.functions.Point;
 import ru.ssau.tk.DoubleA.javalabs.functions.TabulatedFunction;
@@ -13,6 +14,7 @@ public class TabulatedFunctionOperationService {
         this.factory = factory;
     }
 
+    @JsonCreator
     public TabulatedFunctionOperationService() {
         this.factory = new ArrayTabulatedFunctionFactory();
     }

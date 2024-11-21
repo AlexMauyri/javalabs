@@ -1,5 +1,8 @@
 package ru.ssau.tk.DoubleA.javalabs.functions;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.io.Serial;
 import java.util.zip.CRC32;
 
@@ -9,7 +12,8 @@ public class CompositeFunction implements MathFunction {
     private final MathFunction firstFunction;
     private final MathFunction secondFunction;
 
-    public CompositeFunction(MathFunction firstFunction, MathFunction secondFunction) {
+    @JsonCreator
+    public CompositeFunction(@JsonProperty(value = "firstFunction") MathFunction firstFunction, @JsonProperty(value = "secondFunction") MathFunction secondFunction) {
         this.firstFunction = firstFunction;
         this.secondFunction = secondFunction;
     }

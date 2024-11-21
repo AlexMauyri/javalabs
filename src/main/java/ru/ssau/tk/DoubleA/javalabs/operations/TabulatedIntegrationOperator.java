@@ -1,5 +1,6 @@
 package ru.ssau.tk.DoubleA.javalabs.operations;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import ru.ssau.tk.DoubleA.javalabs.concurrent.IntegrationTask;
 import ru.ssau.tk.DoubleA.javalabs.functions.MathFunction;
 import ru.ssau.tk.DoubleA.javalabs.functions.TabulatedFunction;
@@ -15,6 +16,7 @@ public class TabulatedIntegrationOperator implements MathFunction {
     private final transient ExecutorService executorService;
     private final int numberOfThreads;
 
+    @JsonCreator
     public TabulatedIntegrationOperator() {
         int numberOfThreads = Runtime.getRuntime().availableProcessors() - 1;
         this.executorService = Executors.newFixedThreadPool(numberOfThreads);

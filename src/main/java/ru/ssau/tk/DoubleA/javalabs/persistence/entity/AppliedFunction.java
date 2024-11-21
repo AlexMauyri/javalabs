@@ -1,9 +1,13 @@
 package ru.ssau.tk.DoubleA.javalabs.persistence.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "applied_function")
+@AllArgsConstructor
+@NoArgsConstructor
 public class AppliedFunction {
 
     @Id

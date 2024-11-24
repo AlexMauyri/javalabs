@@ -6,9 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-
 import java.io.IOException;
-import java.net.URL;
 
 public class PlotCraft extends Application {
     @Override
@@ -17,10 +15,10 @@ public class PlotCraft extends Application {
         Image icon = new Image("file:src/main/resources/ui/icons/function.png");
         stage.getIcons().add(icon);
         stage.setTitle("PlotCraft");
+        stage.setMinWidth(800);
+        stage.setMinHeight(600);
 
         Scene scene = new Scene(root);
-        String css = this.getClass().getResource("/ui/styles/application.css").toExternalForm();
-        scene.getStylesheets().add(css);
         stage.setScene(scene);
         stage.show();
     }

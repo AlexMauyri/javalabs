@@ -38,11 +38,16 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers(HttpMethod.POST, "/auth/**").anonymous()
+                        .requestMatchers("/login", "/register").anonymous()
                         .requestMatchers("/users/whoami").authenticated()
                         .requestMatchers("/users/**").hasAuthority("ADMIN")
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .logout(logout -> logout.deleteCookies("JwtToken").invalidateHttpSession(true))
+//                .formLogin(form -> form
+//                        .loginPage("/login")
+//                        .successHandler(new LoginSuccessHandler())
+//                        .permitAll())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }

@@ -6,14 +6,37 @@
 </head>
 <body>
 <h1>Please Log In</h1>
-<form th:action="@{/login}" method="post">
+<form id="loginForm">
     <div>
-        <input type="text" name="username" placeholder="Username"/>
+        <input type="text" id="username" name="username" placeholder="Username"/>
     </div>
     <div>
-        <input type="password" name="password" placeholder="Password"/>
+        <input type="password" id="password" name="password" placeholder="Password"/>
     </div>
     <input type="submit" value="Log in" />
+    <a href="register">Registration</a>
 </form>
+
+<script>
+    document.getElementById("loginForm").addEventListener("submit", function(event) {
+        event.preventDefault(); // Отменить стандартное отправление формы
+
+        // Сбор данных из формы
+        const data = {
+            username: document.getElementById("username").value,
+            password: document.getElementById("password").value
+        };
+
+        // Отправка данных через fetch
+        fetch('/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)  // Преобразуем объект в JSON
+        })
+    });
+</script>
+
 </body>
 </html>

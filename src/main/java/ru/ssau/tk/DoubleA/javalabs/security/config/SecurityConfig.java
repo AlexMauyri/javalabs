@@ -43,11 +43,7 @@ public class SecurityConfig {
                         .requestMatchers("/users/**").hasAuthority("ADMIN")
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .logout(logout -> logout.deleteCookies("JwtToken").invalidateHttpSession(true))
-//                .formLogin(form -> form
-//                        .loginPage("/login")
-//                        .successHandler(new LoginSuccessHandler())
-//                        .permitAll())
+                .logout(logout -> logout.deleteCookies("JwtToken"))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }

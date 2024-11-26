@@ -14,6 +14,6 @@ public class LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessH
                                         HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
 
-        response.sendRedirect("/functions");
+        response.sendRedirect("/users");
     }
 }

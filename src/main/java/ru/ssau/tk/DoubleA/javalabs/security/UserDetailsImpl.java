@@ -1,6 +1,5 @@
-package ru.ssau.tk.DoubleA.javalabs.security.user;
+package ru.ssau.tk.DoubleA.javalabs.security;
 
-import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,13 +9,14 @@ import java.io.Serial;
 import java.util.Collection;
 import java.util.List;
 
-@AllArgsConstructor
 public class UserDetailsImpl implements UserDetails {
-
     @Serial
-    private static final long serialVersionUID = 4621715269498720684L;
-    private final User user;
+    private static final long serialVersionUID = -2812971816280649783L;
+    private User user;
 
+    public UserDetailsImpl(User user) {
+        this.user = user;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -3,7 +3,7 @@ package ru.ssau.tk.DoubleA.javalabs.persistence.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import ru.ssau.tk.DoubleA.javalabs.security.user.Role;
+import ru.ssau.tk.DoubleA.javalabs.security.Role;
 
 @Entity
 @Table(name = "users")

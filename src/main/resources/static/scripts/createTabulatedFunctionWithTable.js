@@ -1,9 +1,22 @@
 function createTable() {
-    const points = document.getElementById('points').value;
+    const points = parseFloat(document.getElementById('points').value); //Запятая, точка, е дают пустую строку
+    if (isNaN(points) || parseInt(Number(points)) !== points) {
+        alert('Число не может быть дробным!');
+        return;
+    } else if (points < 0) {
+        alert('Число не может быть отрицательным! Требуется значение от двух и более');
+        return;
+    } else if (points === 0) {
+        alert('А смысл? Требуется значение от двух и более');
+        return;
+    } else if (points === 1) {
+        alert('Требуется значение от двух и более');
+        return;
+    }
+
     const tableBody = document.getElementById('functionTable').getElementsByTagName('tbody')[0];
 
-    // Clear existing rows
-    tableBody.innerHTML = '';
+    tableBody.innerHTML = ''; //Очистка столбцов
 
     // Add new rows based on the number of points
     for (let i = 0; i < points; i++) {
@@ -37,9 +50,11 @@ function submitFunction() {
         const cells = row.getElementsByTagName('td');
         const x = cells[0].getElementsByTagName('input')[0].value;
         const y = cells[1].getElementsByTagName('input')[0].value;
-
-        if (x === '' || y === '') {
-            alert('Please fill all x and y values.');
+        if (x === '') {
+            alert(`Не заполнено значение x в ${row.rowIndex} строке`);
+            return;
+        } else if (y === '') {
+            alert(`Не заполнено значение y в ${row.rowIndex} строке`);
             return;
         }
 
@@ -57,7 +72,7 @@ function sendDataToBackend(xValues, yValues) {
         y: yValues
     };
 
-    fetch('http://localhost:8080/createTF', {
+    fetch('http://localhost:8080/createTabulatedFunctionWithTable', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

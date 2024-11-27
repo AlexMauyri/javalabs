@@ -6,8 +6,3 @@ table, th, td {
 table {
     margin-top: 10px;
 }
-
-.chooseFabric {
-    display: flex;
-    flex-direction: column;
-}

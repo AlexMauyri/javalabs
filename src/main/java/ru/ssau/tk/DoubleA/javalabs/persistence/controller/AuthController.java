@@ -51,6 +51,11 @@ public class AuthController {
 
     @GetMapping("/logout")
     public String logout() {
+        return "logout";
+    }
+
+    @PostMapping("/logout")
+    public String performLogout() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null) {
             SecurityContextHolder.getContext().setAuthentication(null);

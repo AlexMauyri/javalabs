@@ -59,9 +59,7 @@ public class SecurityConfig {
                         .loginPage("/login")
                         .successHandler(new LoginSuccessHandler())
                         .permitAll())
-                .logout(logout -> logout
-                        .logoutUrl("/logout")
-                        .deleteCookies("JSESSIONID"))
+                .logout(AbstractHttpConfigurer::disable)
                 .build();
     }
 }

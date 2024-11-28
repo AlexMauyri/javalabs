@@ -1,8 +1,6 @@
 function createDropdownList() {
     let selector = document.getElementById("selectFunction");
 
-
-
     fetch('http://localhost:8080/getFunctions')
         .then(response => response.json())
         .then(data => {

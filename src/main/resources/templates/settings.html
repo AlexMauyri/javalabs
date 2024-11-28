@@ -2,21 +2,29 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Настройки</title>
 </head>
 <body>
 <div class="container">
   <span class="gotoHome"><a href="/home">Вернуться на главную страницу</a></span>
   <div class="chooseFabric">
-    <label>
-      Создание табулированных функций на основе массивов
-      <input type="radio" name="fabric" value="array" checked="checked">
-    </label>
-    <label>
-      Создание табулированных функций на основе связного списка
-      <input type="radio" name="fabric" value="linkedList">
-    </label>
+    <div class="fabrics">
+      <label>
+        Создание табулированных функций на основе массива
+        <input type="radio" id="ARRAY" name="fabric" value="array" checked="checked">
+      </label>
+      <label>
+        Создание табулированных функций на основе связного списка
+        <input type="radio" id="LINKEDLIST" name="fabric" value="linkedList">
+      </label>
+    </div>
+    <div class="submitSettings" onclick="saveSettings()">
+      <label>
+        <input type="submit" value="Сохранить"/>
+      </label>
+    </div>
   </div>
 </div>
+<script src="/static/scripts/settings.js" th:src="@{/scripts/settings.js}"></script>
 </body>
 </html>

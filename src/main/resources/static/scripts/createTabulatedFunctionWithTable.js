@@ -18,7 +18,6 @@ function createTable() {
 
     tableBody.innerHTML = ''; //Очистка столбцов
 
-    // Add new rows based on the number of points
     for (let i = 0; i < points; i++) {
         const row = document.createElement('tr');
 

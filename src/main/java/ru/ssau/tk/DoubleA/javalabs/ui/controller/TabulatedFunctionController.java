@@ -14,7 +14,8 @@ import ru.ssau.tk.DoubleA.javalabs.functions.factory.ArrayTabulatedFunctionFacto
 import ru.ssau.tk.DoubleA.javalabs.functions.factory.LinkedListTabulatedFunctionFactory;
 import ru.ssau.tk.DoubleA.javalabs.functions.factory.TabulatedFunctionFactory;
 import ru.ssau.tk.DoubleA.javalabs.ui.FabricType;
-import ru.ssau.tk.DoubleA.javalabs.ui.dto.TabulatedFunctionRequest;
+import ru.ssau.tk.DoubleA.javalabs.ui.dto.TabulatedFunctionOnArraysRequest;
+import ru.ssau.tk.DoubleA.javalabs.ui.dto.TabulatedFunctionOnFunctionRequest;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,7 +24,6 @@ import java.util.Map;
 
 @Controller
 public class TabulatedFunctionController {
-
     private final Map<String, MathFunction> functions;
     private final Map<FabricType, TabulatedFunctionFactory> factories;
 
@@ -56,9 +56,28 @@ public class TabulatedFunctionController {
     }
 
     @PostMapping("/createTabulatedFunctionWithTable")
-    public ResponseEntity<TabulatedFunction> createTabulatedFunction(@RequestBody TabulatedFunctionRequest tabulatedFunctionRequest, HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<TabulatedFunction> createTabulatedFunctionWithTable(@RequestBody TabulatedFunctionOnArraysRequest tabulatedFunctionRequest,
+                                                                              HttpServletRequest request,
+                                                                              HttpServletResponse response) {
         TabulatedFunctionFactory factory = determineFabric(request, response);
-        TabulatedFunction function = factory.create(tabulatedFunctionRequest.getX(), tabulatedFunctionRequest.getY());
+        TabulatedFunction function = factory.create(
+                tabulatedFunctionRequest.getX(),
+                tabulatedFunctionRequest.getY()
+        );
+        return ResponseEntity.ok(function);
+    }
+
+    @PostMapping("/createTabulatedFunctionWithFunction")
+    public ResponseEntity<TabulatedFunction> createTabulatedFunctionWithFunction(@RequestBody TabulatedFunctionOnFunctionRequest tabulatedFunctionRequest,
+                                                                                 HttpServletRequest request,
+                                                                                 HttpServletResponse response) {
+        TabulatedFunctionFactory factory = determineFabric(request, response);
+        TabulatedFunction function = factory.create(
+            functions.get(tabulatedFunctionRequest.getFunctionName()),
+            tabulatedFunctionRequest.getFrom(),
+            tabulatedFunctionRequest.getTo(),
+            tabulatedFunctionRequest.getAmountOfPoints()
+        );
         return ResponseEntity.ok(function);
     }
 

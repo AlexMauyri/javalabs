@@ -10,22 +10,34 @@
   <span class="gotoHome"><a href="/home">Вернуться на главную страницу</a></span>
 
   <div class="inputData">
-    <label> Выберите функцию:
-      <select id="selectFunction">
-      </select>
-    </label>
+    <div class="listOfFunctions">
+      <label> Выберите функцию:
+        <select id="selectFunction">
+        </select>
+      </label>
+    </div>
 
-    <label>
-      Укажите количество точек разбиения:
-      <input type="number"/>
-    </label>
+    <div class="numberOfPoints">
+      <label>
+        Укажите количество точек разбиения:
+        <input type="number" id="count"/>
+      </label>
+    </div>
 
-    <label>
-      Укажите интервал разбиения: от
-      <input type="number"/>
-      до
-      <input type="number"/>
-    </label>
+    <div class="interval">
+      <label>
+        Укажите интервал разбиения: от
+        <input type="number" id="leftBorder"/>
+        до
+        <input type="number" id="rightBorder"/>
+      </label>
+    </div>
+
+    <div class="create">
+      <label>
+        <input type="submit" value="Создать" onclick="submitFunction()">
+      </label>
+    </div>
   </div>
 </div>
 

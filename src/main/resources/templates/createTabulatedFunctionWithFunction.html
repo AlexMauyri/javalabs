@@ -5,18 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Создание табулированной функции</title>
 </head>
-<body>
+<body onload="createDropdownList()">
 <div class="container">
   <span class="gotoHome"><a href="/home">Вернуться на главную страницу</a></span>
 
   <div class="inputData">
     <label> Выберите функцию:
-      <select>
-        <option>Функция1</option>
-        <option>Функция2</option>
-        <option>Функция3</option>
-        <option>Функция4</option>
-        <option>Функция5</option>
+      <select id="selectFunction">
       </select>
     </label>
 
@@ -33,5 +28,7 @@
     </label>
   </div>
 </div>
+
+<script src="/static/scripts/createTabulatedFunctionWithFunction.js" th:src="@{/scripts/createTabulatedFunctionWithFunction.js}"></script>
 </body>
 </html>

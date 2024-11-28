@@ -5,20 +5,11 @@
     <title>Title</title>
 </head>
 <body>
-    <form method="get" action="/createTabulatedFunctionWithTable">
-        <input type="submit" value="Создать табулированную функцию с помощью таблицы">
-    </form>
-
-    <form method="get" action="/createTabulatedFunctionWithFunction">
-        <input type="submit" value="Создать табулированную функцию на основе математической функции">
-    </form>
-
-    <form method="get" action="/settings">
-        <input type="submit" value="Настройки">
-    </form>
-
-    <form method="get" action="/logout">
-        <input type="submit" value="Выйти из системы">
-    </form>
+    <nav class="menu">
+        <a th:href="@{/createTabulatedFunctionWithTable}" href="createTabulatedFunctionWithTable.html">Создать табулированную функцию с помощью таблицы</a>
+        <a th:href="@{/createTabulatedFunctionWithFunction}" href="createTabulatedFunctionWithFunction.html">Создать табулированную функцию на основе математической функции</a>
+        <a th:href="@{/settings}" href="settings.html">Настройки</a>
+        <a th:href="@{/logout}" href="logout.html">Выйти из системы</a>
+    </nav>
 </body>
 </html>

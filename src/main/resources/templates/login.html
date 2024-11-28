@@ -6,6 +6,7 @@
 </head>
 <body>
 <h1>Добро пожаловать! Введите свои данные</h1>
+<p th:if="${loginError}" class="loginError">Неправильное имя пользователя или пароль</p>
 <form action="/login" method="post">
     <label for="username"></label>
     <input type="text" id="username" name="username" placeholder="Логин" required><br>

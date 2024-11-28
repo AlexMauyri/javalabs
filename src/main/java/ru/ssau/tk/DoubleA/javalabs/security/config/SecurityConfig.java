@@ -57,6 +57,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth.requestMatchers("/login", "/register").permitAll().anyRequest().authenticated())
                 .formLogin(form -> form
                         .loginPage("/login")
+                        .failureUrl("/login-error")
                         .successHandler(new LoginSuccessHandler())
                         .permitAll())
                 .logout(AbstractHttpConfigurer::disable)

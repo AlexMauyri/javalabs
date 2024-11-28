@@ -3,12 +3,14 @@ package ru.ssau.tk.DoubleA.javalabs.persistence.controller;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
+import org.springframework.boot.Banner;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.ssau.tk.DoubleA.javalabs.persistence.service.UserService;
 
@@ -20,26 +22,27 @@ public class AuthController {
     private AuthenticationManager authenticationManager;
 
     @GetMapping("/register")
-    public String register() {
+    public String register(Model model) {
+        model.addAttribute("registerError", false);
         return "register";
     }
 
     @PostMapping("/register")
-    public String performRegister(@RequestParam("username") String username,@RequestParam("password") String password, HttpServletRequest request) throws ServletException {
+    public String performRegister(@RequestParam("username") String username,@RequestParam("password") String password, HttpServletRequest request, Model model) throws ServletException {
 
         if (userService.existsByUsername(username)) {
-            throw new UsernameNotFoundException("Username " + username + " already exists");
+            model.addAttribute("registerError", true);
+            return "register";
         }
 
         userService.addUser(username, password);
-
         request.login(username, password);
-
         return "redirect:/home";
     }
 
     @GetMapping("/login")
-    public String login() {
+    public String login(Model model) {
+        model.addAttribute("loginError", false);
         return "login";
     }
 
@@ -47,6 +50,12 @@ public class AuthController {
     public void performLogin(@RequestParam("username") String username,@RequestParam("password") String password) {
         Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
         SecurityContextHolder.getContext().setAuthentication(auth);
+    }
+
+    @GetMapping("/login-error")
+    public String loginError(Model model) {
+        model.addAttribute("loginError", true);
+        return "login";
     }
 
     @GetMapping("/logout")

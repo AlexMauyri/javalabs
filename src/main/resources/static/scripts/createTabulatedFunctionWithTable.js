@@ -16,9 +16,22 @@ function createTable() {
 
     const tableBody = document.getElementById('functionTable').getElementsByTagName('tbody')[0];
 
-    tableBody.innerHTML = ''; //Очистка столбцов
+    const existingRows = tableBody.getElementsByTagName('tr');
+    let i = 0;
+    for (; i < existingRows.length && i < points; ++i) {
+        let values = existingRows[i].getElementsByTagName('td');
+        let x = values[0].getElementsByTagName('input')[0].value;
+        let y = values[1].getElementsByTagName('input')[0].value;
+        if (x === undefined && y === undefined) {
+            break;
+        }
+    }
 
-    for (let i = 0; i < points; i++) {
+    for (let j = existingRows.length - 1; j >= i; --j) {
+        tableBody.removeChild(existingRows[j]);
+    }
+
+    for (; i < points; ++i) {
         const row = document.createElement('tr');
 
         const cellX = document.createElement('td');

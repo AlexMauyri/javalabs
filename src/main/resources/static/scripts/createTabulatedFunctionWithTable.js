@@ -74,15 +74,17 @@ function submitFunction() {
         yValues.push(parseFloat(y));
     }
 
-    let blob = serializeFunction(xValues, yValues);
-    console.log(blob);
-    let link = document.createElement('a');
-    link.href = window.URL.createObjectURL(blob);
-    link.download = 'newFunction.bin'; // Предлагаемое имя файла
-    document.body.appendChild(link);
-    link.click();
+    serializeFunction(xValues, yValues).then(data => {
+        console.log(data);
+        let link = document.createElement('a');
+        link.href = window.URL.createObjectURL(data);
+        link.download = 'newFunction.bin'; // Предлагаемое имя файла
+        document.body.appendChild(link);
+        link.click();
 
-    document.body.removeChild(link);
+        document.body.removeChild(link);
+    });
+
 }
 
 function serializeFunction(xValues, yValues) {
@@ -90,24 +92,21 @@ function serializeFunction(xValues, yValues) {
         x: xValues,
         y: yValues
     };
-    let serializedData;
-    fetch('http://localhost:8080/createTabulatedFunctionWithTable', {
+    return fetch('http://localhost:8080/createTabulatedFunctionWithTable', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(data),
     })
-        .then(response => response.json())
-        .then(data => {
-            alert('Tabulated function created successfully!');
-            console.log('Response from backend:', data);
-            serializedData = data;
-        })
+        .then(
+            response => response.blob()
+        )
+        .then(
+            data => data
+        )
         .catch((error) => {
             console.error('Error:', error);
             alert('Error creating tabulated function');
         });
-
-    return serializedData;
 }

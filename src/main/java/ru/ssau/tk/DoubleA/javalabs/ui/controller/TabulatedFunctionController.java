@@ -59,7 +59,7 @@ public class TabulatedFunctionController {
 
     @PostMapping("/createTabulatedFunctionWithTable")
     @ResponseBody
-    public String createTabulatedFunctionWithTable(@RequestBody TabulatedFunctionOnArraysRequest tabulatedFunctionRequest,
+    public byte[] createTabulatedFunctionWithTable(@RequestBody TabulatedFunctionOnArraysRequest tabulatedFunctionRequest,
                                                                               HttpServletRequest request,
                                                                               HttpServletResponse response) throws JsonProcessingException {
         TabulatedFunctionFactory factory = determineFabric(request, response);
@@ -69,8 +69,7 @@ public class TabulatedFunctionController {
         );
 
         byte[] serializedFunction = serialize(function);
-        String result = "{value:" + new ObjectMapper().writeValueAsString(serializedFunction) + "}";
-        return result;
+        return serializedFunction;
     }
 
     @PostMapping("/createTabulatedFunctionWithFunction")

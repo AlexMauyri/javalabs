@@ -1,5 +1,7 @@
 package ru.ssau.tk.DoubleA.javalabs.ui.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -13,14 +15,14 @@ import ru.ssau.tk.DoubleA.javalabs.functions.*;
 import ru.ssau.tk.DoubleA.javalabs.functions.factory.ArrayTabulatedFunctionFactory;
 import ru.ssau.tk.DoubleA.javalabs.functions.factory.LinkedListTabulatedFunctionFactory;
 import ru.ssau.tk.DoubleA.javalabs.functions.factory.TabulatedFunctionFactory;
+import ru.ssau.tk.DoubleA.javalabs.io.FunctionsIO;
+import ru.ssau.tk.DoubleA.javalabs.operations.TabulatedDifferentialOperator;
 import ru.ssau.tk.DoubleA.javalabs.ui.FabricType;
 import ru.ssau.tk.DoubleA.javalabs.ui.dto.TabulatedFunctionOnArraysRequest;
 import ru.ssau.tk.DoubleA.javalabs.ui.dto.TabulatedFunctionOnFunctionRequest;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.*;
+import java.util.*;
 
 @Controller
 public class TabulatedFunctionController {
@@ -56,15 +58,19 @@ public class TabulatedFunctionController {
     }
 
     @PostMapping("/createTabulatedFunctionWithTable")
-    public ResponseEntity<TabulatedFunction> createTabulatedFunctionWithTable(@RequestBody TabulatedFunctionOnArraysRequest tabulatedFunctionRequest,
+    @ResponseBody
+    public String createTabulatedFunctionWithTable(@RequestBody TabulatedFunctionOnArraysRequest tabulatedFunctionRequest,
                                                                               HttpServletRequest request,
-                                                                              HttpServletResponse response) {
+                                                                              HttpServletResponse response) throws JsonProcessingException {
         TabulatedFunctionFactory factory = determineFabric(request, response);
         TabulatedFunction function = factory.create(
                 tabulatedFunctionRequest.getX(),
                 tabulatedFunctionRequest.getY()
         );
-        return ResponseEntity.ok(function);
+
+        byte[] serializedFunction = serialize(function);
+        String result = "{value:" + new ObjectMapper().writeValueAsString(serializedFunction) + "}";
+        return result;
     }
 
     @PostMapping("/createTabulatedFunctionWithFunction")
@@ -97,5 +103,18 @@ public class TabulatedFunctionController {
         cookie.setPath("/");
         cookie.setHttpOnly(false);
         response.addCookie(cookie);
+    }
+
+    private byte[] serialize(TabulatedFunction function) {
+        byte[] serializedFunction = null;
+        try(ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
+            BufferedOutputStream outputStream = new BufferedOutputStream(byteOutputStream)) {
+            FunctionsIO.serialize(outputStream, function);
+            serializedFunction = byteOutputStream.toByteArray();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return serializedFunction;
     }
 }

@@ -11,9 +11,9 @@
     <span class="gotoHome"><a href="/home">Вернуться на главную страницу</a></span>
 
     <div class="inputNumberOfPoints">
-        <label for="points">Number of points:</label>
+        <label for="points">Число точек:</label>
         <input type="number" id="points">
-        <button onclick="createTable()">Create Table</button>
+        <button onclick="createTable()">Создать таблицу</button>
     </div>
 
     <div class="functionTable">
@@ -30,7 +30,17 @@
         </table>
     </div>
 
-    <button onclick="submitFunction()">Submit Function</button>
+    <div class="saveFunction">
+        <label>
+            Сохранить в формате:
+            <select id="format">
+                <option>Byte</option>
+                <option>JSON</option>
+                <option>XML</option>
+            </select>
+        </label>
+        <button onclick="submitFunction()">Сохранить</button>
+    </div>
 </div>
 
 

@@ -74,16 +74,23 @@ function submitFunction() {
         yValues.push(parseFloat(y));
     }
 
-    // Send the data to the Java backend
-    sendDataToBackend(xValues, yValues);
+    let blob = serializeFunction(xValues, yValues);
+    console.log(blob);
+    let link = document.createElement('a');
+    link.href = window.URL.createObjectURL(blob);
+    link.download = 'newFunction.bin'; // Предлагаемое имя файла
+    document.body.appendChild(link);
+    link.click();
+
+    document.body.removeChild(link);
 }
 
-function sendDataToBackend(xValues, yValues) {
+function serializeFunction(xValues, yValues) {
     const data = {
         x: xValues,
         y: yValues
     };
-
+    let serializedData;
     fetch('http://localhost:8080/createTabulatedFunctionWithTable', {
         method: 'POST',
         headers: {
@@ -95,9 +102,12 @@ function sendDataToBackend(xValues, yValues) {
         .then(data => {
             alert('Tabulated function created successfully!');
             console.log('Response from backend:', data);
+            serializedData = data;
         })
         .catch((error) => {
             console.error('Error:', error);
             alert('Error creating tabulated function');
         });
+
+    return serializedData;
 }

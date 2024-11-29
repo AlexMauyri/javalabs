@@ -17,7 +17,7 @@ public final class FunctionsIO {
         throw new UnsupportedOperationException();
     }
 
-    static void writeTabulatedFunction(BufferedWriter writer, TabulatedFunction function) {
+    public static void writeTabulatedFunction(BufferedWriter writer, TabulatedFunction function) {
         PrintWriter printWriter = new PrintWriter(writer);
 
         printWriter.println(function.getCount());
@@ -29,7 +29,7 @@ public final class FunctionsIO {
         printWriter.flush();
     }
 
-    static void writeTabulatedFunction(BufferedOutputStream outputStream, TabulatedFunction function) throws IOException {
+    public static void writeTabulatedFunction(BufferedOutputStream outputStream, TabulatedFunction function) throws IOException {
         DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
 
         dataOutputStream.writeInt(function.getCount());
@@ -42,7 +42,7 @@ public final class FunctionsIO {
         dataOutputStream.flush();
     }
 
-    static TabulatedFunction readTabulatedFunction(BufferedReader reader, TabulatedFunctionFactory factory) throws IOException {
+    public static TabulatedFunction readTabulatedFunction(BufferedReader reader, TabulatedFunctionFactory factory) throws IOException {
         String string = reader.readLine();
         int count = Integer.parseInt(string);
 
@@ -65,7 +65,7 @@ public final class FunctionsIO {
         return factory.create(xValues, yValues);
     }
 
-    static TabulatedFunction readTabulatedFunction(BufferedInputStream inputStream, TabulatedFunctionFactory factory) throws IOException {
+    public static TabulatedFunction readTabulatedFunction(BufferedInputStream inputStream, TabulatedFunctionFactory factory) throws IOException {
         DataInputStream dataInputStream = new DataInputStream(inputStream);
 
         int elementsCount = dataInputStream.readInt();
@@ -80,7 +80,7 @@ public final class FunctionsIO {
         return factory.create(xValues, yValues);
     }
 
-    static void serialize(BufferedOutputStream stream, TabulatedFunction function) throws IOException {
+    public static void serialize(BufferedOutputStream stream, TabulatedFunction function) throws IOException {
         ObjectOutputStream objectStream = new ObjectOutputStream(stream);
 
         objectStream.writeObject(function);
@@ -88,26 +88,26 @@ public final class FunctionsIO {
         objectStream.flush();
     }
 
-    static TabulatedFunction deserialize(BufferedInputStream stream) throws IOException, ClassNotFoundException {
+    public static TabulatedFunction deserialize(BufferedInputStream stream) throws IOException, ClassNotFoundException {
         ObjectInputStream objectInputStream = new ObjectInputStream(stream);
 
         Object function = objectInputStream.readObject();
         return (TabulatedFunction)function;
     }
 
-    static void serializeXml(BufferedWriter writer, ArrayTabulatedFunction function) throws IOException {
+    public static void serializeXml(BufferedWriter writer, ArrayTabulatedFunction function) throws IOException {
         XStream xStream = new XStream();
         writer.write(xStream.toXML(function));
         writer.flush();
     }
 
-    static ArrayTabulatedFunction deserializeXml(BufferedReader reader) {
+    public static ArrayTabulatedFunction deserializeXml(BufferedReader reader) {
         XStream xStream = new XStream();
         xStream.allowTypeHierarchy(ArrayTabulatedFunction.class);
         return (ArrayTabulatedFunction) xStream.fromXML(reader);
     }
 
-    static void serializeJson(BufferedWriter writer, ArrayTabulatedFunction function) throws IOException {
+    public static void serializeJson(BufferedWriter writer, ArrayTabulatedFunction function) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
 
         writer.write(objectMapper.writeValueAsString(function));
@@ -115,7 +115,7 @@ public final class FunctionsIO {
         writer.flush();
     }
 
-    static ArrayTabulatedFunction deserializeJson(BufferedReader reader) throws IOException {
+    public static ArrayTabulatedFunction deserializeJson(BufferedReader reader) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
 
         Object function = objectMapper.readerFor(ArrayTabulatedFunction.class).readValue(reader);

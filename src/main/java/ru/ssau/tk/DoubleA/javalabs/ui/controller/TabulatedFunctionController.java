@@ -73,6 +73,21 @@ public class TabulatedFunctionController {
         return "functionArithmetic";
     }
 
+    @GetMapping("popup/createTabulatedFunction")
+    public String chooseMethod() {
+        return "popup/createTabulatedFunction";
+    }
+
+    @GetMapping("popup/tableCreation")
+    public String createFromTable() {
+        return "popup/tableCreation";
+    }
+
+    @GetMapping("popup/functionCreation")
+    public String createFromFunction() {
+        return "popup/functionCreation";
+    }
+
     @PostMapping("/createTabulatedFunctionWithTableByte")
     @ResponseBody
     public byte[] createTabulatedFunctionWithTableByte(@RequestBody TabulatedFunctionOnArraysRequest tabulatedFunctionRequest,
@@ -127,9 +142,7 @@ public class TabulatedFunctionController {
             tabulatedFunctionRequest.getTo(),
             tabulatedFunctionRequest.getAmountOfPoints()
         );
-        byte[] f = serialize(function);
-        System.out.println(Arrays.toString(f));
-        return f;
+        return serialize(function);
     }
 
     @PostMapping("/createTabulatedFunctionWithFunctionJSON")

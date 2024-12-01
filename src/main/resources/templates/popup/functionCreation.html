@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Создание табулированной функции</title>
+</head>
+<body onload="createDropdownList()">
+<div class="container">
+    <div class="inputData">
+        <div class="listOfFunctions">
+            <label> Выберите функцию:
+                <select id="selectFunction">
+                </select>
+            </label>
+        </div>
+
+        <div class="numberOfPoints">
+            <label>
+                Укажите количество точек разбиения:
+                <input type="number" id="count"/>
+            </label>
+        </div>
+
+        <div class="interval">
+            <label>
+                Укажите интервал разбиения: от
+                <input type="number" id="leftBorder"/>
+                до
+                <input type="number" id="rightBorder"/>
+            </label>
+        </div>
+
+        <div>
+            <input type="submit" onclick="submitFunctionOnFunction()" value="Создать">
+            <button id="close">Закрыть</button>
+        </div>
+    </div>
+</div>
+
+<script src="/static/scripts/createTabulatedFunctionWithFunction.js" th:src="@{/scripts/createTabulatedFunctionWithFunction.js}"></script>
+</body>
+</html>

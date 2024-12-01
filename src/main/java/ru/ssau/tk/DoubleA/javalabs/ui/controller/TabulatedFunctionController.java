@@ -47,6 +47,7 @@ public class TabulatedFunctionController {
         return new ArrayList<>(functions.keySet());
     }
 
+
     @GetMapping("/createTabulatedFunctionWithTable")
     public String createWithTable() {
         return "createTabulatedFunctionWithTable";
@@ -57,9 +58,24 @@ public class TabulatedFunctionController {
         return "createTabulatedFunctionWithFunction";
     }
 
-    @PostMapping("/createTabulatedFunctionWithTable")
+    @GetMapping("/doDifferential")
+    public String doDifferential() {
+        return "doDifferential";
+    }
+
+    @GetMapping("/doIntegral")
+    public String doIntegral() {
+        return "doIntegral";
+    }
+
+    @GetMapping("/functionArithmetic")
+    public String functionArithmetic() {
+        return "functionArithmetic";
+    }
+
+    @PostMapping("/createTabulatedFunctionWithTableByte")
     @ResponseBody
-    public byte[] createTabulatedFunctionWithTable(@RequestBody TabulatedFunctionOnArraysRequest tabulatedFunctionRequest,
+    public byte[] createTabulatedFunctionWithTableByte(@RequestBody TabulatedFunctionOnArraysRequest tabulatedFunctionRequest,
                                                                               HttpServletRequest request,
                                                                               HttpServletResponse response) {
         TabulatedFunctionFactory factory = determineFabric(request, response);
@@ -71,8 +87,37 @@ public class TabulatedFunctionController {
         return serialize(function);
     }
 
-    @PostMapping("/createTabulatedFunctionWithFunction")
-    public byte[] createTabulatedFunctionWithFunction(@RequestBody TabulatedFunctionOnFunctionRequest tabulatedFunctionRequest,
+    @PostMapping("/createTabulatedFunctionWithTableJSON")
+    @ResponseBody
+    public String createTabulatedFunctionWithTableJSON(@RequestBody TabulatedFunctionOnArraysRequest tabulatedFunctionRequest,
+                                                   HttpServletRequest request,
+                                                   HttpServletResponse response) {
+        TabulatedFunctionFactory factory = determineFabric(request, response);
+        TabulatedFunction function = factory.create(
+                tabulatedFunctionRequest.getX(),
+                tabulatedFunctionRequest.getY()
+        );
+
+        return serializeJson(function);
+    }
+
+    @PostMapping("/createTabulatedFunctionWithTableXML")
+    @ResponseBody
+    public String createTabulatedFunctionWithTableXML(@RequestBody TabulatedFunctionOnArraysRequest tabulatedFunctionRequest,
+                                                   HttpServletRequest request,
+                                                   HttpServletResponse response) {
+        TabulatedFunctionFactory factory = determineFabric(request, response);
+        TabulatedFunction function = factory.create(
+                tabulatedFunctionRequest.getX(),
+                tabulatedFunctionRequest.getY()
+        );
+
+        return serializeXml(function);
+    }
+
+    @PostMapping("/createTabulatedFunctionWithFunctionByte")
+    @ResponseBody
+    public byte[] createTabulatedFunctionWithFunctionByte(@RequestBody TabulatedFunctionOnFunctionRequest tabulatedFunctionRequest,
                                                                                  HttpServletRequest request,
                                                                                  HttpServletResponse response) {
         TabulatedFunctionFactory factory = determineFabric(request, response);
@@ -82,7 +127,65 @@ public class TabulatedFunctionController {
             tabulatedFunctionRequest.getTo(),
             tabulatedFunctionRequest.getAmountOfPoints()
         );
-        return serialize(function);
+        byte[] f = serialize(function);
+        System.out.println(Arrays.toString(f));
+        return f;
+    }
+
+    @PostMapping("/createTabulatedFunctionWithFunctionJSON")
+    @ResponseBody
+    public String createTabulatedFunctionWithFunctionJSON(@RequestBody TabulatedFunctionOnFunctionRequest tabulatedFunctionRequest,
+                                                      HttpServletRequest request,
+                                                      HttpServletResponse response) {
+        TabulatedFunctionFactory factory = determineFabric(request, response);
+        TabulatedFunction function = factory.create(
+                functions.get(tabulatedFunctionRequest.getFunctionName()),
+                tabulatedFunctionRequest.getFrom(),
+                tabulatedFunctionRequest.getTo(),
+                tabulatedFunctionRequest.getAmountOfPoints()
+        );
+        return serializeJson(function);
+    }
+
+    @PostMapping("/createTabulatedFunctionWithFunctionXML")
+    @ResponseBody
+    public String createTabulatedFunctionWithFunctionXML(@RequestBody TabulatedFunctionOnFunctionRequest tabulatedFunctionRequest,
+                                                      HttpServletRequest request,
+                                                      HttpServletResponse response) {
+        TabulatedFunctionFactory factory = determineFabric(request, response);
+        TabulatedFunction function = factory.create(
+                functions.get(tabulatedFunctionRequest.getFunctionName()),
+                tabulatedFunctionRequest.getFrom(),
+                tabulatedFunctionRequest.getTo(),
+                tabulatedFunctionRequest.getAmountOfPoints()
+        );
+        return serializeXml(function);
+    }
+
+    @PostMapping("/convertFromBLOB")
+    @ResponseBody
+    public String convertFromBLOB(@RequestBody byte[] bytes) throws JsonProcessingException {
+        TabulatedFunction function = null;
+        try(BufferedInputStream inputStream = new BufferedInputStream(new ByteArrayInputStream(bytes))) {
+            function = FunctionsIO.deserialize(inputStream);
+        } catch (ClassNotFoundException | IOException e) {
+            e.printStackTrace();
+        }
+
+        return new ObjectMapper().writeValueAsString(function);
+    }
+
+    @PostMapping("/convertFromXML")
+    @ResponseBody
+    public String convertFromXML(@RequestBody String xmlFunction) throws JsonProcessingException {
+        TabulatedFunction function = null;
+        try(BufferedReader reader = new BufferedReader(new StringReader(xmlFunction))) {
+            function = FunctionsIO.deserializeXml(reader);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return new ObjectMapper().writeValueAsString(function);
     }
 
     private TabulatedFunctionFactory determineFabric(HttpServletRequest request, HttpServletResponse response) {
@@ -109,6 +212,32 @@ public class TabulatedFunctionController {
             BufferedOutputStream outputStream = new BufferedOutputStream(byteOutputStream)) {
             FunctionsIO.serialize(outputStream, function);
             serializedFunction = byteOutputStream.toByteArray();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return serializedFunction;
+    }
+
+    private String serializeJson(TabulatedFunction function) {
+        String serializedFunction = null;
+        try(StringWriter stringWriter = new StringWriter();
+            BufferedWriter bufferedWriter = new BufferedWriter(stringWriter)) {
+            FunctionsIO.serializeJson(bufferedWriter, function);
+            serializedFunction = stringWriter.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return serializedFunction;
+    }
+
+    private String serializeXml(TabulatedFunction function) {
+        String serializedFunction = null;
+        try(StringWriter stringWriter = new StringWriter();
+            BufferedWriter bufferedWriter = new BufferedWriter(stringWriter)) {
+            FunctionsIO.serializeXml(bufferedWriter, function);
+            serializedFunction = stringWriter.toString();
         } catch (IOException e) {
             e.printStackTrace();
         }

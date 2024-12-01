@@ -14,7 +14,8 @@
     <div class="operand">
         <div class="chooseAction">
             <button>Создать таблицу</button>
-            <button>Загрузить таблицу</button>
+            <input type="file" id="fileInput" hidden onchange="showTable(this)">
+            <button onclick="loadFunction()">Загрузить таблицу</button>
             <button>Сохранить таблицу</button>
         </div>
         <div class="functionTable">
@@ -54,8 +55,8 @@
             </table>
         </div>
     </div>
-
 </div>
 
+<script th:src="@{/scripts/doDifferential.js}" src="/static/scripts/doDifferential.js" type="text/javascript"></script>
 </body>
 </html>

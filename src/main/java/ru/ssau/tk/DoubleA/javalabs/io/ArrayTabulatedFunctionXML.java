@@ -15,7 +15,7 @@ public class ArrayTabulatedFunctionXML {
         }
 
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader("output/serialized array xml.xml"))) {
-            ArrayTabulatedFunction function = FunctionsIO.deserializeXml(bufferedReader);
+            ArrayTabulatedFunction function = (ArrayTabulatedFunction) FunctionsIO.deserializeXml(bufferedReader);
 
             System.out.println(function);
         } catch (IOException e) {

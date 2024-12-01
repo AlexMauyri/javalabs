@@ -33,10 +33,16 @@
       </label>
     </div>
 
-    <div class="create">
+    <div class="saveFunction">
       <label>
-        <input type="submit" value="Создать" onclick="submitFunction()">
+        Сохранить в формате:
+        <select id="format">
+          <option>Byte</option>
+          <option>JSON</option>
+          <option>XML</option>
+        </select>
       </label>
+      <button onclick="submitFunction()">Сохранить</button>
     </div>
   </div>
 </div>

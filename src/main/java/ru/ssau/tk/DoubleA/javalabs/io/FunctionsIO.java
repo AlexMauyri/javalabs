@@ -3,6 +3,7 @@ package ru.ssau.tk.DoubleA.javalabs.io;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.xstream.XStream;
 import ru.ssau.tk.DoubleA.javalabs.functions.ArrayTabulatedFunction;
+import ru.ssau.tk.DoubleA.javalabs.functions.LinkedListTabulatedFunction;
 import ru.ssau.tk.DoubleA.javalabs.functions.Point;
 import ru.ssau.tk.DoubleA.javalabs.functions.TabulatedFunction;
 import ru.ssau.tk.DoubleA.javalabs.functions.factory.TabulatedFunctionFactory;
@@ -90,24 +91,24 @@ public final class FunctionsIO {
 
     public static TabulatedFunction deserialize(BufferedInputStream stream) throws IOException, ClassNotFoundException {
         ObjectInputStream objectInputStream = new ObjectInputStream(stream);
-
         Object function = objectInputStream.readObject();
         return (TabulatedFunction)function;
     }
 
-    public static void serializeXml(BufferedWriter writer, ArrayTabulatedFunction function) throws IOException {
+    public static void serializeXml(BufferedWriter writer, TabulatedFunction function) throws IOException {
         XStream xStream = new XStream();
         writer.write(xStream.toXML(function));
         writer.flush();
     }
 
-    public static ArrayTabulatedFunction deserializeXml(BufferedReader reader) {
+    public static TabulatedFunction deserializeXml(BufferedReader reader) {
         XStream xStream = new XStream();
         xStream.allowTypeHierarchy(ArrayTabulatedFunction.class);
-        return (ArrayTabulatedFunction) xStream.fromXML(reader);
+        xStream.allowTypeHierarchy(LinkedListTabulatedFunction.class);
+        return (TabulatedFunction) xStream.fromXML(reader);
     }
 
-    public static void serializeJson(BufferedWriter writer, ArrayTabulatedFunction function) throws IOException {
+    public static void serializeJson(BufferedWriter writer, TabulatedFunction function) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
 
         writer.write(objectMapper.writeValueAsString(function));
@@ -115,10 +116,10 @@ public final class FunctionsIO {
         writer.flush();
     }
 
-    public static ArrayTabulatedFunction deserializeJson(BufferedReader reader) throws IOException {
+    public static TabulatedFunction deserializeJson(BufferedReader reader) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
 
-        Object function = objectMapper.readerFor(ArrayTabulatedFunction.class).readValue(reader);
-        return (ArrayTabulatedFunction)function;
+        Object function = objectMapper.readerFor(TabulatedFunction.class).readValue(reader);
+        return (TabulatedFunction) function;
     }
 }

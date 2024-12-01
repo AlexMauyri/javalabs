@@ -8,3 +8,12 @@
     flex-direction: row;
     align-content: center;
 }
+
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+    padding: 5px;
+}
+table {
+    margin-top: 10px;
+}

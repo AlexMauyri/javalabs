@@ -15,36 +15,68 @@ function createDropdownList() {
 }
 
 function submitFunction() {
-    let tabulatedFunction = document.getElementById('selectFunction');
-    let count = document.getElementById('count');
-    let leftBorder = document.getElementById('leftBorder');
-    let rightBorder = document.getElementById('rightBorder');
+    const tabulatedFunction = document.getElementById('selectFunction').value;
+    const count = document.getElementById('count').value;
+    const leftBorder = document.getElementById('leftBorder').value;
+    const rightBorder = document.getElementById('rightBorder').value;
+    const format = document.getElementById("format").value;
 
-    sendDataToBackend(tabulatedFunction.value, count.value, leftBorder.value, rightBorder.value);
-}
-
-function sendDataToBackend(tabulatedFunction, count, leftBorder, rightBorder) {
-    const data = {
+    const functionData = {
         functionName : tabulatedFunction,
         from : leftBorder,
         to : rightBorder,
         amountOfPoints : count,
     }
-    console.log(JSON.stringify(data));
-    fetch('http://localhost:8080/createTabulatedFunctionWithFunction', {
+
+    serializeAndDownload(functionData, format);
+}
+
+function serializeAndDownload(functionData, format) {
+    if (format !== 'Byte') {
+        serializeFunction(functionData, format)
+            .then(response => response.text())
+            .then(data => {
+                console.log(data);
+                let link = document.createElement('a');
+                link.href = window.URL.createObjectURL(
+                    new Blob([data],
+                        {
+                            type: 'application/plain'
+                        }
+                    )
+                );
+                link.download = 'newFunction.' + format.toLowerCase();
+                link.click();
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                alert('Error creating tabulated function');
+            });
+    } else {
+        serializeFunction(functionData, format)
+            .then(response => response.blob())
+            .then(data => {
+                console.log(data);
+                let link = document.createElement('a');
+                link.href = window.URL.createObjectURL(data);
+                link.download = 'newFunction.bin'; // Предлагаемое имя файла
+                link.click();
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                alert('Error creating tabulated function');
+            });
+    }
+}
+
+function serializeFunction(functionData, format) {
+    console.log(JSON.stringify(functionData));
+    return fetch('http://localhost:8080/createTabulatedFunctionWithFunction' + format, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
-    })
-        .then(response => response.json())
-        .then(data => {
-            alert('Tabulated function created successfully!');
-            console.log('Response from backend:', data);
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-            alert('Error creating tabulated function');
-        });
+        body: JSON.stringify(functionData),
+    });
 }
+

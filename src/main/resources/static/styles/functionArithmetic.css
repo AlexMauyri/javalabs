@@ -1,0 +1,10 @@
+.chooseAction {
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    display: flex;
+    flex-direction: row;
+    align-content: center;
+}

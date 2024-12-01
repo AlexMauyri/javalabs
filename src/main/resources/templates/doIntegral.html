@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Определенный интеграл</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/styles/doIntegral.css}" href="/static/styles/doIntegral.css">
+</head>
+<body>
+<span class="gotoHome"><a href="/home">Вернуться на главную страницу</a></span>
+
+<div class="container">
+
+    <div class="operand">
+        <div class="chooseAction">
+            <button>Создать таблицу</button>
+            <button>Загрузить таблицу</button>
+            <button>Сохранить таблицу</button>
+        </div>
+        <div class="functionTable">
+            <table id="functionTable">
+                <thead>
+                <tr>
+                    <th>x</th>
+                    <th>y</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- Rows will be added here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="result">
+        <label>
+            Определенный интеграл равен:
+            <input type="text">
+        </label>
+    </div>
+
+</div>
+</body>
+</html>

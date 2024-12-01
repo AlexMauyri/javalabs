@@ -61,19 +61,18 @@ public class TabulatedFunctionController {
     @ResponseBody
     public byte[] createTabulatedFunctionWithTable(@RequestBody TabulatedFunctionOnArraysRequest tabulatedFunctionRequest,
                                                                               HttpServletRequest request,
-                                                                              HttpServletResponse response) throws JsonProcessingException {
+                                                                              HttpServletResponse response) {
         TabulatedFunctionFactory factory = determineFabric(request, response);
         TabulatedFunction function = factory.create(
                 tabulatedFunctionRequest.getX(),
                 tabulatedFunctionRequest.getY()
         );
 
-        byte[] serializedFunction = serialize(function);
-        return serializedFunction;
+        return serialize(function);
     }
 
     @PostMapping("/createTabulatedFunctionWithFunction")
-    public ResponseEntity<TabulatedFunction> createTabulatedFunctionWithFunction(@RequestBody TabulatedFunctionOnFunctionRequest tabulatedFunctionRequest,
+    public byte[] createTabulatedFunctionWithFunction(@RequestBody TabulatedFunctionOnFunctionRequest tabulatedFunctionRequest,
                                                                                  HttpServletRequest request,
                                                                                  HttpServletResponse response) {
         TabulatedFunctionFactory factory = determineFabric(request, response);
@@ -83,7 +82,7 @@ public class TabulatedFunctionController {
             tabulatedFunctionRequest.getTo(),
             tabulatedFunctionRequest.getAmountOfPoints()
         );
-        return ResponseEntity.ok(function);
+        return serialize(function);
     }
 
     private TabulatedFunctionFactory determineFabric(HttpServletRequest request, HttpServletResponse response) {

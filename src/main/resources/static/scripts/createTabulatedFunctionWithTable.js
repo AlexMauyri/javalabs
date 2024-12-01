@@ -74,16 +74,22 @@ function submitFunction() {
         yValues.push(parseFloat(y));
     }
 
-    serializeFunction(xValues, yValues).then(data => {
-        console.log(data);
-        let link = document.createElement('a');
-        link.href = window.URL.createObjectURL(data);
-        link.download = 'newFunction.bin'; // Предлагаемое имя файла
-        document.body.appendChild(link);
-        link.click();
+    serializeFunction(xValues, yValues)
+        .then(response => response.blob())
+        .then(data => {
+            console.log(data);
+            let link = document.createElement('a');
+            link.href = window.URL.createObjectURL(data);
+            link.download = 'newFunction.bin'; // Предлагаемое имя файла
+            document.body.appendChild(link);
+            link.click();
 
-        document.body.removeChild(link);
-    });
+            document.body.removeChild(link);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            alert('Error creating tabulated function');
+        });
 
 }
 
@@ -98,15 +104,5 @@ function serializeFunction(xValues, yValues) {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(data),
-    })
-        .then(
-            response => response.blob()
-        )
-        .then(
-            data => data
-        )
-        .catch((error) => {
-            console.error('Error:', error);
-            alert('Error creating tabulated function');
-        });
+    });
 }

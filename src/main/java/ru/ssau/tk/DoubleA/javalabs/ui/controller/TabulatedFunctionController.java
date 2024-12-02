@@ -7,22 +7,22 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import ru.ssau.tk.DoubleA.javalabs.functions.*;
 import ru.ssau.tk.DoubleA.javalabs.functions.factory.ArrayTabulatedFunctionFactory;
 import ru.ssau.tk.DoubleA.javalabs.functions.factory.LinkedListTabulatedFunctionFactory;
 import ru.ssau.tk.DoubleA.javalabs.functions.factory.TabulatedFunctionFactory;
 import ru.ssau.tk.DoubleA.javalabs.io.FunctionsIO;
 import ru.ssau.tk.DoubleA.javalabs.operations.TabulatedDifferentialOperator;
+import ru.ssau.tk.DoubleA.javalabs.operations.TabulatedFunctionOperationService;
+import ru.ssau.tk.DoubleA.javalabs.operations.TabulatedIntegrationOperator;
 import ru.ssau.tk.DoubleA.javalabs.ui.FabricType;
 import ru.ssau.tk.DoubleA.javalabs.ui.dto.TabulatedFunctionOnArraysRequest;
 import ru.ssau.tk.DoubleA.javalabs.ui.dto.TabulatedFunctionOnFunctionRequest;
 
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 
 @Controller
 public class TabulatedFunctionController {
@@ -49,43 +49,107 @@ public class TabulatedFunctionController {
 
 
     @GetMapping("/createTabulatedFunctionWithTable")
-    public String createWithTable() {
+    public String createWithTablePage() {
         return "createTabulatedFunctionWithTable";
     }
 
     @GetMapping("/createTabulatedFunctionWithFunction")
-    public String createWithFunction() {
+    public String createWithFunctionPage() {
         return "createTabulatedFunctionWithFunction";
     }
 
     @GetMapping("/doDifferential")
-    public String doDifferential() {
+    public String doDifferentialPage() {
         return "doDifferential";
     }
 
     @GetMapping("/doIntegral")
-    public String doIntegral() {
+    public String doIntegralPage() {
         return "doIntegral";
     }
 
     @GetMapping("/functionArithmetic")
-    public String functionArithmetic() {
+    public String functionArithmeticPage() {
         return "functionArithmetic";
     }
 
     @GetMapping("popup/createTabulatedFunction")
-    public String chooseMethod() {
+    public String chooseMethodPage() {
         return "popup/createTabulatedFunction";
     }
 
     @GetMapping("popup/tableCreation")
-    public String createFromTable() {
+    public String createFromTablePage() {
         return "popup/tableCreation";
     }
 
     @GetMapping("popup/functionCreation")
-    public String createFromFunction() {
+    public String createFromFunctionPage() {
         return "popup/functionCreation";
+    }
+
+    @GetMapping("popup/saveFile")
+    public String saveFunction() {
+        return "popup/saveFile";
+    }
+
+    @PostMapping("/doOperation/{operation}")
+    @ResponseBody
+    public String doOperation(@RequestBody TabulatedFunctionOnArraysRequest[] tables,
+                              @PathVariable("operation") String operation,
+                              HttpServletRequest request,
+                              HttpServletResponse response) throws JsonProcessingException {
+        TabulatedFunctionFactory factory = determineFabric(request, response);
+        TabulatedFunctionOperationService service = new TabulatedFunctionOperationService(factory);
+        TabulatedFunction firstFunction = factory.create(
+                tables[0].getX(),
+                tables[0].getY()
+        );
+
+        TabulatedFunction secondFunction = factory.create(
+                tables[1].getX(),
+                tables[1].getY()
+        );
+        TabulatedFunction function = switch (operation) {
+            case "+" -> service.addition(firstFunction, secondFunction);
+            case "-" -> service.subtraction(firstFunction, secondFunction);
+            case "*" -> service.multiply(firstFunction, secondFunction);
+            case "÷" -> service.divide(firstFunction, secondFunction);
+            default -> throw new IllegalStateException("Unexpected value: " + operation);
+        };
+
+        return new ObjectMapper().writeValueAsString(function);
+    }
+
+    @PostMapping("/doDifferential")
+    @ResponseBody
+    public String doDifferential(@RequestBody TabulatedFunctionOnArraysRequest tabulatedFunctionRequest,
+                                 HttpServletRequest request,
+                                 HttpServletResponse response) throws JsonProcessingException {
+        TabulatedFunctionFactory factory = determineFabric(request, response);
+        TabulatedDifferentialOperator operator = new TabulatedDifferentialOperator(factory);
+        TabulatedFunction function = factory.create(
+                tabulatedFunctionRequest.getX(),
+                tabulatedFunctionRequest.getY()
+        );
+
+        return new ObjectMapper().writeValueAsString(operator.derive(function));
+    }
+
+    @PostMapping("/doIntegral/{threads}")
+    @ResponseBody
+    public String doIntegral(@RequestBody TabulatedFunctionOnArraysRequest tabulatedFunctionRequest,
+                                 @PathVariable(name = "threads") int threadCount,
+                                 HttpServletRequest request,
+                                 HttpServletResponse response) throws JsonProcessingException, ExecutionException, InterruptedException {
+        int DEFAULT_NUMBER_OF_SECTIONS = 30;
+        TabulatedFunctionFactory factory = determineFabric(request, response);
+        TabulatedFunction function = factory.create(
+                tabulatedFunctionRequest.getX(),
+                tabulatedFunctionRequest.getY()
+        );
+        TabulatedIntegrationOperator operator = new TabulatedIntegrationOperator(threadCount);
+        return new ObjectMapper().writeValueAsString(operator.integrate(function, DEFAULT_NUMBER_OF_SECTIONS));
     }
 
     @PostMapping("/createTabulatedFunctionWithTableByte")

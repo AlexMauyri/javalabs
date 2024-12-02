@@ -29,9 +29,9 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>("Array is not sorted", HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ResponseEntity<String> exception(Exception ex) {
-        return new ResponseEntity<>("Unknown exception: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+//    @ExceptionHandler(Exception.class)
+//    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+//    public ResponseEntity<String> exception(Exception ex) {
+//        return new ResponseEntity<>("Unknown exception: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+//    }
 }

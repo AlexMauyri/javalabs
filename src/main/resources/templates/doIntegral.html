@@ -14,10 +14,10 @@
 
     <div class="operand">
         <div class="chooseAction">
-            <button id="createTable">Создать таблицу</button>
+            <button id="createTable1" class="createTable" onclick="setCurrentIdButton(this.id)">Создать таблицу</button>
             <input type="file" id="fileInput" hidden onchange="showTable(this, 1)">
-            <button onclick="loadFunction()">Загрузить таблицу</button>
-            <button>Сохранить таблицу</button>
+            <button onclick="loadFunction('fileInput')">Загрузить таблицу</button>
+            <button id="saveTable1" class="saveTable" onclick="setCurrentIdButton(this.id)">Сохранить таблицу</button>
         </div>
         <div class="functionTable">
             <table id="functionTable1">
@@ -34,15 +34,27 @@
         </div>
     </div>
 
-    <div class="result">
-        <label>
-            Определенный интеграл равен:
-            <input type="text">
-        </label>
-    </div>
+</div>
 
+<div class="threads">
+    <label>
+        Введите количество потоков для исполнения:
+        <input type="number" id="numberOfThreads">
+    </label>
+</div>
+
+<div>
+    <input type="submit" onclick="doIntegral()" value="Выполнить интегрирование">
+</div>
+
+<div class="result">
+    <label>
+        Определенный интеграл равен:
+        <input type="text" id="resultOfIntegrate" readonly>
+    </label>
 </div>
 
 <script th:src="@{/scripts/general.js}" src="/scripts/general.js" type="text/javascript"></script>
+<script th:src="@{/scripts/doIntegral.js}" src="/scripts/doIntegral.js" type="text/javascript"></script>
 </body>
 </html>

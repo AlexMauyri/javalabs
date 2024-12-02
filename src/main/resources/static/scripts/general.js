@@ -1,11 +1,12 @@
-function loadFunction() {
-    document.getElementById("fileInput").click();
+let currentButtonId;
+
+function loadFunction(id) {
+    document.getElementById(id).click();
 }
 
 function showTable(input, id) {
     let file = input.files[0];
     let extension = file.name.split('.').reverse()[0];
-
     if (extension === 'json') {
         let reader = new FileReader();
         reader.readAsText(file);
@@ -45,9 +46,11 @@ function convertBLOBToJSONFunction(content) {
 }
 
 function createTableWithContent(content, id) {
-    let lengthOfArray = content["xValues"].length
+    console.log(content);
+    console.log("Table id is " + id);
+    let lengthOfArray = content["xValues"].length;
     createTableForTableId(id, lengthOfArray);
-    const tableBody = document.getElementById('functionTable1').getElementsByTagName('tbody')[0];
+    const tableBody = document.getElementById('functionTable' + id).getElementsByTagName('tbody')[0];
     const tableRows = tableBody.getElementsByTagName('tr');
     for (let i = 0; i < lengthOfArray; ++i) {
         tableRows[i].getElementsByTagName('td')[0].getElementsByTagName('input')[0].value = content['xValues'][i];
@@ -150,7 +153,7 @@ function submitFunctionOnTable() {
         xValues : xValues,
         yValues : yValues
     }
-    createTableWithContent(content, 1);
+    createTableWithContent(content, currentButtonId[currentButtonId.length - 1]);
     document.getElementById('my-dialog').close();
 }
 
@@ -167,14 +170,14 @@ function submitFunctionOnFunction() {
         amountOfPoints: count,
     }
 
-    serializeFunction(functionData, 'JSON')
+    serializeFunctionAndReturn(functionData, 'JSON')
         .then(data => {
-            createTableWithContent(data, 1);
+            createTableWithContent(data, currentButtonId[currentButtonId.length - 1]);
             document.getElementById('my-dialog').close();
         });
 }
 
-function serializeFunction(functionData, format) {
+function serializeFunctionAndReturn(functionData, format) {
     console.log(JSON.stringify(functionData));
     return fetch('http://localhost:8080/createTabulatedFunctionWithFunction' + format, {
         method: 'POST',
@@ -206,33 +209,137 @@ async function getData(url) {
     return await response.text();
 }
 
-document.getElementById('createTable').addEventListener('click', () => {
-    fetch('popup/createTabulatedFunction')
-        .then(response => response.text())
-        .then(html => {
-            document.getElementById('modal-container').innerHTML = html;
-            document.getElementById('my-dialog').showModal();
-            document.getElementById('table').addEventListener('click', () => {
-                getData('popup/tableCreation').then(result => {
-                    document.getElementById('my-dialog').innerHTML = result;
-                    document.getElementById('close').addEventListener('click', () => {
-                        document.getElementById('my-dialog').close();
+function submitFunction() {
+    const table = document.getElementById('functionTable' + currentButtonId[currentButtonId.length - 1]);
+    const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+    const xValues = [];
+    const yValues = [];
+    const format = document.getElementById("dialog-format").value;
+
+    for (let row of rows) {
+        const cells = row.getElementsByTagName('td');
+        const x = cells[0].getElementsByTagName('input')[0].value;
+        const y = cells[1].getElementsByTagName('input')[0].value;
+
+        xValues.push(parseFloat(x));
+        yValues.push(parseFloat(y));
+    }
+
+    serializeAndDownload(xValues, yValues, format);
+}
+
+function serializeAndDownload(xValues, yValues, format) {
+    if (format !== 'Byte') {
+        serializeFunction(xValues, yValues, format)
+            .then(response => response.text())
+            .then(data => {
+                console.log(data);
+                let link = document.createElement('a');
+                link.href = window.URL.createObjectURL(
+                    new Blob([data],
+                        {
+                            type: 'application/plain'
+                        }
+                    )
+                );
+                link.download = 'newFunction.' + format.toLowerCase();
+                link.click();
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                alert('Error creating tabulated function');
+            });
+    } else {
+        serializeFunction(xValues, yValues, format)
+            .then(response => response.blob())
+            .then(data => {
+                console.log(data);
+                let link = document.createElement('a');
+                link.href = window.URL.createObjectURL(data);
+                link.download = 'newFunction.bin'; // Предлагаемое имя файла
+                link.click();
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                alert('Error creating tabulated function');
+            });
+    }
+}
+
+function serializeFunction(xValues, yValues, format) {
+    const data = {
+        x: xValues,
+        y: yValues
+    };
+
+    console.log(JSON.stringify(data));
+    console.log(data);
+    return fetch('http://localhost:8080/createTabulatedFunctionWithTable' + format, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+    });
+}
+
+let createButtons = document.getElementsByClassName("createTable");
+
+for (let i = 0; i < createButtons.length; ++i) {
+    let id = createButtons[i].getAttribute('id');
+    console.log(id);
+    document.getElementById(id).addEventListener('click', () => {
+        fetch('popup/createTabulatedFunction')
+            .then(response => response.text())
+            .then(html => {
+                console.log(currentButtonId);
+                document.getElementById('modal-container').innerHTML = html;
+                document.getElementById('my-dialog').showModal();
+                document.getElementById('table').addEventListener('click', () => {
+                    getData('popup/tableCreation').then(result => {
+                        document.getElementById('my-dialog').innerHTML = result;
+                        document.getElementById('close').addEventListener('click', () => {
+                            document.getElementById('my-dialog').close();
+                        });
                     });
                 });
-            });
 
-            document.getElementById('function').addEventListener('click', () => {
-                getData('popup/functionCreation').then(result => {
-                    document.getElementById('my-dialog').innerHTML = result;
-                    createDropdownList();
-                    document.getElementById('close').addEventListener('click', () => {
-                        document.getElementById('my-dialog').close();
+                document.getElementById('function').addEventListener('click', () => {
+                    getData('popup/functionCreation').then(result => {
+                        document.getElementById('my-dialog').innerHTML = result;
+                        createDropdownList();
+                        document.getElementById('close').addEventListener('click', () => {
+                            document.getElementById('my-dialog').close();
+                        });
                     });
                 });
-            });
 
-            document.getElementById('close').addEventListener('click', () => {
-                document.getElementById('my-dialog').close();
+                document.getElementById('close').addEventListener('click', () => {
+                    document.getElementById('my-dialog').close();
+                });
             });
-        });
-});
+    });
+}
+
+let saveButtons = document.getElementsByClassName("saveTable");
+
+for (let i = 0; i < saveButtons.length; ++i) {
+    let id = saveButtons[i].getAttribute('id');
+    console.log(id);
+    document.getElementById(id).addEventListener('click', () => {
+        fetch('popup/saveFile')
+            .then(response => response.text())
+            .then(html => {
+                console.log(currentButtonId);
+                document.getElementById('modal-container').innerHTML = html;
+                document.getElementById('save-modal').showModal();
+                document.getElementById('close').addEventListener('click', () => {
+                    document.getElementById('save-modal').close();
+                });
+            });
+    })
+}
+
+function setCurrentIdButton(id) {
+    currentButtonId = id;
+}

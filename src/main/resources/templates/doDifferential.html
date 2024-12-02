@@ -15,10 +15,10 @@
 
     <div class="operand">
         <div class="chooseAction">
-            <button id="createTable">Создать таблицу</button>
+            <button id="createTable1" class="createTable" onclick="setCurrentIdButton(this.id)">Создать таблицу</button>
             <input type="file" id="fileInput" hidden onchange="showTable(this, 1)">
-            <button onclick="loadFunction()">Загрузить таблицу</button>
-            <button>Сохранить таблицу</button>
+            <button onclick="loadFunction('fileInput')">Загрузить таблицу</button>
+            <button class="saveTable" id="saveTable1" onclick="setCurrentIdButton(this.id)">Сохранить таблицу</button>
         </div>
         <div class="functionTable">
             <table id="functionTable1">
@@ -41,7 +41,7 @@
 
     <div class="answerFunction">
         <div class="saveFunction">
-            <button>Сохранить таблицу</button>
+            <button class="saveTable" id="saveTable0" onclick="setCurrentIdButton(this.id)">Сохранить таблицу</button>
         </div>
         <div class="functionTable">
             <table id="functionTable0">
@@ -60,9 +60,10 @@
 </div>
 
 <div>
-    <input type="submit" value="Выполнить дифференцирование">
+    <input type="submit" onclick="submitFunctionToDiff()" value="Выполнить дифференцирование">
 </div>
 
 <script th:src="@{/scripts/general.js}" src="/scripts/general.js" type="text/javascript"></script>
+<script th:src="@{/scripts/doDifferential.js}" src="/scripts/doDifferential.js" type="text/javascript"></script>
 </body>
 </html>

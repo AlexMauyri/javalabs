@@ -75,7 +75,6 @@ function submitFunction() {
         yValues.push(parseFloat(y));
     }
 
-
     serializeAndDownload(xValues, yValues, format);
 }
 
@@ -122,6 +121,9 @@ function serializeFunction(xValues, yValues, format) {
         x: xValues,
         y: yValues
     };
+
+    console.log(JSON.stringify(data));
+    console.log(data);
     return fetch('http://localhost:8080/createTabulatedFunctionWithTable' + format, {
         method: 'POST',
         headers: {

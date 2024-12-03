@@ -47,6 +47,11 @@ public class TabulatedFunctionController {
         return new ArrayList<>(functions.keySet());
     }
 
+    @GetMapping("/createPlot")
+    public String createPlot() {
+        return "createPlot";
+    }
+
     @GetMapping("/doDifferential")
     public String doDifferentialPage() {
         return "doDifferential";
@@ -85,6 +90,21 @@ public class TabulatedFunctionController {
     @GetMapping("popup/error")
     public String errorPage() {
         return "popup/error";
+    }
+
+    @PostMapping("/apply/{xValue}")
+    @ResponseBody
+    public String applyValue(@PathVariable(name = "xValue") double xValue,
+                             @RequestBody TabulatedFunctionOnArraysRequest functionRequest,
+                             HttpServletRequest request,
+                             HttpServletResponse response) throws JsonProcessingException {
+        TabulatedFunctionFactory factory = determineFabric(request, response);
+        TabulatedFunction function = factory.create(
+                functionRequest.getXValues(),
+                functionRequest.getYValues()
+        );
+
+        return new ObjectMapper().writeValueAsString(function.apply(xValue));
     }
 
     @PostMapping("/doOperation/{operation}")

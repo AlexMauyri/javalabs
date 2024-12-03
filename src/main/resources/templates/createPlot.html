@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Создание табулированной функции</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/styles/createTabulatedFunctionWithTable.css}" href="/static/styles/createTabulatedFunctionWithTable.css">
+</head>
+<body>
+
+<div id="modal-container"></div>
+<div id="error-modal-container"></div>
+
+<div class="container">
+    <span class="gotoHome"><a href="/home">Вернуться на главную страницу</a></span>
+    <div class="operand">
+        <div class="chooseAction">
+            <button id="createTable1" class="createTable" onclick="setCurrentIdButton(this.id)">Создать таблицу</button>
+            <input type="file" id="fileInput" hidden onchange="showTable(this, 1)">
+            <button onclick="loadFunction('fileInput')">Загрузить таблицу</button>
+            <button class="saveTable" id="saveTable1" onclick="setCurrentIdButton(this.id)">Сохранить таблицу</button>
+        </div>
+        <div class="functionTable">
+            <table id="functionTable1">
+                <thead>
+                <tr>
+                    <th>x</th>
+                    <th>y</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- Rows will be added here -->
+                </tbody>
+            </table>
+        </div>
+
+        <div>
+            <canvas id="chart"></canvas>
+        </div>
+
+        <div id="createPlot">
+                <input id="createPlotButton" type="submit" value="Создать график">
+        </div>
+        <div id="doApply">
+            <label>
+                Введите значение x, для которого хотите узнать значение y:
+                <input id="xValue" type="number">
+                <input id="apply" type="submit" value="Вычислить" onclick="applyValue()">
+            </label>
+        </div>
+        <div id="resultOfApply">
+            <label>
+                Значение y:
+                <input id="yValue" type="number" readonly>
+            </label>
+        </div>
+    </div>
+</div>
+<script th:src="@{/scripts/general.js}" src="/static/scripts/general.js" type="text/javascript"></script>
+<script th:src="@{/scripts/createPlot.js}" src="/static/scripts/createPlot.js" type="text/javascript"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    let chartInstance;
+    document.getElementById('createPlotButton').addEventListener('click', () => {
+        if (chartInstance !== null && chartInstance !== undefined) chartInstance.destroy();
+        let content = fetchDataFromTable(1);
+        let length = content["xValues"].length;
+
+        for (let i = 0; i < length; ++i) {
+            content["xValues"][i] = content["xValues"][i].toFixed(2);
+            content["yValues"][i] = content["yValues"][i].toFixed(2);
+        }
+
+
+        chartInstance = new Chart(document.getElementById('chart'),
+            {
+                type: 'line',
+                data: {
+                    labels: content["xValues"],
+                    datasets: [{
+                        label: "Function",
+                        data: content["yValues"]
+                    }]
+                }
+            });
+    });
+</script>
+</body>
+</html>

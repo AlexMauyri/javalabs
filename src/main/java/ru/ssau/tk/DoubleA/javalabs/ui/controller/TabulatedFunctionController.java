@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import ru.ssau.tk.DoubleA.javalabs.functions.*;
@@ -16,11 +15,14 @@ import ru.ssau.tk.DoubleA.javalabs.io.FunctionsIO;
 import ru.ssau.tk.DoubleA.javalabs.operations.TabulatedDifferentialOperator;
 import ru.ssau.tk.DoubleA.javalabs.operations.TabulatedFunctionOperationService;
 import ru.ssau.tk.DoubleA.javalabs.operations.TabulatedIntegrationOperator;
+import ru.ssau.tk.DoubleA.javalabs.ui.AccessingAllClassesInPackage;
 import ru.ssau.tk.DoubleA.javalabs.ui.FabricType;
+import ru.ssau.tk.DoubleA.javalabs.ui.annotation.SimpleFunction;
 import ru.ssau.tk.DoubleA.javalabs.ui.dto.TabulatedFunctionOnArraysRequest;
 import ru.ssau.tk.DoubleA.javalabs.ui.dto.TabulatedFunctionOnFunctionRequest;
 
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 
@@ -29,12 +31,16 @@ public class TabulatedFunctionController {
     private final Map<String, MathFunction> functions;
     private final Map<FabricType, TabulatedFunctionFactory> factories;
 
-    public TabulatedFunctionController() {
+    public TabulatedFunctionController() throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+        List<Class> classes = AccessingAllClassesInPackage.findAllClassesWithSimpleFunctionAnnotation("ru.ssau.tk.DoubleA.javalabs.functions");
         functions = new HashMap<>();
-        functions.put("Тождественная функция", new IdentityFunction());
-        functions.put("Квадратичная функция", new SqrFunction());
-        functions.put("Единичная функция", new UnitFunction());
-        functions.put("Нулевая функция", new ZeroFunction());
+
+        for (Class clazz : classes) {
+            SimpleFunction annotation = (SimpleFunction) clazz.getAnnotation(SimpleFunction.class);
+            functions.put(annotation.localizedName(), (MathFunction) clazz.getConstructor().newInstance());
+        }
+
+        System.out.println(functions);
 
         factories = new HashMap<>();
         factories.put(FabricType.ARRAY, new ArrayTabulatedFunctionFactory());

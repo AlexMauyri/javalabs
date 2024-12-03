@@ -1,7 +1,10 @@
 package ru.ssau.tk.DoubleA.javalabs.functions;
 
+import ru.ssau.tk.DoubleA.javalabs.ui.annotation.SimpleFunction;
+
 import java.io.Serial;
 
+@SimpleFunction(localizedName = "Квадратичная функция")
 public class SqrFunction implements MathFunction {
     @Serial
     private static final long serialVersionUID = -106292742190894331L;

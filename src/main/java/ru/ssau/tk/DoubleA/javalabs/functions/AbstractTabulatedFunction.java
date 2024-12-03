@@ -16,12 +16,12 @@ abstract public class AbstractTabulatedFunction implements TabulatedFunction, Se
     protected int count;
 
     static void checkLengthIsTheSame(double[] xValues, double[] yValues) throws DifferentLengthOfArraysException {
-        if (xValues.length != yValues.length) throw new DifferentLengthOfArraysException();
+        if (xValues.length != yValues.length) throw new DifferentLengthOfArraysException("Длина массивов должна быть одинакова!");
     }
 
     static void checkSorted(double[] xValues) throws ArrayIsNotSortedException {
         for (int i = 1; i < xValues.length; ++i) {
-            if (xValues[i - 1] >= xValues[i]) throw new ArrayIsNotSortedException();
+            if (xValues[i - 1] >= xValues[i]) throw new ArrayIsNotSortedException("Значения x должны идти в порядке строгого возрастания!");
         }
     }
 

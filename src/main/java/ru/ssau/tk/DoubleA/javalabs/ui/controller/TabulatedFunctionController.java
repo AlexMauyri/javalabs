@@ -47,17 +47,6 @@ public class TabulatedFunctionController {
         return new ArrayList<>(functions.keySet());
     }
 
-
-    @GetMapping("/createTabulatedFunctionWithTable")
-    public String createWithTablePage() {
-        return "createTabulatedFunctionWithTable";
-    }
-
-    @GetMapping("/createTabulatedFunctionWithFunction")
-    public String createWithFunctionPage() {
-        return "createTabulatedFunctionWithFunction";
-    }
-
     @GetMapping("/doDifferential")
     public String doDifferentialPage() {
         return "doDifferential";
@@ -93,6 +82,11 @@ public class TabulatedFunctionController {
         return "popup/saveFile";
     }
 
+    @GetMapping("popup/error")
+    public String errorPage() {
+        return "popup/error";
+    }
+
     @PostMapping("/doOperation/{operation}")
     @ResponseBody
     public String doOperation(@RequestBody TabulatedFunctionOnArraysRequest[] tables,
@@ -102,13 +96,13 @@ public class TabulatedFunctionController {
         TabulatedFunctionFactory factory = determineFabric(request, response);
         TabulatedFunctionOperationService service = new TabulatedFunctionOperationService(factory);
         TabulatedFunction firstFunction = factory.create(
-                tables[0].getX(),
-                tables[0].getY()
+                tables[0].getXValues(),
+                tables[0].getYValues()
         );
 
         TabulatedFunction secondFunction = factory.create(
-                tables[1].getX(),
-                tables[1].getY()
+                tables[1].getXValues(),
+                tables[1].getYValues()
         );
         TabulatedFunction function = switch (operation) {
             case "+" -> service.addition(firstFunction, secondFunction);
@@ -129,8 +123,8 @@ public class TabulatedFunctionController {
         TabulatedFunctionFactory factory = determineFabric(request, response);
         TabulatedDifferentialOperator operator = new TabulatedDifferentialOperator(factory);
         TabulatedFunction function = factory.create(
-                tabulatedFunctionRequest.getX(),
-                tabulatedFunctionRequest.getY()
+                tabulatedFunctionRequest.getXValues(),
+                tabulatedFunctionRequest.getYValues()
         );
 
         return new ObjectMapper().writeValueAsString(operator.derive(function));
@@ -145,8 +139,8 @@ public class TabulatedFunctionController {
         int DEFAULT_NUMBER_OF_SECTIONS = 30;
         TabulatedFunctionFactory factory = determineFabric(request, response);
         TabulatedFunction function = factory.create(
-                tabulatedFunctionRequest.getX(),
-                tabulatedFunctionRequest.getY()
+                tabulatedFunctionRequest.getXValues(),
+                tabulatedFunctionRequest.getYValues()
         );
         TabulatedIntegrationOperator operator = new TabulatedIntegrationOperator(threadCount);
         return new ObjectMapper().writeValueAsString(operator.integrate(function, DEFAULT_NUMBER_OF_SECTIONS));
@@ -159,8 +153,8 @@ public class TabulatedFunctionController {
                                                                               HttpServletResponse response) {
         TabulatedFunctionFactory factory = determineFabric(request, response);
         TabulatedFunction function = factory.create(
-                tabulatedFunctionRequest.getX(),
-                tabulatedFunctionRequest.getY()
+                tabulatedFunctionRequest.getXValues(),
+                tabulatedFunctionRequest.getYValues()
         );
 
         return serialize(function);
@@ -173,8 +167,8 @@ public class TabulatedFunctionController {
                                                    HttpServletResponse response) {
         TabulatedFunctionFactory factory = determineFabric(request, response);
         TabulatedFunction function = factory.create(
-                tabulatedFunctionRequest.getX(),
-                tabulatedFunctionRequest.getY()
+                tabulatedFunctionRequest.getXValues(),
+                tabulatedFunctionRequest.getYValues()
         );
 
         return serializeJson(function);
@@ -187,8 +181,8 @@ public class TabulatedFunctionController {
                                                    HttpServletResponse response) {
         TabulatedFunctionFactory factory = determineFabric(request, response);
         TabulatedFunction function = factory.create(
-                tabulatedFunctionRequest.getX(),
-                tabulatedFunctionRequest.getY()
+                tabulatedFunctionRequest.getXValues(),
+                tabulatedFunctionRequest.getYValues()
         );
 
         return serializeXml(function);

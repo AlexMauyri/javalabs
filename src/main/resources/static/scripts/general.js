@@ -24,27 +24,6 @@ function showTable(input, id) {
     }
 }
 
-function convertXMLToJSONFunction(content) {
-    return fetch('http://localhost:8080/convertFromXML', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/plain',
-        },
-        body: content})
-        .then(response => response.json())
-}
-
-function convertBLOBToJSONFunction(content) {
-    return fetch('http://localhost:8080/convertFromBLOB', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/octet-stream',
-        },
-        body: content
-    })
-        .then(response => response.json())
-}
-
 function createTableWithContent(content, id) {
     console.log(content);
     console.log("Table id is " + id);
@@ -87,9 +66,18 @@ function createTableForTableId(tableId, points) {
 }
 
 function createTable() {
-    const points = parseFloat(document.getElementById('points').value); //Запятая, точка, е дают пустую строку
+    let points = document.getElementById('points').value; //Запятая, точка, е дают пустую строку
 
-    const tableBody = document.getElementById('functionTable').getElementsByTagName('tbody')[0];
+    if (!validateInteger(points)) return;
+
+    points = parseFloat(points);
+
+    if (points < 2) {
+        showError('Число точек должно быть больше 2');
+        return;
+    }
+
+    const tableBody = document.getElementById('functionTableModal').getElementsByTagName('tbody')[0];
 
     const existingRows = tableBody.getElementsByTagName('tr');
     let i = 0;
@@ -127,67 +115,6 @@ function createTable() {
     }
 }
 
-function submitFunctionOnTable() {
-    const table = document.getElementById('functionTable');
-    const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
-    const xValues = [];
-    const yValues = [];
-
-    for (let row of rows) {
-        const cells = row.getElementsByTagName('td');
-        const x = cells[0].getElementsByTagName('input')[0].value;
-        const y = cells[1].getElementsByTagName('input')[0].value;
-        if (x === '') {
-            alert(`Не заполнено значение x в ${row.rowIndex} строке`);
-            return;
-        } else if (y === '') {
-            alert(`Не заполнено значение y в ${row.rowIndex} строке`);
-            return;
-        }
-
-        xValues.push(parseFloat(x));
-        yValues.push(parseFloat(y));
-    }
-
-    let content = {
-        xValues : xValues,
-        yValues : yValues
-    }
-    createTableWithContent(content, currentButtonId[currentButtonId.length - 1]);
-    document.getElementById('my-dialog').close();
-}
-
-function submitFunctionOnFunction() {
-    const tabulatedFunction = document.getElementById('selectFunction').value;
-    const count = document.getElementById('count').value;
-    const leftBorder = document.getElementById('leftBorder').value;
-    const rightBorder = document.getElementById('rightBorder').value;
-
-    const functionData = {
-        functionName: tabulatedFunction,
-        from: leftBorder,
-        to: rightBorder,
-        amountOfPoints: count,
-    }
-
-    serializeFunctionAndReturn(functionData, 'JSON')
-        .then(data => {
-            createTableWithContent(data, currentButtonId[currentButtonId.length - 1]);
-            document.getElementById('my-dialog').close();
-        });
-}
-
-function serializeFunctionAndReturn(functionData, format) {
-    console.log(JSON.stringify(functionData));
-    return fetch('http://localhost:8080/createTabulatedFunctionWithFunction' + format, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(functionData),
-    }).then(response => response.json());
-}
-
 function createDropdownList() {
     let selector = document.getElementById("selectFunction");
 
@@ -204,33 +131,64 @@ function createDropdownList() {
         });
 }
 
-async function getData(url) {
-    const response = await fetch(url);
-    return await response.text();
+function submitFunctionOnTable() {
+    let content = fetchDataFromTable('Modal');
+    if (content === undefined || content === null) return;
+    createTableWithContent(content, currentButtonId[currentButtonId.length - 1]);
+    document.getElementById('my-dialog').close();
+}
+
+function submitFunctionOnFunction() {
+    const tabulatedFunction = document.getElementById('selectFunction').value;
+    const count = document.getElementById('count').value;
+    const leftBorder = document.getElementById('leftBorder').value;
+    const rightBorder = document.getElementById('rightBorder').value;
+
+    if (!validateInteger(count)) return;
+
+    if (parseFloat(count) < 2) {
+        showError('Число точек должно быть больше 2');
+        return;
+    }
+
+    if (!validateDouble(leftBorder)) return;
+    if (!validateDouble(rightBorder)) return;
+
+    const functionData = {
+        functionName: tabulatedFunction,
+        from: leftBorder,
+        to: rightBorder,
+        amountOfPoints: count,
+    }
+
+    serializeFunctionAndReturn(functionData, 'JSON')
+        .then(data => {
+            createTableWithContent(data, currentButtonId[currentButtonId.length - 1]);
+            document.getElementById('my-dialog').close();
+        });
 }
 
 function submitFunction() {
-    const table = document.getElementById('functionTable' + currentButtonId[currentButtonId.length - 1]);
-    const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
-    const xValues = [];
-    const yValues = [];
+    const content = fetchDataFromTable(currentButtonId[currentButtonId.length - 1]);
     const format = document.getElementById("dialog-format").value;
 
-    for (let row of rows) {
-        const cells = row.getElementsByTagName('td');
-        const x = cells[0].getElementsByTagName('input')[0].value;
-        const y = cells[1].getElementsByTagName('input')[0].value;
-
-        xValues.push(parseFloat(x));
-        yValues.push(parseFloat(y));
-    }
-
-    serializeAndDownload(xValues, yValues, format);
+    serializeAndDownload(content, format);
 }
 
-function serializeAndDownload(xValues, yValues, format) {
+function serializeFunctionAndReturn(functionData, format) {
+    console.log(JSON.stringify(functionData));
+    return fetch('http://localhost:8080/createTabulatedFunctionWithFunction' + format, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(functionData),
+    }).then(response => response.json());
+}
+
+function serializeAndDownload(content, format) {
     if (format !== 'Byte') {
-        serializeFunction(xValues, yValues, format)
+        serializeFunction(content, format)
             .then(response => response.text())
             .then(data => {
                 console.log(data);
@@ -250,7 +208,7 @@ function serializeAndDownload(xValues, yValues, format) {
                 alert('Error creating tabulated function');
             });
     } else {
-        serializeFunction(xValues, yValues, format)
+        serializeFunction(content, format)
             .then(response => response.blob())
             .then(data => {
                 console.log(data);
@@ -266,21 +224,157 @@ function serializeAndDownload(xValues, yValues, format) {
     }
 }
 
-function serializeFunction(xValues, yValues, format) {
-    const data = {
-        x: xValues,
-        y: yValues
-    };
-
-    console.log(JSON.stringify(data));
-    console.log(data);
+function serializeFunction(content, format) {
+    console.log(JSON.stringify(content));
+    console.log(content);
     return fetch('http://localhost:8080/createTabulatedFunctionWithTable' + format, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(content),
     });
+}
+
+function fetchDataFromTable(id) {
+    const table = document.getElementById('functionTable' + id);
+    const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+    const xValues = [];
+    const yValues = [];
+
+    for (let row of rows) {
+        const cells = row.getElementsByTagName('td');
+        const x = cells[0].getElementsByTagName('input')[0].value;
+        const y = cells[1].getElementsByTagName('input')[0].value;
+        if (x === '' || !validateDouble(x)) {
+            showError(`Неправильное значение x в ${row.rowIndex} строке`);
+            return;
+        } else if (y === '' || !validateDouble(y)) {
+            showError(`Неправильное значение y в ${row.rowIndex} строке`);
+            return;
+        }
+
+        xValues.push(parseFloat(x));
+        yValues.push(parseFloat(y));
+    }
+
+    return {
+        xValues: xValues,
+        yValues: yValues
+    };
+}
+
+function setCurrentIdButton(id) {
+    currentButtonId = id;
+}
+
+function convertXMLToJSONFunction(content) {
+    return fetch('http://localhost:8080/convertFromXML', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/plain',
+        },
+        body: content})
+        .then(response => response.json())
+}
+
+function convertBLOBToJSONFunction(content) {
+    return fetch('http://localhost:8080/convertFromBLOB', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/octet-stream',
+        },
+        body: content
+    })
+        .then(response => response.json())
+}
+
+function showError(error) {
+    fetch('popup/error')
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById('error-modal-container').innerHTML = html;
+            document.getElementById('textError').innerHTML = error;
+            document.getElementById('error-modal').showModal();
+            document.getElementById('closeError').addEventListener('click', () => {
+                document.getElementById('error-modal').close();
+                document.getElementById('error-modal-container').innerHTML = '';
+            });
+        })
+}
+
+function validateInteger(value) {
+    if (value === null || value === undefined || value === '') {
+        showError('Неправильная запись числа!');
+        return false;
+    }
+
+    if (typeof value === 'string') {
+        // Удаляем пробелы
+        value = value.trim();
+
+        if (value.includes('.') || value.includes(',')) {
+            showError('Число должно быть целым');
+            return false;
+        }
+
+        if (value.includes('e')) {
+            const parts = value.split('e');
+            if (parts.length !== 2 || isNaN(parts[0]) || isNaN(parts[1])) {
+                showError('Неправильная запись экспоненциальной формы числа');
+                return false;
+            }
+        }
+
+        value = Number(value);
+    }
+
+    if (typeof value !== 'number') {
+        showError('Вы ввели не число!');
+        return false;
+    } else if (!isFinite(value)) {
+        showError('Число слишком большое!')
+        return false;
+    }
+
+    return true;
+}
+
+function validateDouble(value) {
+    if (value === null || value === undefined || value === '') {
+        showError('Неправильная запись числа!');
+        return false;
+    }
+
+    if (typeof value === 'string') {
+        // Удаляем пробелы
+        value = value.trim();
+
+        if (value.includes('e')) {
+            const parts = value.split('e');
+            if (parts.length !== 2 || isNaN(parts[0]) || isNaN(parts[1])) {
+                showError('Неправильная запись экспоненциальной формы числа');
+                return false;
+            }
+        }
+
+        value = Number(value);
+    }
+
+    if (typeof value !== 'number') {
+        showError('Вы ввели не число!');
+        return false;
+    } else if (!isFinite(value)) {
+        showError('Число слишком большое!')
+        return false;
+    }
+
+    return true;
+}
+
+async function getData(url) {
+    const response = await fetch(url);
+    return await response.text();
 }
 
 let createButtons = document.getElementsByClassName("createTable");
@@ -338,8 +432,4 @@ for (let i = 0; i < saveButtons.length; ++i) {
                 });
             });
     })
-}
-
-function setCurrentIdButton(id) {
-    currentButtonId = id;
 }

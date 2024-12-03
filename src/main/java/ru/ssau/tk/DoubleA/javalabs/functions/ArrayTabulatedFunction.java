@@ -24,7 +24,7 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
     @JsonCreator
     public ArrayTabulatedFunction(@JsonProperty(value = "xValues") double[] xValues, @JsonProperty(value = "yValues") double[] yValues) throws IllegalArgumentException {
         if (xValues.length < 2 || yValues.length < 2) {
-            throw new IllegalArgumentException("Count of Array Tabulated Function nodes cannot be less than 2");
+            throw new IllegalArgumentException("В одном из массивов значений меньше чем 2!");
         }
 
         AbstractTabulatedFunction.checkLengthIsTheSame(xValues, yValues);
@@ -37,7 +37,7 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
 
     public ArrayTabulatedFunction(MathFunction source, double xFrom, double xTo, int count) throws IllegalArgumentException {
         if (count < 2) {
-            throw new IllegalArgumentException("Count of Array Tabulated Function nodes cannot be less than 2");
+            throw new IllegalArgumentException("Число точек должно быть больше или равно 2!");
         }
 
         if (xFrom > xTo) {

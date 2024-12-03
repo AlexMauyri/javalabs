@@ -17,7 +17,7 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
     @JsonCreator
     public LinkedListTabulatedFunction(@JsonProperty("xValues") double[] xValues, @JsonProperty("yValues") double[] yValues) throws IllegalArgumentException {
         if (xValues.length < 2 || yValues.length < 2) {
-            throw new IllegalArgumentException("Count of List Tabulated Function nodes cannot be less than 2");
+            throw new IllegalArgumentException("В одном из массивов значений меньше чем 2!");
         }
 
         AbstractTabulatedFunction.checkLengthIsTheSame(xValues, yValues);
@@ -34,7 +34,7 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
 
     public LinkedListTabulatedFunction(MathFunction source, double xFrom, double xTo, int count) throws IllegalArgumentException {
         if (count < 2) {
-            throw new IllegalArgumentException("Count of List Tabulated Function nodes cannot be less than 2");
+            throw new IllegalArgumentException("Число точек должно быть больше или равно 2!");
         }
 
         this.count = 0;

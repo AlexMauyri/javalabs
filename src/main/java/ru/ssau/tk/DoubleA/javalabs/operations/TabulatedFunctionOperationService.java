@@ -32,7 +32,7 @@ public class TabulatedFunctionOperationService {
 
     private TabulatedFunction doOperation(TabulatedFunction a, TabulatedFunction b, BiOperation operation) throws InconsistentFunctionsException {
         if (a.getCount() != b.getCount()) {
-            throw new InconsistentFunctionsException();
+            throw new InconsistentFunctionsException("Число точек различно в двух функциях!");
         }
         int size = a.getCount();
 
@@ -43,7 +43,7 @@ public class TabulatedFunctionOperationService {
         double[] yValues = new double[size];
 
         for (int i = 0; i < size; ++i) {
-            if (points1[i].x != points2[i].x) throw new InconsistentFunctionsException();
+            if (points1[i].x != points2[i].x) throw new InconsistentFunctionsException("Неодинаковые значения x на позиции %d".formatted(i + 1));
 
             xValues[i] = points1[i].x;
             yValues[i] = operation.apply(points1[i].y, points2[i].y);
@@ -65,7 +65,10 @@ public class TabulatedFunctionOperationService {
     }
 
     public TabulatedFunction divide(TabulatedFunction a, TabulatedFunction b) {
-        return doOperation(a, b, (double x, double y) -> x / y);
+        return doOperation(a, b, (double x, double y) -> {
+            if (y == 0) throw new IllegalArgumentException("Делить на ноль нельзя!");
+            return x / y;
+        });
     }
 
     public TabulatedFunctionFactory getFactory() {

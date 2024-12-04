@@ -39,8 +39,9 @@ function createTableWithContent(content, id) {
 
 function createTableForTableId(tableId, points) {
     const tableBody = document.getElementById('functionTable' + tableId).getElementsByTagName('tbody')[0];
-
     tableBody.innerHTML = '';
+
+    if (tableId !== 0) document.getElementById('lastIdfunctionTable' + tableId).value = points;
 
     for (let i = 0; i < points; ++i) {
         const row = document.createElement('tr');
@@ -57,7 +58,23 @@ function createTableForTableId(tableId, points) {
         inputY.type = 'number';
         inputY.required = true;
         inputY.readOnly = (tableId === 0);
+
         cellY.appendChild(inputY);
+
+        if (tableId !== 0) {
+            const addPoint = document.createElement('input');
+            const deletePoint = document.createElement('input');
+            addPoint.value = '+';
+            addPoint.type = 'submit';
+            addPoint.id = `addPoint${tableId}_${i}`;
+            addPoint.addEventListener('click', () => addPointToTable('functionTable' + tableId, addPoint.id));
+            deletePoint.value = '-';
+            deletePoint.type = 'submit';
+            deletePoint.id = `deletePoint${tableId}_${i}`;
+            deletePoint.addEventListener('click', () => deletePointToTable(deletePoint.id));
+            cellY.appendChild(addPoint);
+            cellY.appendChild(deletePoint);
+        }
 
         row.appendChild(cellX);
         row.appendChild(cellY);
@@ -66,7 +83,7 @@ function createTableForTableId(tableId, points) {
 }
 
 function createTable() {
-    let points = document.getElementById('points').value; //Запятая, точка, е дают пустую строку
+    let points = document.getElementById('points').value;
 
     if (!validateInteger(points)) return;
 
@@ -76,7 +93,7 @@ function createTable() {
         showError('Число точек должно быть больше 2');
         return;
     }
-
+    document.getElementById('lastIdfunctionTableModal').value = points;
     const tableBody = document.getElementById('functionTableModal').getElementsByTagName('tbody')[0];
 
     const existingRows = tableBody.getElementsByTagName('tr');
@@ -107,7 +124,21 @@ function createTable() {
         const inputY = document.createElement('input');
         inputY.type = 'number';
         inputY.required = true;
+
+        const addPoint = document.createElement('input');
+        const deletePoint = document.createElement('input');
+        addPoint.value = '+';
+        addPoint.type = 'submit';
+        addPoint.id = `addPointModal_${i}`;
+        addPoint.addEventListener('click', () => addPointToTable('functionTableModal', addPoint.id));
+        deletePoint.value = '-';
+        deletePoint.type = 'submit';
+        deletePoint.id = `deletePointModal_${i}`;
+        deletePoint.addEventListener('click', () => deletePointToTable(deletePoint.id));
+
         cellY.appendChild(inputY);
+        cellY.appendChild(addPoint);
+        cellY.appendChild(deletePoint);
 
         row.appendChild(cellX);
         row.appendChild(cellY);
@@ -262,6 +293,57 @@ function fetchDataFromTable(id) {
         xValues: xValues,
         yValues: yValues
     };
+}
+
+function addPointToTable(tableId, buttonId) {
+    let table = document.getElementById(tableId).getElementsByTagName('tbody')[0];
+    let lastIdValue = 'lastId' + tableId;
+    let newRow = createNode(tableId, parseInt(document.getElementById(lastIdValue).value) + 1);
+    document.getElementById(lastIdValue).value = parseInt(document.getElementById(lastIdValue).value) + 1;
+    table.insertBefore(newRow, document.getElementById(buttonId).closest("tr"));
+    console.log(buttonId);
+}
+
+function deletePointToTable(buttonId) {
+    document.getElementById(buttonId).closest("tr").remove();
+    console.log(buttonId);
+}
+
+function createNode(tableId, id) {
+    console.log(tableId);
+    const numOfTable = parseInt(tableId.split("Table")[1]);
+    const row = document.createElement('tr');
+
+    const cellX = document.createElement('td');
+    const inputX = document.createElement('input');
+    inputX.type = 'number';
+    inputX.required = true;
+    cellX.appendChild(inputX);
+
+    const cellY = document.createElement('td');
+    const inputY = document.createElement('input');
+    inputY.type = 'number';
+    inputY.required = true;
+
+    const addPoint = document.createElement('input');
+    const deletePoint = document.createElement('input');
+    addPoint.value = '+';
+    addPoint.type = 'submit';
+    addPoint.id = `addPoint${numOfTable}_${id}`;
+    addPoint.addEventListener('click', () => addPointToTable(tableId, addPoint.id));
+    deletePoint.value = '-';
+    deletePoint.type = 'submit';
+    deletePoint.id = `deletePoint${numOfTable}_${id}`;
+    deletePoint.addEventListener('click', () => deletePointToTable(deletePoint.id));
+
+    cellY.appendChild(inputY);
+    cellY.appendChild(addPoint);
+    cellY.appendChild(deletePoint);
+
+    row.appendChild(cellX);
+    row.appendChild(cellY);
+
+    return row;
 }
 
 function setCurrentIdButton(id) {

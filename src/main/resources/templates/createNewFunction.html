@@ -4,20 +4,40 @@
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
-<body onload="createDropdownList()">
+<body onload="updateSelects()">
+<div id="error-modal-container"></div>
 <div class="container">
-  <div class="listOfFunctions">
-    <label> Выберите функцию:
+  <div class="listOfFunctions" hidden="hidden">
       <select id="selectFunction">
       </select>
-    </label>
+  </div>
+
+  <div id="chainOfFunctions">
+    <label>
+      <select></select>
+    </label> <= <label>
+    <select></select>
+  </label>
   </div>
 
   <div>
-    <input type="submit" value="Добавить функцию">
+    <input onclick="addFunction()" type="submit" value="Добавить функцию в цепочку" id="addFunction">
+    <input onclick="deleteFunction()" type="submit" value="Удалить последнюю функцию в цепочке" id="deleteFunction">
+  </div>
+
+  <div>
+    <label>
+      Ввведите название для сложной функции:
+      <input type="text" id="functionName">
+    </label>
+    <input onclick="createFunction()" type="submit" value="Создать сложную функцию" id="createFunction">
   </div>
 
   <div></div>
 </div>
+
+
+<script th:src="@{/scripts/general.js}" src="/static/scripts/general.js" type="text/javascript"></script>
+<script th:src="@{/scripts/createNewFunction.js}" src="/static/scripts/createNewFunction.js" type="text/javascript"></script>
 </body>
 </html>

@@ -142,8 +142,8 @@ function createTable() {
 
 function createDropdownList() {
     let selector = document.getElementById("selectFunction");
-
-    fetch('http://localhost:8080/getFunctions')
+    selector.innerHTML = '';
+    return fetch('http://localhost:8080/getFunctions')
         .then(response => response.json())
         .then(data => {
             data.sort();

@@ -5,6 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import ru.ssau.tk.DoubleA.javalabs.functions.*;
@@ -15,6 +18,9 @@ import ru.ssau.tk.DoubleA.javalabs.io.FunctionsIO;
 import ru.ssau.tk.DoubleA.javalabs.operations.TabulatedDifferentialOperator;
 import ru.ssau.tk.DoubleA.javalabs.operations.TabulatedFunctionOperationService;
 import ru.ssau.tk.DoubleA.javalabs.operations.TabulatedIntegrationOperator;
+import ru.ssau.tk.DoubleA.javalabs.persistence.dao.CustomFunctionDAO;
+import ru.ssau.tk.DoubleA.javalabs.persistence.entity.CustomFunction;
+import ru.ssau.tk.DoubleA.javalabs.persistence.service.CustomFunctionService;
 import ru.ssau.tk.DoubleA.javalabs.ui.AccessingAllClassesInPackage;
 import ru.ssau.tk.DoubleA.javalabs.ui.FabricType;
 import ru.ssau.tk.DoubleA.javalabs.ui.annotation.SimpleFunction;
@@ -26,82 +32,51 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 
-@Controller
+@RestController
 public class TabulatedFunctionController {
-    private final Map<String, MathFunction> functions;
+    private final Map<String, MathFunction> allFunctions;
     private final Map<FabricType, TabulatedFunctionFactory> factories;
+    private boolean isFirstRequestForFunctions = true;
+
+    @Autowired
+    private CustomFunctionService customFunctionService;
 
     public TabulatedFunctionController() throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         List<Class> classes = AccessingAllClassesInPackage.findAllClassesWithSimpleFunctionAnnotation("ru.ssau.tk.DoubleA.javalabs.functions");
-        functions = new HashMap<>();
+        allFunctions = new HashMap<>();
 
         for (Class clazz : classes) {
             SimpleFunction annotation = (SimpleFunction) clazz.getAnnotation(SimpleFunction.class);
-            functions.put(annotation.localizedName(), (MathFunction) clazz.getConstructor().newInstance());
+            allFunctions.put(annotation.localizedName(), (MathFunction) clazz.getConstructor().newInstance());
         }
-
-        System.out.println(functions);
 
         factories = new HashMap<>();
         factories.put(FabricType.ARRAY, new ArrayTabulatedFunctionFactory());
         factories.put(FabricType.LINKEDLIST, new LinkedListTabulatedFunctionFactory());
     }
 
+    @PostMapping("/create/{functionName}")
+    public void createFunction(@PathVariable(name = "functionName") String functionName, @RequestBody String[] functions) {
+        List<MathFunction> functionList = Arrays.stream(functions).map(allFunctions::get).toList().reversed();
+        CustomFunction customFunction = customFunctionService.createFunction(functionName, functionList);
+        allFunctions.put(customFunction.getName(), deserializeFunction(customFunction.getSerializedFunction()));
+    }
+
     @GetMapping("/getFunctions")
     @ResponseBody
     public List<String> getFunctions() {
-        return new ArrayList<>(functions.keySet());
+        if (isFirstRequestForFunctions) {
+            List<CustomFunction> functions = customFunctionService.getCustomFunctions();
+
+            for (CustomFunction function : functions) {
+                allFunctions.put(function.getName(), deserializeFunction(function.getSerializedFunction()));
+            }
+            isFirstRequestForFunctions = false;
+            System.out.println(allFunctions);
+        }
+        return new ArrayList<>(allFunctions.keySet());
     }
 
-    @GetMapping("/createPlot")
-    public String createPlot() {
-        return "createPlot";
-    }
-
-    @GetMapping("/doDifferential")
-    public String doDifferentialPage() {
-        return "doDifferential";
-    }
-
-    @GetMapping("/doIntegral")
-    public String doIntegralPage() {
-        return "doIntegral";
-    }
-
-    @GetMapping("/functionArithmetic")
-    public String functionArithmeticPage() {
-        return "functionArithmetic";
-    }
-
-    @GetMapping("popup/createTabulatedFunction")
-    public String chooseMethodPage() {
-        return "popup/createTabulatedFunction";
-    }
-
-    @GetMapping("popup/tableCreation")
-    public String createFromTablePage() {
-        return "popup/tableCreation";
-    }
-
-    @GetMapping("popup/functionCreation")
-    public String createFromFunctionPage() {
-        return "popup/functionCreation";
-    }
-
-    @GetMapping("popup/saveFile")
-    public String saveFunction() {
-        return "popup/saveFile";
-    }
-
-    @GetMapping("popup/error")
-    public String errorPage() {
-        return "popup/error";
-    }
-
-    @GetMapping("popup/addNewPoint")
-    public String addNewPoint() {
-        return "popup/addNewPoint";
-    }
 
     @PostMapping("/apply/{xValue}")
     @ResponseBody
@@ -226,10 +201,10 @@ public class TabulatedFunctionController {
                                                                                  HttpServletResponse response) {
         TabulatedFunctionFactory factory = determineFabric(request, response);
         TabulatedFunction function = factory.create(
-            functions.get(tabulatedFunctionRequest.getFunctionName()),
-            tabulatedFunctionRequest.getFrom(),
-            tabulatedFunctionRequest.getTo(),
-            tabulatedFunctionRequest.getAmountOfPoints()
+                allFunctions.get(tabulatedFunctionRequest.getFunctionName()),
+                tabulatedFunctionRequest.getFrom(),
+                tabulatedFunctionRequest.getTo(),
+                tabulatedFunctionRequest.getAmountOfPoints()
         );
         return serialize(function);
     }
@@ -241,7 +216,7 @@ public class TabulatedFunctionController {
                                                       HttpServletResponse response) {
         TabulatedFunctionFactory factory = determineFabric(request, response);
         TabulatedFunction function = factory.create(
-                functions.get(tabulatedFunctionRequest.getFunctionName()),
+                allFunctions.get(tabulatedFunctionRequest.getFunctionName()),
                 tabulatedFunctionRequest.getFrom(),
                 tabulatedFunctionRequest.getTo(),
                 tabulatedFunctionRequest.getAmountOfPoints()
@@ -256,7 +231,7 @@ public class TabulatedFunctionController {
                                                       HttpServletResponse response) {
         TabulatedFunctionFactory factory = determineFabric(request, response);
         TabulatedFunction function = factory.create(
-                functions.get(tabulatedFunctionRequest.getFunctionName()),
+                allFunctions.get(tabulatedFunctionRequest.getFunctionName()),
                 tabulatedFunctionRequest.getFrom(),
                 tabulatedFunctionRequest.getTo(),
                 tabulatedFunctionRequest.getAmountOfPoints()
@@ -345,5 +320,14 @@ public class TabulatedFunctionController {
         }
 
         return serializedFunction;
+    }
+
+    private MathFunction deserializeFunction(byte[] data) {
+        try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(data);
+             ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream)) {
+            return (MathFunction) objectInputStream.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            throw new RuntimeException("Failed to deserialize function", e);
+        }
     }
 }

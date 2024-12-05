@@ -36,3 +36,10 @@ CREATE TABLE IF NOT EXISTS users
     password VARCHAR(30) NOT NULL,
     role     roles       NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS custom_function
+(
+    id SERIAL PRIMARY KEY ,
+    name VARCHAR(255) UNIQUE NOT NULL ,
+    serialized_function bytea
+)

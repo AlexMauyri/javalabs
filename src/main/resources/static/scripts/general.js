@@ -41,7 +41,6 @@ function createTableForTableId(tableId, points) {
     const tableBody = document.getElementById('functionTable' + tableId).getElementsByTagName('tbody')[0];
     tableBody.innerHTML = '';
 
-    if (tableId !== 0) document.getElementById('lastIdfunctionTable' + tableId).value = points;
 
     for (let i = 0; i < points; ++i) {
         const row = document.createElement('tr');
@@ -66,12 +65,10 @@ function createTableForTableId(tableId, points) {
             const deletePoint = document.createElement('input');
             addPoint.value = '+';
             addPoint.type = 'submit';
-            addPoint.id = `addPoint${tableId}_${i}`;
-            addPoint.addEventListener('click', () => addPointToTable('functionTable' + tableId, addPoint.id));
+            addPoint.addEventListener('click', (event) => addPointToTable(event));
             deletePoint.value = '-';
             deletePoint.type = 'submit';
-            deletePoint.id = `deletePoint${tableId}_${i}`;
-            deletePoint.addEventListener('click', () => deletePointToTable(deletePoint.id));
+            deletePoint.addEventListener('click', (event) => deletePointToTable(event));
             cellY.appendChild(addPoint);
             cellY.appendChild(deletePoint);
         }
@@ -93,7 +90,6 @@ function createTable() {
         showError('Число точек должно быть больше 2');
         return;
     }
-    document.getElementById('lastIdfunctionTableModal').value = points;
     const tableBody = document.getElementById('functionTableModal').getElementsByTagName('tbody')[0];
 
     const existingRows = tableBody.getElementsByTagName('tr');
@@ -129,12 +125,10 @@ function createTable() {
         const deletePoint = document.createElement('input');
         addPoint.value = '+';
         addPoint.type = 'submit';
-        addPoint.id = `addPointModal_${i}`;
-        addPoint.addEventListener('click', () => addPointToTable('functionTableModal', addPoint.id));
+        addPoint.addEventListener('click', (event) => addPointToTable(event));
         deletePoint.value = '-';
         deletePoint.type = 'submit';
-        deletePoint.id = `deletePointModal_${i}`;
-        deletePoint.addEventListener('click', () => deletePointToTable(deletePoint.id));
+        deletePoint.addEventListener('click', (event) => deletePointToTable(event));
 
         cellY.appendChild(inputY);
         cellY.appendChild(addPoint);
@@ -295,23 +289,46 @@ function fetchDataFromTable(id) {
     };
 }
 
-function addPointToTable(tableId, buttonId) {
-    let table = document.getElementById(tableId).getElementsByTagName('tbody')[0];
-    let lastIdValue = 'lastId' + tableId;
-    let newRow = createNode(tableId, parseInt(document.getElementById(lastIdValue).value) + 1);
-    document.getElementById(lastIdValue).value = parseInt(document.getElementById(lastIdValue).value) + 1;
-    table.insertBefore(newRow, document.getElementById(buttonId).closest("tr"));
-    console.log(buttonId);
+function addPointToTable(event) {
+    let currentRow = event.target.parentNode.parentNode;
+    let table = currentRow.parentNode;
+    let isAlreadyModal = table.parentNode.id === "functionTableModal";
+
+    if (isAlreadyModal) {
+        let newRow = createNode();
+        table.insertBefore(newRow, currentRow);
+    } else {
+        let newRow = createNode();
+        fetch("popup/addNewPoint")
+            .then(response => response.text())
+            .then(html => {
+                let container = document.getElementById('modal-container');
+                container.innerHTML = html;
+                let dialog = document.getElementById('addNewPoint');
+                dialog.showModal();
+                document.getElementById('confirm').addEventListener('click', () => {
+                    let x = document.getElementById('xValue').value;
+                    let y = document.getElementById('yValue').value;
+                    let inputs = newRow.getElementsByTagName('input');
+                    inputs[0].value = x;
+                    inputs[1].value = y;
+                    table.insertBefore(newRow, currentRow);
+                    container.innerHTML = '';
+                    dialog.close();
+                });
+                document.getElementById('close').addEventListener('click', () =>  {
+                    container.innerHTML = '';
+                    dialog.close();
+                });
+            });
+    }
 }
 
-function deletePointToTable(buttonId) {
-    document.getElementById(buttonId).closest("tr").remove();
-    console.log(buttonId);
+function deletePointToTable(event) {
+    event.target.closest("tr").remove();
 }
 
-function createNode(tableId, id) {
-    console.log(tableId);
-    const numOfTable = parseInt(tableId.split("Table")[1]);
+function createNode() {
     const row = document.createElement('tr');
 
     const cellX = document.createElement('td');
@@ -329,12 +346,10 @@ function createNode(tableId, id) {
     const deletePoint = document.createElement('input');
     addPoint.value = '+';
     addPoint.type = 'submit';
-    addPoint.id = `addPoint${numOfTable}_${id}`;
-    addPoint.addEventListener('click', () => addPointToTable(tableId, addPoint.id));
+    addPoint.addEventListener('click', (event) => addPointToTable(event));
     deletePoint.value = '-';
     deletePoint.type = 'submit';
-    deletePoint.id = `deletePoint${numOfTable}_${id}`;
-    deletePoint.addEventListener('click', () => deletePointToTable(deletePoint.id));
+    deletePoint.addEventListener('click', (event) => deletePointToTable(event));
 
     cellY.appendChild(inputY);
     cellY.appendChild(addPoint);

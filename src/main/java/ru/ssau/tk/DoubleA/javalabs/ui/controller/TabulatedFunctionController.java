@@ -98,6 +98,11 @@ public class TabulatedFunctionController {
         return "popup/error";
     }
 
+    @GetMapping("popup/addNewPoint")
+    public String addNewPoint() {
+        return "popup/addNewPoint";
+    }
+
     @PostMapping("/apply/{xValue}")
     @ResponseBody
     public String applyValue(@PathVariable(name = "xValue") double xValue,

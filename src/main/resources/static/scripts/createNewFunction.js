@@ -18,6 +18,13 @@ function deleteFunction() {
 }
 
 function createFunction() {
+    let functionName = document.getElementById('functionName').value;
+
+    if (!validateNameOfFunction(functionName)) {
+        showError("Имя функции может содержать только русские буквы, цифры и пробелы");
+        return;
+    }
+
     let selects = document.getElementById('chainOfFunctions').getElementsByTagName('select');
 
     let functions = [];
@@ -25,8 +32,6 @@ function createFunction() {
     for (let i = 0; i < selects.length; ++i) {
         functions.push(selects[i].value);
     }
-
-    let functionName = document.getElementById('functionName').value;
 
     createFunctionRequest(functions, functionName);
 }
@@ -50,13 +55,27 @@ function createFunctionRequest(functions, functionName) {
     });
 }
 
-function updateSelects() {
+function updateSelectsRequest() {
     createDropdownList().then(() => {
-        let selects = document.getElementById('chainOfFunctions').getElementsByTagName('select');
-        console.log(selects);
-        for (let i = 0; i < selects.length; ++i) {
-            console.log(document.getElementById('selectFunction').innerHTML);
-            selects[i].innerHTML = document.getElementById('selectFunction').innerHTML;
-        }
+        updateSelects();
     });
+}
+
+function updateSelects() {
+    let selects = document.getElementById('chainOfFunctions').getElementsByTagName('select');
+    console.log(selects);
+    for (let i = 0; i < selects.length; ++i) {
+        console.log(document.getElementById('selectFunction').innerHTML);
+        selects[i].innerHTML = document.getElementById('selectFunction').innerHTML;
+    }
+}
+
+function clearAll() {
+    document.getElementById('chainOfFunctions').innerHTML = "<label><select></select></label> <= <label><select></select></label>";
+    updateSelects();
+}
+
+function validateNameOfFunction(data) {
+    const regex = /^[а-яА-ЯёЁ0-9\s]+$/;
+    return regex.test(data);
 }

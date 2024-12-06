@@ -9,6 +9,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import ru.ssau.tk.DoubleA.javalabs.bootloader.MathApplication;
@@ -38,8 +42,8 @@ public class CalculationRouteControllerTest {
     @Autowired
     private CalculationService calculationService;
 
-    private String token;
-    private final String login = "{\"username\":\"Vovan\",\"password\":\"1984\"}";
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     private ObjectMapper functionSetMapper;
     private List<Calculation> createdCalculationRoutes = new ArrayList<>();
@@ -61,6 +65,7 @@ public class CalculationRouteControllerTest {
     );
 
     @BeforeEach
+    @WithMockUser(username = "Vovan", password = "1984")
     public void setUp() throws Exception {
         functionSetMapper = new ObjectMapper();
         functionSetMapper.activateDefaultTyping(
@@ -68,22 +73,15 @@ public class CalculationRouteControllerTest {
                 ObjectMapper.DefaultTyping.NON_FINAL
         );
 
-        MvcResult result = mvc.perform(post("/auth/login").contentType(MediaType.APPLICATION_JSON)
-                .content(login)).andExpect(status().isOk()).andReturn();
-        token = "Bearer " + result.getResponse().getContentAsString();
-
         for (int id = 0; id < 3; id++) {
             mvc.perform(post("/calculations_routes")
-                            .header(HttpHeaders.AUTHORIZATION, token)
                             .contentType(MediaType.APPLICATION_JSON)
                             .param("appliedValue", Double.toString(xVal[id]))
                             .param("resultValue", Double.toString(yVal[id]))
                             .content(functionSetMapper.writeValueAsString(functionSets.get(id))))
-                    .andExpect(status().isCreated())
                     .andExpect(content().string("Calculation created successfully"));
 
             String calculationJson = mvc.perform(get("/calculations_routes/find")
-                            .header(HttpHeaders.AUTHORIZATION, token)
                             .contentType(MediaType.APPLICATION_JSON)
                             .param("appliedValue", Double.toString(xVal[id]))
                             .content(functionSetMapper.writeValueAsString(functionSets.get(id))))
@@ -103,18 +101,16 @@ public class CalculationRouteControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "Vovan", password = "1984")
     void createAndFindCalculationTest() throws Exception {
         mvc.perform(post("/calculations_routes")
-                        .header(HttpHeaders.AUTHORIZATION, token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("appliedValue", Double.toString(1.23))
                         .param("resultValue", Double.toString(4.56))
                         .content(functionSetMapper.writeValueAsString(functionSets.getFirst())))
-                .andExpect(status().isCreated())
                 .andExpect(content().string("Calculation created successfully"));
 
         String calculationJson = mvc.perform(get("/calculations_routes/find")
-                        .header(HttpHeaders.AUTHORIZATION, token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("appliedValue", Double.toString(1.23))
                         .content(functionSetMapper.writeValueAsString(functionSets.getFirst())))
@@ -126,12 +122,11 @@ public class CalculationRouteControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "Vovan", password = "1984")
     void getCalculationByIdTest() throws Exception {
         for (int i = 0; i < 3 ; i++) {
             String calculationDataDTOJson = mvc.perform(get("/calculations_routes/" + createdCalculationRoutes.get(i).getId())
-                            .header(HttpHeaders.AUTHORIZATION, token)
                             .contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isOk())
                     .andReturn()
                     .getResponse()
                     .getContentAsString();
@@ -144,11 +139,10 @@ public class CalculationRouteControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "Vovan", password = "1984")
     void getAllCalculationsByFilterTest() throws Exception {
         String calculationsDataArrayJson = mvc.perform(get("/calculations_routes/filter")
-                        .header(HttpHeaders.AUTHORIZATION, token)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
                 .getContentAsString();

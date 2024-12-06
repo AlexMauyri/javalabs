@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
-<body onload="updateSelects()">
+<body onload="updateSelectsRequest()">
 <div id="error-modal-container"></div>
 <div class="container">
   <div class="listOfFunctions" hidden="hidden">
@@ -13,16 +13,13 @@
   </div>
 
   <div id="chainOfFunctions">
-    <label>
-      <select></select>
-    </label> <= <label>
-    <select></select>
-  </label>
+    <label><select></select></label> <= <label><select></select></label>
   </div>
 
   <div>
     <input onclick="addFunction()" type="submit" value="Добавить функцию в цепочку" id="addFunction">
     <input onclick="deleteFunction()" type="submit" value="Удалить последнюю функцию в цепочке" id="deleteFunction">
+    <input onclick="clearAll()" type="submit" value="Начать заново" id="clearAll">
   </div>
 
   <div>

@@ -77,6 +77,8 @@ function createTableForTableId(tableId, points) {
         row.appendChild(cellY);
         tableBody.appendChild(row);
     }
+
+    createFakeRow(tableBody);
 }
 
 function createTable() {
@@ -138,6 +140,8 @@ function createTable() {
         row.appendChild(cellY);
         tableBody.appendChild(row);
     }
+
+    createFakeRow(tableBody);
 }
 
 function createDropdownList() {
@@ -267,7 +271,8 @@ function fetchDataFromTable(id) {
     const xValues = [];
     const yValues = [];
 
-    for (let row of rows) {
+    for (let i = 0; i < rows.length - 1; ++i) {
+        let row = rows[i];
         const cells = row.getElementsByTagName('td');
         const x = cells[0].getElementsByTagName('input')[0].value;
         const y = cells[1].getElementsByTagName('input')[0].value;
@@ -290,7 +295,7 @@ function fetchDataFromTable(id) {
 }
 
 function addPointToTable(event) {
-    let currentRow = event.target.parentNode.parentNode;
+    let currentRow = event.target.closest("tr");
     let table = currentRow.parentNode;
     let isAlreadyModal = table.parentNode.id === "functionTableModal";
 
@@ -325,6 +330,10 @@ function addPointToTable(event) {
 }
 
 function deletePointToTable(event) {
+    if (event.target.closest("tbody").getElementsByTagName("tr").length === 3) {
+        showError("Нельзя удалить точку! Значений должно быть больше чем 1");
+        return;
+    }
     event.target.closest("tr").remove();
 }
 
@@ -359,6 +368,20 @@ function createNode() {
     row.appendChild(cellY);
 
     return row;
+}
+
+function createFakeRow(tableBody) {
+    const row = document.createElement('tr');
+    const cell = document.createElement('td');
+    cell.colSpan = 2;
+    cell.style.textAlign="center";
+    const addPoint = document.createElement('input');
+    addPoint.value = '+';
+    addPoint.type = 'submit';
+    addPoint.addEventListener('click', (event) => addPointToTable(event));
+    cell.appendChild(addPoint);
+    row.appendChild(cell);
+    tableBody.appendChild(row);
 }
 
 function setCurrentIdButton(id) {

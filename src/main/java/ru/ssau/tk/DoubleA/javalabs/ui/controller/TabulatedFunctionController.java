@@ -6,9 +6,6 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import ru.ssau.tk.DoubleA.javalabs.functions.*;
 import ru.ssau.tk.DoubleA.javalabs.functions.factory.ArrayTabulatedFunctionFactory;
@@ -18,7 +15,6 @@ import ru.ssau.tk.DoubleA.javalabs.io.FunctionsIO;
 import ru.ssau.tk.DoubleA.javalabs.operations.TabulatedDifferentialOperator;
 import ru.ssau.tk.DoubleA.javalabs.operations.TabulatedFunctionOperationService;
 import ru.ssau.tk.DoubleA.javalabs.operations.TabulatedIntegrationOperator;
-import ru.ssau.tk.DoubleA.javalabs.persistence.dao.CustomFunctionDAO;
 import ru.ssau.tk.DoubleA.javalabs.persistence.entity.CustomFunction;
 import ru.ssau.tk.DoubleA.javalabs.persistence.service.CustomFunctionService;
 import ru.ssau.tk.DoubleA.javalabs.ui.AccessingAllClassesInPackage;
@@ -57,6 +53,9 @@ public class TabulatedFunctionController {
 
     @PostMapping("/create/{functionName}")
     public void createFunction(@PathVariable(name = "functionName") String functionName, @RequestBody String[] functions) {
+        if (allFunctions.containsKey(functionName)) {
+            throw new IllegalArgumentException("Введенное имя функции уже существует");
+        }
         List<MathFunction> functionList = Arrays.stream(functions).map(allFunctions::get).toList().reversed();
         CustomFunction customFunction = customFunctionService.createFunction(functionName, functionList);
         allFunctions.put(customFunction.getName(), deserializeFunction(customFunction.getSerializedFunction()));

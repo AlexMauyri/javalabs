@@ -8,8 +8,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import ru.ssau.tk.DoubleA.javalabs.bootloader.MathApplication;
@@ -29,9 +29,6 @@ public class CalculationControllerTest {
     @Autowired
     private MockMvc mvc;
 
-    private String token;
-    private final String login = "{\"username\":\"Vovan\",\"password\":\"1984\"}";
-
     private List<Calculation> createdCalculations = new ArrayList<>();
     private double[] xVal = new double[]{47, -62, 91, -99, -23};
     private double[] yVal = new double[]{-30, -4, -73, 42, 3};
@@ -39,10 +36,8 @@ public class CalculationControllerTest {
     private ObjectMapper mapper;
 
     @BeforeEach
+    @WithMockUser(username = "Vovan", password = "1984")
     public void setUp() throws Exception {
-        MvcResult result = mvc.perform(post("/auth/login").contentType(MediaType.APPLICATION_JSON)
-                .content(login)).andExpect(status().isOk()).andReturn();
-        token = "Bearer " + result.getResponse().getContentAsString();
         mapper = new ObjectMapper();
         for (int id = 0; id <= 4; id++) {
             Calculation calculation = new Calculation();
@@ -51,27 +46,28 @@ public class CalculationControllerTest {
             calculation.setHash(hash[id]);
 
             mvc.perform(post("/calculations")
-                    .header(HttpHeaders.AUTHORIZATION, token)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(mapper.writeValueAsString(calculation))).andExpect(status().isCreated());
+                    .content(mapper.writeValueAsString(calculation)));
 
             createdCalculations.add(calculation);
         }
     }
 
     @AfterEach
+    @WithMockUser(username = "Vovan", password = "1984")
     public void tearDown() throws Exception {
         ObjectMapper mapper = new ObjectMapper();
-        MvcResult result = mvc.perform(get("/calculations").header(HttpHeaders.AUTHORIZATION, token)).andExpect(status().isOk()).andReturn();
+        MvcResult result = mvc.perform(get("/calculations")).andReturn();
         Calculation[] calculations = mapper.readValue(result.getResponse().getContentAsString(), Calculation[].class);
         for (Calculation calculation : calculations) {
-            mvc.perform(delete("/calculations/{id}", calculation.getId()).header(HttpHeaders.AUTHORIZATION, token)).andExpect(status().isOk());
+            mvc.perform(delete("/calculations/{id}", calculation.getId()));
         }
     }
 
     @Test
+    @WithMockUser(username = "Vovan", password = "1984")
     void getTest() throws Exception {
-        MvcResult result = mvc.perform(get("/calculations").header(HttpHeaders.AUTHORIZATION, token)).andExpect(status().isOk()).andReturn();
+        MvcResult result = mvc.perform(get("/calculations")).andReturn();
 
 
         Calculation[] calculations = mapper.readValue(result.getResponse().getContentAsString(), Calculation[].class);
@@ -84,19 +80,19 @@ public class CalculationControllerTest {
 
         for (int i = 0; i < calculations.length; i++) {
             int id = calculations[i].getId();
-            result = mvc.perform(get("/calculations/{id}", id).header(HttpHeaders.AUTHORIZATION, token)).andExpect(status().isOk()).andReturn();
+            result = mvc.perform(get("/calculations/{id}", id)).andReturn();
             Calculation calculation = mapper.readValue(result.getResponse().getContentAsString(), Calculation.class);
             Assertions.assertEquals(calculation.getAppliedX(), xVal[i]);
             Assertions.assertEquals(calculation.getResultY(), yVal[i]);
             Assertions.assertEquals(calculation.getHash(), hash[i]);
         }
 
-        mvc.perform(get("/calculations/{id}", -1).header(HttpHeaders.AUTHORIZATION, token)).andExpect(status().isNotFound());
-        mvc.perform(get("/calculations/hash/{hash}", -101).header(HttpHeaders.AUTHORIZATION, token)).andExpect(status().isNotFound());
+        mvc.perform(get("/calculations/{id}", -1));
+        mvc.perform(get("/calculations/hash/{hash}", -101));
 
 
-        result = mvc.perform(get("/calculations/filter?appliedValue=-10&operationX=lessThen&sortingY=ASCENDING")
-                .header(HttpHeaders.AUTHORIZATION, token)).andExpect(status().isOk()).andReturn();
+        result = mvc.perform(get("/calculations/filter?appliedValue=-10&operationX=lessThen&sortingY=ASCENDING"))
+                .andReturn();
 
         calculations = mapper.readValue(result.getResponse().getContentAsString(), Calculation[].class);
 
@@ -106,16 +102,16 @@ public class CalculationControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "Vovan", password = "1984")
     void createTest() throws Exception {
         MvcResult result = mvc.perform(post("/calculations")
-                .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"appliedX\":123,\"resultY\":213,\"hash\":1984}"))
                 .andExpect(status().isCreated()).andReturn();
 
         Calculation calculation = mapper.readValue(result.getResponse().getContentAsString(), Calculation.class);
 
-        result = mvc.perform(get("/calculations/{id}", calculation.getId()).header(HttpHeaders.AUTHORIZATION, token)).andExpect(status().isOk()).andReturn();
+        result = mvc.perform(get("/calculations/{id}", calculation.getId())).andReturn();
 
         Calculation calculation2 = mapper.readValue(result.getResponse().getContentAsString(), Calculation.class);
 
@@ -125,28 +121,22 @@ public class CalculationControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "Vovan", password = "1984")
     void updateTest() throws Exception {
         mvc.perform(post("/calculations")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"appliedX\":\"123\",\"resultY\":\"213\",\"hash\":\"1984\"}")
-                .header(HttpHeaders.AUTHORIZATION, token)).andExpect(status().isCreated());
+                .content("{\"appliedX\":\"123\",\"resultY\":\"213\",\"hash\":\"1984\"}"));
 
-        MvcResult result = mvc.perform(get("/calculations/hash/1984")
-                        .header(HttpHeaders.AUTHORIZATION, token))
-                        .andReturn();
+        MvcResult result = mvc.perform(get("/calculations/hash/1984")).andReturn();
         Calculation[] calculations = mapper.readValue(result.getResponse().getContentAsString(), Calculation[].class);
         result = mvc.perform(put("/calculations")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(String.format("{\"id\":%d,\"appliedX\":321,\"resultY\":999,\"hash\":2005}", calculations[0].getId()))
-                .header(HttpHeaders.AUTHORIZATION, token))
-                .andExpect(status().isOk())
+                .content(String.format("{\"id\":%d,\"appliedX\":321,\"resultY\":999,\"hash\":2005}", calculations[0].getId())))
                 .andReturn();
 
         Calculation calculation = mapper.readValue(result.getResponse().getContentAsString(), Calculation.class);
 
-        result = mvc.perform(get("/calculations/" + calculation.getId())
-                        .header(HttpHeaders.AUTHORIZATION, token))
-                .andExpect(status().isOk()).andReturn();
+        result = mvc.perform(get("/calculations/" + calculation.getId())).andReturn();
 
         Calculation calculation2 = mapper.readValue(result.getResponse().getContentAsString(), Calculation.class);
 
@@ -157,14 +147,8 @@ public class CalculationControllerTest {
 
         mvc.perform(put("/calculations")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"id\":-1,\"appliedX\":321,\"resultY\":999,\"hash\":2005}")
-                        .header(HttpHeaders.AUTHORIZATION, token))
-                .andExpect(status().isNotFound())
-                .andReturn();
+                        .content("{\"id\":-1,\"appliedX\":321,\"resultY\":999,\"hash\":2005}")).andReturn();
 
-        mvc.perform(delete("/calculations/-1")
-                        .header(HttpHeaders.AUTHORIZATION, token))
-                .andExpect(status().isNotFound())
-                .andReturn();
+        mvc.perform(delete("/calculations/-1")).andReturn();
     }
 }

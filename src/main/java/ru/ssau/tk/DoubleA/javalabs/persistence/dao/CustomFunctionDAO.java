@@ -6,4 +6,5 @@ import ru.ssau.tk.DoubleA.javalabs.persistence.entity.CustomFunction;
 
 @Repository
 public interface CustomFunctionDAO extends JpaRepository<CustomFunction, String> {
+    CustomFunction findBySerializedFunction(byte[] serializedFunction);
 }

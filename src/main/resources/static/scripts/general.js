@@ -78,7 +78,9 @@ function createTableForTableId(tableId, points) {
         tableBody.appendChild(row);
     }
 
-    createFakeRow(tableBody);
+    if (tableId !== 0) {
+        createFakeRow(tableBody);
+    }
 }
 
 function createTable() {

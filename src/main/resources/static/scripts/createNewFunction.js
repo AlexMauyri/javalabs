@@ -37,6 +37,7 @@ function createFunction() {
 }
 
 function createFunctionRequest(functions, functionName) {
+    console.log(functionName);
     fetch(`/create/${functionName}`, {
         method: 'POST',
         headers: {
@@ -46,7 +47,7 @@ function createFunctionRequest(functions, functionName) {
     }).then(response => {
         if (response.ok) {
             console.log("Everything is fine!!!");
-            updateSelects();
+            updateSelectsRequest();
         } else {
             response.text().then(error => {
                 showError(error);
@@ -63,9 +64,7 @@ function updateSelectsRequest() {
 
 function updateSelects() {
     let selects = document.getElementById('chainOfFunctions').getElementsByTagName('select');
-    console.log(selects);
     for (let i = 0; i < selects.length; ++i) {
-        console.log(document.getElementById('selectFunction').innerHTML);
         selects[i].innerHTML = document.getElementById('selectFunction').innerHTML;
     }
 }

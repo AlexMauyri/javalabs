@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 public class AccessingAllClassesInPackage {
 
-    public static List<Class> findAllClassesWithSimpleFunctionAnnotation(String packageName) {
+    public static List<Class<?>> findAllClassesWithSimpleFunctionAnnotation(String packageName) {
         InputStream stream = ClassLoader.getSystemClassLoader()
                 .getResourceAsStream(packageName.replaceAll("[.]", "/"));
         BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
@@ -22,7 +22,7 @@ public class AccessingAllClassesInPackage {
                 .collect(Collectors.toList());
     }
 
-    private static Class getClass(String className, String packageName) {
+    private static Class<?> getClass(String className, String packageName) {
         try {
             return Class.forName(packageName + "."
                     + className.substring(0, className.lastIndexOf('.')));

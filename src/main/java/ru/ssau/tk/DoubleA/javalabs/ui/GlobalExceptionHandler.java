@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import ru.ssau.tk.DoubleA.javalabs.exceptions.ArrayIsNotSortedException;
 import ru.ssau.tk.DoubleA.javalabs.exceptions.DifferentLengthOfArraysException;
+import ru.ssau.tk.DoubleA.javalabs.exceptions.FunctionAlreadyExists;
 import ru.ssau.tk.DoubleA.javalabs.exceptions.InconsistentFunctionsException;
 
 @ControllerAdvice
@@ -33,6 +34,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(InconsistentFunctionsException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<String> inconsistentFunctionsException(InconsistentFunctionsException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(FunctionAlreadyExists.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<String> functionAlreadyExistsException(FunctionAlreadyExists ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 

@@ -1,4 +1,4 @@
-package ru.ssau.tk.DoubleA.javalabs.ui.controller;
+package ru.ssau.tk.DoubleA.javalabs.web.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,8 +11,8 @@ import ru.ssau.tk.DoubleA.javalabs.functions.factory.TabulatedFunctionFactory;
 import ru.ssau.tk.DoubleA.javalabs.operations.TabulatedDifferentialOperator;
 import ru.ssau.tk.DoubleA.javalabs.operations.TabulatedFunctionOperationService;
 import ru.ssau.tk.DoubleA.javalabs.operations.TabulatedIntegrationOperator;
-import ru.ssau.tk.DoubleA.javalabs.ui.TabulatedFunctionFactoryCookieHandler;
-import ru.ssau.tk.DoubleA.javalabs.ui.dto.TabulatedFunctionOnArraysRequest;
+import ru.ssau.tk.DoubleA.javalabs.web.cookie.TabulatedFunctionFactoryCookieHandler;
+import ru.ssau.tk.DoubleA.javalabs.web.dto.TabulatedFunctionOnArraysRequest;
 
 import java.util.concurrent.ExecutionException;
 

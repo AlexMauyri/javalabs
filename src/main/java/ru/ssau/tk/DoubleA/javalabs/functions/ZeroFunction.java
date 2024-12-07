@@ -1,7 +1,7 @@
 package ru.ssau.tk.DoubleA.javalabs.functions;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import ru.ssau.tk.DoubleA.javalabs.ui.annotation.SimpleFunction;
+import ru.ssau.tk.DoubleA.javalabs.annotation.SimpleFunction;
 
 import java.io.Serial;
 

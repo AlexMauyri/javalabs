@@ -1,32 +1,21 @@
-package ru.ssau.tk.DoubleA.javalabs.ui.controller;
+package ru.ssau.tk.DoubleA.javalabs.web.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.ssau.tk.DoubleA.javalabs.functions.*;
-import ru.ssau.tk.DoubleA.javalabs.functions.factory.ArrayTabulatedFunctionFactory;
-import ru.ssau.tk.DoubleA.javalabs.functions.factory.LinkedListTabulatedFunctionFactory;
 import ru.ssau.tk.DoubleA.javalabs.functions.factory.TabulatedFunctionFactory;
-import ru.ssau.tk.DoubleA.javalabs.io.FunctionsIO;
-import ru.ssau.tk.DoubleA.javalabs.operations.TabulatedDifferentialOperator;
-import ru.ssau.tk.DoubleA.javalabs.operations.TabulatedFunctionOperationService;
-import ru.ssau.tk.DoubleA.javalabs.operations.TabulatedIntegrationOperator;
 import ru.ssau.tk.DoubleA.javalabs.persistence.entity.CustomFunction;
 import ru.ssau.tk.DoubleA.javalabs.persistence.service.CustomFunctionService;
-import ru.ssau.tk.DoubleA.javalabs.ui.AccessingAllClassesInPackage;
-import ru.ssau.tk.DoubleA.javalabs.ui.FabricType;
-import ru.ssau.tk.DoubleA.javalabs.ui.FunctionSerializer;
-import ru.ssau.tk.DoubleA.javalabs.ui.TabulatedFunctionFactoryCookieHandler;
-import ru.ssau.tk.DoubleA.javalabs.ui.annotation.SimpleFunction;
-import ru.ssau.tk.DoubleA.javalabs.ui.dto.TabulatedFunctionOnArraysRequest;
-import ru.ssau.tk.DoubleA.javalabs.ui.dto.TabulatedFunctionOnFunctionRequest;
+import ru.ssau.tk.DoubleA.javalabs.annotation.AccessingAllClassesInPackage;
+import ru.ssau.tk.DoubleA.javalabs.web.serializer.FunctionSerializer;
+import ru.ssau.tk.DoubleA.javalabs.web.cookie.TabulatedFunctionFactoryCookieHandler;
+import ru.ssau.tk.DoubleA.javalabs.annotation.SimpleFunction;
+import ru.ssau.tk.DoubleA.javalabs.web.dto.TabulatedFunctionOnArraysRequest;
+import ru.ssau.tk.DoubleA.javalabs.web.dto.TabulatedFunctionOnFunctionRequest;
 
-import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 

@@ -1,6 +1,4 @@
-package ru.ssau.tk.DoubleA.javalabs.ui;
-
-import ru.ssau.tk.DoubleA.javalabs.ui.annotation.SimpleFunction;
+package ru.ssau.tk.DoubleA.javalabs.annotation;
 
 import java.io.BufferedReader;
 import java.io.InputStream;

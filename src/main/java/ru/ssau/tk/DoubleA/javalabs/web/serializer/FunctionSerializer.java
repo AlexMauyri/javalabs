@@ -1,4 +1,4 @@
-package ru.ssau.tk.DoubleA.javalabs.ui;
+package ru.ssau.tk.DoubleA.javalabs.web.serializer;
 
 import org.springframework.stereotype.Component;
 import ru.ssau.tk.DoubleA.javalabs.functions.MathFunction;

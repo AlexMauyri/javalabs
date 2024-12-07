@@ -1,4 +1,4 @@
-package ru.ssau.tk.DoubleA.javalabs.ui.controller;
+package ru.ssau.tk.DoubleA.javalabs.web.controller;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -6,7 +6,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import ru.ssau.tk.DoubleA.javalabs.ui.FabricType;
 
 @Controller
 public class SettingsController {

@@ -1,4 +1,4 @@
-package ru.ssau.tk.DoubleA.javalabs.ui.dto;
+package ru.ssau.tk.DoubleA.javalabs.web.dto;
 
 import lombok.Getter;
 import lombok.Setter;

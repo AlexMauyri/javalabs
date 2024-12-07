@@ -1,4 +1,4 @@
-package ru.ssau.tk.DoubleA.javalabs.ui.controller;
+package ru.ssau.tk.DoubleA.javalabs.web.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

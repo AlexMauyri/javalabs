@@ -1,12 +1,10 @@
-package ru.ssau.tk.DoubleA.javalabs.ui.dto;
+package ru.ssau.tk.DoubleA.javalabs.web.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import ru.ssau.tk.DoubleA.javalabs.functions.AbstractTabulatedFunction;
 
 import java.util.Arrays;
 

@@ -1,4 +1,4 @@
-package ru.ssau.tk.DoubleA.javalabs.ui;
+package ru.ssau.tk.DoubleA.javalabs.web.handler;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

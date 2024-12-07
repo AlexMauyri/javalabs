@@ -1,4 +1,4 @@
-package ru.ssau.tk.DoubleA.javalabs.ui.annotation;
+package ru.ssau.tk.DoubleA.javalabs.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

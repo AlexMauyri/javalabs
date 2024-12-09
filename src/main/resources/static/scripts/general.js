@@ -86,7 +86,10 @@ function createTableForTableId(tableId, points) {
 function createTable() {
     let points = document.getElementById('points').value;
 
-    if (!validateInteger(points)) return;
+    if (!validateInteger(points)) {
+        document.getElementById('textError').innerHTML += ` Неправильное значение количества точек`;
+        return;
+    }
 
     points = parseFloat(points);
 
@@ -171,19 +174,29 @@ function submitFunctionOnTable() {
 
 function submitFunctionOnFunction() {
     const tabulatedFunction = document.getElementById('selectFunction').value;
-    const count = document.getElementById('count').value;
-    const leftBorder = document.getElementById('leftBorder').value;
-    const rightBorder = document.getElementById('rightBorder').value;
-
-    if (!validateInteger(count)) return;
+    const count = document.getElementById('count').valueAsNumber;
+    const leftBorder = document.getElementById('leftBorder').valueAsNumber;
+    const rightBorder = document.getElementById('rightBorder').valueAsNumber;
+    console.log(typeof rightBorder);
+    console.log(rightBorder);
+    if (!validateInteger(count)) {
+        document.getElementById('textError').innerHTML += ' Неправильное значение количества точек';
+        return;
+    }
 
     if (parseFloat(count) < 2) {
         showError('Число точек должно быть больше 2');
         return;
     }
 
-    if (!validateDouble(leftBorder)) return;
-    if (!validateDouble(rightBorder)) return;
+    if (!validateDouble(leftBorder)) {
+        document.getElementById('textError').innerHTML += ' Неправильное значение левой границы';
+        return;
+    }
+    if (!validateDouble(rightBorder)) {
+        document.getElementById('textError').innerHTML += ' Неправильное значение правой границы';
+        return;
+    }
 
     const functionData = {
         functionName: tabulatedFunction,
@@ -276,13 +289,14 @@ function fetchDataFromTable(id) {
     for (let i = 0; i < rows.length - 1; ++i) {
         let row = rows[i];
         const cells = row.getElementsByTagName('td');
-        const x = cells[0].getElementsByTagName('input')[0].value;
-        const y = cells[1].getElementsByTagName('input')[0].value;
-        if (x === '' || !validateDouble(x)) {
-            showError(`Неправильное значение x в ${row.rowIndex} строке`);
+        const x = cells[0].getElementsByTagName('input')[0].valueAsNumber;
+        const y = cells[1].getElementsByTagName('input')[0].valueAsNumber;
+        if (!validateDouble(x)) {
+            document.getElementById('textError').innerHTML += ` Неправильное значение x в ${row.rowIndex} строке`;
             return;
-        } else if (y === '' || !validateDouble(y)) {
-            showError(`Неправильное значение y в ${row.rowIndex} строке`);
+        } else if (!validateDouble(y)) {
+            console.log(document.getElementById('error-modal-container').innerHTML);
+            document.getElementById('textError').innerHTML += ` Неправильное значение y в ${row.rowIndex} строке`;
             return;
         }
 
@@ -412,17 +426,16 @@ function convertBLOBToJSONFunction(content) {
 }
 
 function showError(error) {
-    fetch('popup/error')
-        .then(response => response.text())
-        .then(html => {
-            document.getElementById('error-modal-container').innerHTML = html;
-            document.getElementById('textError').innerHTML = error;
-            document.getElementById('error-modal').showModal();
-            document.getElementById('closeError').addEventListener('click', () => {
-                document.getElementById('error-modal').close();
-                document.getElementById('error-modal-container').innerHTML = '';
-            });
-        })
+    const Http = new XMLHttpRequest();
+    Http.open("GET", 'popup/error', false);
+    Http.send();
+    document.getElementById('error-modal-container').innerHTML = Http.response;
+    document.getElementById('textError').innerHTML = error;
+    document.getElementById('error-modal').showModal();
+    document.getElementById('closeError').addEventListener('click', () => {
+        document.getElementById('error-modal').close();
+        document.getElementById('error-modal-container').innerHTML = '';
+    });
 }
 
 function validateInteger(value) {

@@ -17,16 +17,16 @@ public class CustomFunctionService {
         this.customFunctionDAO = customFunctionDAO;
     }
 
-    public List<CustomFunction> getCustomFunctions() {
-        return customFunctionDAO.findAll();
+    public List<CustomFunction> getCustomFunctionsByUserId(int userId) {
+        return customFunctionDAO.findAllByUserId(userId);
     }
 
-    public CustomFunction createFunction(String functionName, byte[] serializedFunction) {
-        CustomFunction customFunction = customFunctionDAO.findBySerializedFunction(serializedFunction);
+    public CustomFunction createFunction(int userId, String functionName, byte[] serializedFunction) {
+        CustomFunction customFunction = customFunctionDAO.findBySerializedFunctionAndUserId(serializedFunction, userId);
         if (customFunction != null) {
             throw new FunctionAlreadyExists("Эта функция уже существует!!! Её название - " + customFunction.getName());
         }
 
-        return customFunctionDAO.save(new CustomFunction(functionName, serializedFunction));
+        return customFunctionDAO.save(new CustomFunction(userId, functionName, serializedFunction));
     }
 }

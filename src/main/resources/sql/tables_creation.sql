@@ -40,6 +40,7 @@ CREATE TABLE IF NOT EXISTS users
 CREATE TABLE IF NOT EXISTS custom_function
 (
     id SERIAL PRIMARY KEY ,
-    name VARCHAR(255) UNIQUE NOT NULL ,
+    user_id INTEGER NOT NULL,
+    name VARCHAR(50) NOT NULL ,
     serialized_function bytea
 )

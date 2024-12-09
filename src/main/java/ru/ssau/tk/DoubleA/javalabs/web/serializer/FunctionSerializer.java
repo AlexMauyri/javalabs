@@ -7,9 +7,8 @@ import ru.ssau.tk.DoubleA.javalabs.io.FunctionsIO;
 
 import java.io.*;
 
-@Component
 public class FunctionSerializer {
-    public byte[] serializeCustomFunction(MathFunction function) {
+    public static byte[] serializeCustomFunction(MathFunction function) {
         try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
              ObjectOutputStream out = new ObjectOutputStream(bos)) {
             out.writeObject(function);
@@ -19,7 +18,7 @@ public class FunctionSerializer {
         }
     }
 
-    public byte[] serializeByte(TabulatedFunction function) {
+    public static byte[] serializeByte(TabulatedFunction function) {
         byte[] serializedFunction = null;
         try(ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
             BufferedOutputStream outputStream = new BufferedOutputStream(byteOutputStream)) {
@@ -32,7 +31,7 @@ public class FunctionSerializer {
         return serializedFunction;
     }
 
-    public String serializeJson(TabulatedFunction function) {
+    public static String serializeJson(TabulatedFunction function) {
         String serializedFunction = null;
         try(StringWriter stringWriter = new StringWriter();
             BufferedWriter bufferedWriter = new BufferedWriter(stringWriter)) {
@@ -45,7 +44,7 @@ public class FunctionSerializer {
         return serializedFunction;
     }
 
-    public String serializeXml(TabulatedFunction function) {
+    public static String serializeXml(TabulatedFunction function) {
         String serializedFunction = null;
         try(StringWriter stringWriter = new StringWriter();
             BufferedWriter bufferedWriter = new BufferedWriter(stringWriter)) {
@@ -58,7 +57,7 @@ public class FunctionSerializer {
         return serializedFunction;
     }
 
-    public MathFunction deserializeFunction(byte[] data) {
+    public static MathFunction deserializeFunction(byte[] data) {
         try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(data);
              ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream)) {
             return (MathFunction) objectInputStream.readObject();

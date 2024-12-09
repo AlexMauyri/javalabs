@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serial;
+import java.util.List;
 import java.util.zip.CRC32;
 
 public class CompositeFunction implements MathFunction {
@@ -29,5 +30,13 @@ public class CompositeFunction implements MathFunction {
         crc.update(firstFunction.hashCode());
         crc.update(secondFunction.hashCode());
         return (int) crc.getValue();
+    }
+
+    public static CompositeFunction createCompositeFunctionFromList(List<MathFunction> functionList) {
+        CompositeFunction function = new CompositeFunction(functionList.get(0), functionList.get(1));
+        for (int i = 2; i < functionList.size(); i++) {
+            function = new CompositeFunction(function, functionList.get(i));
+        }
+        return function;
     }
 }

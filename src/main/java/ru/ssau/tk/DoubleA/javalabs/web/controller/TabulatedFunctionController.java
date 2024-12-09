@@ -3,13 +3,14 @@ package ru.ssau.tk.DoubleA.javalabs.web.controller;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.ssau.tk.DoubleA.javalabs.annotation.SimpleFunctionAnnotationHandler;
 import ru.ssau.tk.DoubleA.javalabs.functions.*;
 import ru.ssau.tk.DoubleA.javalabs.functions.factory.TabulatedFunctionFactory;
 import ru.ssau.tk.DoubleA.javalabs.persistence.entity.CustomFunction;
 import ru.ssau.tk.DoubleA.javalabs.persistence.service.CustomFunctionService;
+import ru.ssau.tk.DoubleA.javalabs.persistence.service.UserService;
 import ru.ssau.tk.DoubleA.javalabs.web.serializer.FunctionSerializer;
 import ru.ssau.tk.DoubleA.javalabs.web.cookie.TabulatedFunctionFactoryCookieHandler;
 import ru.ssau.tk.DoubleA.javalabs.web.dto.TabulatedFunctionOnArraysRequest;
@@ -18,49 +19,43 @@ import ru.ssau.tk.DoubleA.javalabs.web.dto.TabulatedFunctionOnFunctionRequest;
 import java.util.*;
 
 @RestController
+@RequiredArgsConstructor
 public class TabulatedFunctionController {
-    private final Map<String, MathFunction> allFunctions;
     private final CustomFunctionService customFunctionService;
-    private final FunctionSerializer functionSerializer;
     private final TabulatedFunctionFactoryCookieHandler cookieHandler;
+    private final UserService userService;
+    
+    private Map<String, MathFunction> allFunctions;
 
-    public TabulatedFunctionController(@Autowired CustomFunctionService customFunctionService,
-                                       @Autowired FunctionSerializer functionSerializer,
-                                       @Autowired TabulatedFunctionFactoryCookieHandler cookieHandler) {
-        allFunctions = SimpleFunctionAnnotationHandler.putSimpleFunctions();
-        this.customFunctionService = customFunctionService;
-        this.functionSerializer = functionSerializer;
-        this.cookieHandler = cookieHandler;
-    }
-
-    @PostConstruct
-    public void init() {
-        List<CustomFunction> functions = customFunctionService.getCustomFunctions();
-        for (CustomFunction function : functions) {
-            allFunctions.put(function.getName(), functionSerializer.deserializeFunction(function.getSerializedFunction()));
-        }
-    }
 
     @GetMapping("/getFunctions")
     @ResponseBody
-    public List<String> getFunctions() {
+    public List<String> getFunctions(HttpServletRequest request) {
+        allFunctions = SimpleFunctionAnnotationHandler.putSimpleFunctions();
+        int userId = userService.getUserIdByUsername(request.getRemoteUser());
+        List<CustomFunction> functions = customFunctionService.getCustomFunctionsByUserId(userId);
+        for (CustomFunction function : functions) {
+            allFunctions.put(function.getName(), FunctionSerializer.deserializeFunction(function.getSerializedFunction()));
+        }
         return new ArrayList<>(allFunctions.keySet());
     }
 
     @PostMapping("/create/{functionName}")
-    public void createFunction(@PathVariable(name = "functionName") String functionName, @RequestBody String[] functions) {
+    public void createFunction(@PathVariable(name = "functionName") String functionName,
+                               @RequestBody String[] functions,
+                               HttpServletRequest request) {
         if (allFunctions.containsKey(functionName)) {
             throw new IllegalArgumentException("Введенное имя функции уже существует");
         }
-        List<MathFunction> functionList = Arrays.stream(functions).map(allFunctions::get).toList().reversed();
-        CompositeFunction function = new CompositeFunction(functionList.get(0), functionList.get(1));
-        for (int i = 2; i < functionList.size(); i++) {
-            function = new CompositeFunction(function, functionList.get(i));
-        }
-        byte[] serializedFunction = functionSerializer.serializeCustomFunction(function);
 
-        CustomFunction customFunction = customFunctionService.createFunction(functionName, serializedFunction);
-        allFunctions.put(customFunction.getName(), functionSerializer.deserializeFunction(customFunction.getSerializedFunction()));
+        List<MathFunction> functionList = Arrays.stream(functions).map(allFunctions::get).toList().reversed();
+        CompositeFunction function = CompositeFunction.createCompositeFunctionFromList(functionList);
+
+        byte[] serializedFunction = FunctionSerializer.serializeCustomFunction(function);
+        int userId = userService.getUserIdByUsername(request.getRemoteUser());
+        CustomFunction customFunction = customFunctionService.createFunction(userId, functionName, serializedFunction);
+
+        allFunctions.put(customFunction.getName(), FunctionSerializer.deserializeFunction(customFunction.getSerializedFunction()));
     }
 
     @PostMapping("/createTabulatedFunctionWithTableByte")
@@ -74,7 +69,7 @@ public class TabulatedFunctionController {
                 tabulatedFunctionRequest.getYValues()
         );
 
-        return functionSerializer.serializeByte(function);
+        return FunctionSerializer.serializeByte(function);
     }
 
     @PostMapping("/createTabulatedFunctionWithTableJSON")
@@ -88,7 +83,7 @@ public class TabulatedFunctionController {
                 tabulatedFunctionRequest.getYValues()
         );
 
-        return functionSerializer.serializeJson(function);
+        return FunctionSerializer.serializeJson(function);
     }
 
     @PostMapping("/createTabulatedFunctionWithTableXML")
@@ -102,7 +97,7 @@ public class TabulatedFunctionController {
                 tabulatedFunctionRequest.getYValues()
         );
 
-        return functionSerializer.serializeXml(function);
+        return FunctionSerializer.serializeXml(function);
     }
 
     @PostMapping("/createTabulatedFunctionWithFunctionByte")
@@ -117,7 +112,7 @@ public class TabulatedFunctionController {
                 tabulatedFunctionRequest.getTo(),
                 tabulatedFunctionRequest.getAmountOfPoints()
         );
-        return functionSerializer.serializeByte(function);
+        return FunctionSerializer.serializeByte(function);
     }
 
     @PostMapping("/createTabulatedFunctionWithFunctionJSON")
@@ -132,7 +127,7 @@ public class TabulatedFunctionController {
                 tabulatedFunctionRequest.getTo(),
                 tabulatedFunctionRequest.getAmountOfPoints()
         );
-        return functionSerializer.serializeJson(function);
+        return FunctionSerializer.serializeJson(function);
     }
 
     @PostMapping("/createTabulatedFunctionWithFunctionXML")
@@ -147,7 +142,7 @@ public class TabulatedFunctionController {
                 tabulatedFunctionRequest.getTo(),
                 tabulatedFunctionRequest.getAmountOfPoints()
         );
-        return functionSerializer.serializeXml(function);
+        return FunctionSerializer.serializeXml(function);
     }
 
 }

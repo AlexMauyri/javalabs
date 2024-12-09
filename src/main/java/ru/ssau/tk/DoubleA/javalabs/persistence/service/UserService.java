@@ -42,4 +42,9 @@ public class UserService implements UserDetailsService {
         user.setRole(Role.USER);
         userRepo.save(user);
     }
+
+    public int getUserIdByUsername(String username) {
+        User user = userRepo.findByUsername(username);
+        return user.getUser_id();
+    }
 }

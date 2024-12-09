@@ -15,12 +15,15 @@ import lombok.Setter;
 @NoArgsConstructor
 public class CustomFunction {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(name = "user_id")
+    private int userId;
     private String name;
     private byte[] serializedFunction;
 
-    public CustomFunction(String name, byte[] serializedFunction) {
+    public CustomFunction(int userId, String name, byte[] serializedFunction) {
+        this.userId = userId;
         this.name = name;
         this.serializedFunction = serializedFunction;
     }

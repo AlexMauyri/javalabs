@@ -10,4 +10,5 @@ import java.util.List;
 public interface CustomFunctionDAO extends JpaRepository<CustomFunction, String> {
     CustomFunction findBySerializedFunctionAndUserId(byte[] serializedFunction, int userId);
     List<CustomFunction> findAllByUserId(int userId);
+    void deleteCustomFunctionByUserIdAndName(int userId, String functionName);
 }

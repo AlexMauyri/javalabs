@@ -29,4 +29,8 @@ public class CustomFunctionService {
 
         return customFunctionDAO.save(new CustomFunction(userId, functionName, serializedFunction));
     }
+
+    public void deleteCustomFunctionByUserIdAndFunctionName(int userId, String functionName) {
+        customFunctionDAO.deleteCustomFunctionByUserIdAndName(userId, functionName);
+    }
 }

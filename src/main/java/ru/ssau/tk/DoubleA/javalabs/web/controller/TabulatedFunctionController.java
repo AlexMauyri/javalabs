@@ -1,6 +1,5 @@
 package ru.ssau.tk.DoubleA.javalabs.web.controller;
 
-import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -27,17 +26,20 @@ public class TabulatedFunctionController {
     
     private Map<String, MathFunction> allFunctions;
 
-
     @GetMapping("/getFunctions")
     @ResponseBody
     public List<String> getFunctions(HttpServletRequest request) {
+        updateAllFunctionsMap(request);
+        return new ArrayList<>(allFunctions.keySet());
+    }
+
+    private void updateAllFunctionsMap(HttpServletRequest request) {
         allFunctions = SimpleFunctionAnnotationHandler.putSimpleFunctions();
         int userId = userService.getUserIdByUsername(request.getRemoteUser());
         List<CustomFunction> functions = customFunctionService.getCustomFunctionsByUserId(userId);
         for (CustomFunction function : functions) {
             allFunctions.put(function.getName(), FunctionSerializer.deserializeFunction(function.getSerializedFunction()));
         }
-        return new ArrayList<>(allFunctions.keySet());
     }
 
     @PostMapping("/create/{functionName}")
@@ -56,6 +58,13 @@ public class TabulatedFunctionController {
         CustomFunction customFunction = customFunctionService.createFunction(userId, functionName, serializedFunction);
 
         allFunctions.put(customFunction.getName(), FunctionSerializer.deserializeFunction(customFunction.getSerializedFunction()));
+    }
+
+    @DeleteMapping("/delete/{functionName}")
+    public void deleteFunction(@PathVariable(name = "functionName") String functionName,
+                               HttpServletRequest request) {
+        int userId = userService.getUserIdByUsername(request.getRemoteUser());
+        customFunctionService.deleteCustomFunctionByUserIdAndFunctionName(userId, functionName);
     }
 
     @PostMapping("/createTabulatedFunctionWithTableByte")

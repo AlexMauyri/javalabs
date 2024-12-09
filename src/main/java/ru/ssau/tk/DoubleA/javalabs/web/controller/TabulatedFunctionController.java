@@ -5,18 +5,16 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import ru.ssau.tk.DoubleA.javalabs.annotation.SimpleFunctionAnnotationHandler;
 import ru.ssau.tk.DoubleA.javalabs.functions.*;
 import ru.ssau.tk.DoubleA.javalabs.functions.factory.TabulatedFunctionFactory;
 import ru.ssau.tk.DoubleA.javalabs.persistence.entity.CustomFunction;
 import ru.ssau.tk.DoubleA.javalabs.persistence.service.CustomFunctionService;
-import ru.ssau.tk.DoubleA.javalabs.annotation.AccessingAllClassesInPackage;
 import ru.ssau.tk.DoubleA.javalabs.web.serializer.FunctionSerializer;
 import ru.ssau.tk.DoubleA.javalabs.web.cookie.TabulatedFunctionFactoryCookieHandler;
-import ru.ssau.tk.DoubleA.javalabs.annotation.SimpleFunction;
 import ru.ssau.tk.DoubleA.javalabs.web.dto.TabulatedFunctionOnArraysRequest;
 import ru.ssau.tk.DoubleA.javalabs.web.dto.TabulatedFunctionOnFunctionRequest;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 @RestController
@@ -28,16 +26,8 @@ public class TabulatedFunctionController {
 
     public TabulatedFunctionController(@Autowired CustomFunctionService customFunctionService,
                                        @Autowired FunctionSerializer functionSerializer,
-                                       @Autowired TabulatedFunctionFactoryCookieHandler cookieHandler)
-            throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
-        List<Class<?>> classes = AccessingAllClassesInPackage.findAllClassesWithSimpleFunctionAnnotation("ru.ssau.tk.DoubleA.javalabs.functions");
-        allFunctions = new HashMap<>();
-
-        for (Class<?> clazz : classes) {
-            SimpleFunction annotation = clazz.getAnnotation(SimpleFunction.class);
-            allFunctions.put(annotation.localizedName(), (MathFunction) clazz.getConstructor().newInstance());
-        }
-
+                                       @Autowired TabulatedFunctionFactoryCookieHandler cookieHandler) {
+        allFunctions = SimpleFunctionAnnotationHandler.putSimpleFunctions();
         this.customFunctionService = customFunctionService;
         this.functionSerializer = functionSerializer;
         this.cookieHandler = cookieHandler;

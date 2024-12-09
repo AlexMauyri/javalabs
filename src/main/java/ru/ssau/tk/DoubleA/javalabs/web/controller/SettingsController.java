@@ -10,11 +10,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 @Controller
 public class SettingsController {
 
-    @GetMapping("/settings")
-    public String settings() {
-        return "settings";
-    }
-
     @PostMapping("/settings")
     public void saveSettings(@RequestBody String settings, HttpServletResponse response) {
         Cookie cookie = new Cookie("fabricType", settings);

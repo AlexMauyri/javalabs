@@ -5,6 +5,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class PageController {
+
+    @GetMapping("/settings")
+    public String settings() {
+        return "settings";
+    }
+
     @GetMapping("/createPlot")
     public String createPlotPage() {
         return "createPlot";

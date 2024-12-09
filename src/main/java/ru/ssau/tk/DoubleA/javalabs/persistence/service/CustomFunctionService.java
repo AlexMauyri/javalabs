@@ -1,5 +1,6 @@
 package ru.ssau.tk.DoubleA.javalabs.persistence.service;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.ssau.tk.DoubleA.javalabs.exceptions.FunctionAlreadyExists;
@@ -30,6 +31,7 @@ public class CustomFunctionService {
         return customFunctionDAO.save(new CustomFunction(userId, functionName, serializedFunction));
     }
 
+    @Transactional
     public void deleteCustomFunctionByUserIdAndFunctionName(int userId, String functionName) {
         customFunctionDAO.deleteCustomFunctionByUserIdAndName(userId, functionName);
     }

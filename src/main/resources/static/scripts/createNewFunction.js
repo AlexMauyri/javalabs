@@ -1,3 +1,5 @@
+let built_in_functions=['Квадратичная функция', 'Нулевая функция', 'Тождественная функция', 'Единичная функция'];
+
 function addFunction() {
     let select = document.createElement("select");
     select.innerHTML = document.getElementById('selectFunction').innerHTML;
@@ -64,9 +66,40 @@ function updateSelectsRequest() {
 
 function updateSelects() {
     let selects = document.getElementById('chainOfFunctions').getElementsByTagName('select');
+    let cachedSelect = document.getElementById('selectFunction');
     for (let i = 0; i < selects.length; ++i) {
         selects[i].innerHTML = document.getElementById('selectFunction').innerHTML;
     }
+
+    let options = cachedSelect.getElementsByTagName('option');
+    let deleteSelect = document.getElementById('selectForDeleting');
+    deleteSelect.innerHTML = '';
+    for (let option of options) {
+        if (!built_in_functions.includes(option.value)) {
+            deleteSelect.appendChild(option);
+        }
+    }
+}
+
+function deleteCustomFunction() {
+    let select = document.getElementById('selectForDeleting');
+    let functionToDelete = select.value;
+    deleteCustomFunctionRequest(functionToDelete);
+}
+
+function deleteCustomFunctionRequest(functionToDelete) {
+    fetch(`/delete/${functionToDelete}`, {
+        method: 'DELETE'
+    }).then(response => {
+        if (response.ok) {
+            console.log("Everything is fine!!!");
+            updateSelectsRequest();
+        } else {
+            response.text().then(error => {
+                showError(error);
+            });
+        }
+    });
 }
 
 function clearAll() {

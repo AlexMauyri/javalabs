@@ -63,6 +63,7 @@ public class TabulatedFunctionController {
     @DeleteMapping("/delete/{functionName}")
     public void deleteFunction(@PathVariable(name = "functionName") String functionName,
                                HttpServletRequest request) {
+        allFunctions.remove(functionName);
         int userId = userService.getUserIdByUsername(request.getRemoteUser());
         customFunctionService.deleteCustomFunctionByUserIdAndFunctionName(userId, functionName);
     }

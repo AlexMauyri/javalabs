@@ -1,7 +1,13 @@
 function applyValue() {
-    const xValue = document.getElementById('xValue').value;
-    if (!validateDouble(xValue)) return;
+    const xValue = document.getElementById('xValue').valueAsNumber;
+    if (!isFinite(xValue)) {
+        showError('Неправильное значение x');
+        return;
+    }
     const content = fetchDataFromTable(1);
+    if (!tableIsNotEmpty(content)) {
+        return;
+    }
     applyRequest(xValue, content);
 }
 

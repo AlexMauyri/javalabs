@@ -84,25 +84,23 @@ function createTableForTableId(tableId, points) {
 }
 
 function createTable() {
-    let points = document.getElementById('points').value;
+    let points = document.getElementById('points').valueAsNumber;
 
-    if (!validateInteger(points)) {
-        document.getElementById('textError').innerHTML += ` Неправильное значение количества точек`;
+    if (!Number.isInteger(points)) {
+        showError(`Неправильное значение количества точек`);
         return;
     }
-
-    points = parseFloat(points);
 
     if (points < 2) {
         showError('Число точек должно быть больше 2');
         return;
     }
     const tableBody = document.getElementById('functionTableModal').getElementsByTagName('tbody')[0];
-
     const existingRows = tableBody.getElementsByTagName('tr');
     let i = 0;
-    for (; i < existingRows.length && i < points; ++i) {
+    for (; i < existingRows.length - 1 && i < points; ++i) {
         let values = existingRows[i].getElementsByTagName('td');
+        console.log(values);
         let x = values[0].getElementsByTagName('input')[0].value;
         let y = values[1].getElementsByTagName('input')[0].value;
         if (x === undefined && y === undefined) {
@@ -179,22 +177,22 @@ function submitFunctionOnFunction() {
     const rightBorder = document.getElementById('rightBorder').valueAsNumber;
     console.log(typeof rightBorder);
     console.log(rightBorder);
-    if (!validateInteger(count)) {
-        document.getElementById('textError').innerHTML += ' Неправильное значение количества точек';
+    if (!Number.isInteger(count)) {
+        showError('Неправильное значение количества точек');
         return;
     }
 
-    if (parseFloat(count) < 2) {
+    if (count < 2) {
         showError('Число точек должно быть больше 2');
         return;
     }
 
-    if (!validateDouble(leftBorder)) {
-        document.getElementById('textError').innerHTML += ' Неправильное значение левой границы';
+    if (!isFinite(leftBorder)) {
+        showError('Неправильное значение левой границы');
         return;
     }
-    if (!validateDouble(rightBorder)) {
-        document.getElementById('textError').innerHTML += ' Неправильное значение правой границы';
+    if (!isFinite(rightBorder)) {
+        showError('Неправильное значение правой границы');
         return;
     }
 
@@ -291,17 +289,16 @@ function fetchDataFromTable(id) {
         const cells = row.getElementsByTagName('td');
         const x = cells[0].getElementsByTagName('input')[0].valueAsNumber;
         const y = cells[1].getElementsByTagName('input')[0].valueAsNumber;
-        if (!validateDouble(x)) {
-            document.getElementById('textError').innerHTML += ` Неправильное значение x в ${row.rowIndex} строке`;
+        if (!isFinite(x)) {
+            showError(`Неправильное значение x в ${row.rowIndex} строке`);
             return;
-        } else if (!validateDouble(y)) {
-            console.log(document.getElementById('error-modal-container').innerHTML);
-            document.getElementById('textError').innerHTML += ` Неправильное значение y в ${row.rowIndex} строке`;
+        } else if (!isFinite(y)) {
+            showError(`Неправильное значение y в ${row.rowIndex} строке`);
             return;
         }
 
-        xValues.push(parseFloat(x));
-        yValues.push(parseFloat(y));
+        xValues.push(x);
+        yValues.push(y);
     }
 
     return {
@@ -400,10 +397,6 @@ function createFakeRow(tableBody) {
     tableBody.appendChild(row);
 }
 
-function setCurrentIdButton(id) {
-    currentButtonId = id;
-}
-
 function convertXMLToJSONFunction(content) {
     return fetch('http://localhost:8080/convertFromXML', {
         method: 'POST',
@@ -438,78 +431,21 @@ function showError(error) {
     });
 }
 
-function validateInteger(value) {
-    if (value === null || value === undefined || value === '') {
-        showError('Неправильная запись числа!');
+function tableIsNotEmpty(content) {
+    if (content === undefined || content === null || content.xValues.length === 0) {
+        showError('В таблице не заполнены данные');
         return false;
     }
-
-    if (typeof value === 'string') {
-        // Удаляем пробелы
-        value = value.trim();
-
-        if (value.includes('.') || value.includes(',')) {
-            showError('Число должно быть целым');
-            return false;
-        }
-
-        if (value.includes('e')) {
-            const parts = value.split('e');
-            if (parts.length !== 2 || isNaN(parts[0]) || isNaN(parts[1])) {
-                showError('Неправильная запись экспоненциальной формы числа');
-                return false;
-            }
-        }
-
-        value = Number(value);
-    }
-
-    if (typeof value !== 'number') {
-        showError('Вы ввели не число!');
-        return false;
-    } else if (!isFinite(value)) {
-        showError('Число слишком большое!')
-        return false;
-    }
-
-    return true;
-}
-
-function validateDouble(value) {
-    if (value === null || value === undefined || value === '') {
-        showError('Неправильная запись числа!');
-        return false;
-    }
-
-    if (typeof value === 'string') {
-        // Удаляем пробелы
-        value = value.trim();
-
-        if (value.includes('e')) {
-            const parts = value.split('e');
-            if (parts.length !== 2 || isNaN(parts[0]) || isNaN(parts[1])) {
-                showError('Неправильная запись экспоненциальной формы числа');
-                return false;
-            }
-        }
-
-        value = Number(value);
-    }
-
-    if (typeof value !== 'number') {
-        showError('Вы ввели не число!');
-        return false;
-    } else if (!isFinite(value)) {
-        showError('Число слишком большое!')
-        return false;
-    }
-
     return true;
 }
 
 async function getData(url) {
     const response = await fetch(url);
     return await response.text();
+}
+
+function setCurrentIdButton(id) {
+    currentButtonId = id;
 }
 
 let createButtons = document.getElementsByClassName("createTable");

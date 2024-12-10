@@ -1,6 +1,16 @@
 function doOperation() {
     let firstTable = fetchDataFromTable(1);
+
+    if (!tableIsNotEmpty(firstTable)) {
+        return;
+    }
+
     let secondTable = fetchDataFromTable(2);
+
+    if (!tableIsNotEmpty(secondTable)) {
+        return;
+    }
+
     let operation = document.getElementById('operation').value;
     let content = [firstTable, secondTable];
     console.log(content);

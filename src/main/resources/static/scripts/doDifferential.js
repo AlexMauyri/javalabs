@@ -1,6 +1,8 @@
 function submitFunctionToDiff() {
     const values = fetchDataFromTable(1);
-    if (values === undefined || values === null) return;
+    if (!tableIsNotEmpty(values)) {
+        return;
+    }
     differentiate(values);
 }
 

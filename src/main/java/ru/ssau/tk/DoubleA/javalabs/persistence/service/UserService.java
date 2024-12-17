@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.ssau.tk.DoubleA.javalabs.persistence.dao.UserRepo;
 import ru.ssau.tk.DoubleA.javalabs.persistence.entity.User;
 import ru.ssau.tk.DoubleA.javalabs.security.Role;
@@ -43,8 +44,13 @@ public class UserService implements UserDetailsService {
         userRepo.save(user);
     }
 
-    public int getUserIdByUsername(String username) {
+    public int getUserIdByUsername(String username) throws UsernameNotFoundException {
         User user = userRepo.findByUsername(username);
-        return user.getUser_id();
+
+        if (user != null) {
+            return user.getUser_id();
+        }
+
+        throw new UsernameNotFoundException(username);
     }
 }

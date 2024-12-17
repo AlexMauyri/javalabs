@@ -131,6 +131,7 @@ public class TabulatedFunctionController {
                                                       HttpServletRequest request,
                                                       HttpServletResponse response) {
         TabulatedFunctionFactory factory = cookieHandler.determineFabric(request, response);
+        updateAllFunctionsMap(request);
         TabulatedFunction function = factory.create(
                 allFunctions.get(tabulatedFunctionRequest.getFunctionName()),
                 tabulatedFunctionRequest.getFrom(),
